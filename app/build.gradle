@@ -34,7 +34,7 @@ java {
 
 application {
     // Define the main class for the application.
-    mainClass = 'topdownshooter.App'
+    mainClass = 'topdownshooter.Game'
 }
 
 tasks.named('test') {

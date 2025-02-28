@@ -3,12 +3,19 @@
  */
 package topdownshooter;
 
-public class Game {
-    public String getGreeting() {
-        return "Hello World!";
-    }
+import javax.swing.*;
 
+public class Game {
     public static void main(String[] args) {
-        System.out.println(new Game().getGreeting());
+        SwingUtilities.invokeLater(() -> {
+            JFrame frame = new JFrame("Zombie Shooter");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.setSize(800, 600);
+            frame.setResizable(false);
+
+            MenuPanel menuPanel = new MenuPanel(frame);
+            frame.add(menuPanel);
+            frame.setVisible(true);
+        });
     }
 }
