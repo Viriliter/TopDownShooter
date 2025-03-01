@@ -92,6 +92,7 @@ public class GamePanel  extends JPanel implements ActionListener, KeyListener, M
         while (iterator.hasNext()) {
             Bullet bullet = iterator.next();
 
+            // If bullet is out of bounds, remove it
             if (bullet.isOutOfBounds(getWidth(), getHeight())) {
                 iterator.remove();
             } else {
@@ -147,10 +148,10 @@ public class GamePanel  extends JPanel implements ActionListener, KeyListener, M
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_A -> player.decrementX();
-            case KeyEvent.VK_D -> player.incrementX();
-            case KeyEvent.VK_W -> player.decrementY();
-            case KeyEvent.VK_S -> player.incrementY();
+            case KeyEvent.VK_A -> player.decrementDx();
+            case KeyEvent.VK_D -> player.incrementDx();
+            case KeyEvent.VK_W -> player.decrementDy();
+            case KeyEvent.VK_S -> player.incrementDy();
             case KeyEvent.VK_R -> player.getCurrentWeapon().reload();
             case KeyEvent.VK_Q -> player.switchWeapon();
         }

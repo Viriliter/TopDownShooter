@@ -23,11 +23,6 @@ public class Player extends JPanel{
     private ArrayList<Weapon> inventory;
     private int currentWeaponIndex = 0;
 
-    public enum MoveDirection {
-        POSITIVE,
-        NEGATIVE
-    }
-
     public Player(ConfigHandler config) {
         PlayerProperties playerProperties = config.getPlayerProperties();
         this.x = playerProperties.startingX();
@@ -73,6 +68,14 @@ public class Player extends JPanel{
         g2d.setTransform(oldTransform);
     }
 
+    public void decrementDx() { this.dx = -this.speed; }
+    
+    public void incrementDx() { this.dx = this.speed; }
+    
+    public void decrementDy() { this.dy = -this.speed; }
+    
+    public void incrementDy() { this.dy = +this.speed; }
+
     public void setDx(int dx) { this.dx = dx; }
 
     public void setDy(int dy) { this.dy = dy; }
@@ -83,13 +86,9 @@ public class Player extends JPanel{
     
     public double getR() { return this.r; }
 
-    public void incrementX() { this.x += this.speed; }
+    public void moveX() { this.x += this.dx; }
 
-    public void incrementY() { this.y += this.speed; }
-
-    public void decrementX() { this.x += this.speed; }
-
-    public void decrementY() { this.y += this.speed; }
+    public void moveY() { this.y += this.dy; }
 
     public double getHealth() {return this.health;}
 
