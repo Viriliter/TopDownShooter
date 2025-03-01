@@ -1,6 +1,10 @@
-package topdownshooter;
+package topdownshooter.Player;
 
 import javax.swing.*;
+
+import topdownshooter.Weapon.Weapon;
+import topdownshooter.Weapon.Pistol;
+
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;

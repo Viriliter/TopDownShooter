@@ -23,6 +23,7 @@ dependencies {
 
     // This dependency is used by the application.
     implementation libs.guava
+    implementation 'org.ini4j:ini4j:0.5.4'
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -30,6 +31,29 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
     }
+}
+
+sourceSets {
+    // Define the main source directory.
+    main {
+        java {
+            srcDirs 'src/main/java'
+        }
+        resources {
+            srcDirs 'src/main/resources'
+        }
+    }
+
+    // Define the test source directory.
+    test {
+        java {
+            srcDirs 'src/test/java'
+        }
+    }
+}
+
+tasks.withType(Copy).configureEach {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE // or EXCLUDE, WARN
 }
 
 application {

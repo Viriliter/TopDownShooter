@@ -1,4 +1,4 @@
-package topdownshooter;
+package topdownshooter.Weapon;
 
 public class Pistol implements Weapon {
     private int damage = 1;

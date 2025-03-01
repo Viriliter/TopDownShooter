@@ -1,4 +1,4 @@
-package topdownshooter;
+package topdownshooter.Zombie;
 
 import java.awt.*;
 

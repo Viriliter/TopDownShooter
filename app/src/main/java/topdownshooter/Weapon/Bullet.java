@@ -1,4 +1,4 @@
-package topdownshooter;
+package topdownshooter.Weapon;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;

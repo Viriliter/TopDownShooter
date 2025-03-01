@@ -1,4 +1,4 @@
-package topdownshooter;
+package topdownshooter.Weapon;
 
 public interface Weapon {
     int damage = 0;

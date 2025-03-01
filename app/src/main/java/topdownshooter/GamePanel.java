@@ -7,6 +7,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
+import topdownshooter.Player.Player;
+import topdownshooter.Weapon.Bullet;
+import topdownshooter.Zombie.Zombie;
+import topdownshooter.Core.ConfigHandler;
+
 public class GamePanel  extends JPanel implements ActionListener, KeyListener, MouseListener, MouseMotionListener {
     private Player player;
     private ArrayList<Zombie> zombies;
