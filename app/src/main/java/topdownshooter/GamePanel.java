@@ -7,19 +7,25 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
+import topdownshooter.Core.Globals;
+import topdownshooter.Core.ConfigHandler;
+
 import topdownshooter.Player.Player;
 import topdownshooter.Weapon.Bullet;
 import topdownshooter.Zombie.Zombie;
-import topdownshooter.Core.ConfigHandler;
 
 public class GamePanel  extends JPanel implements ActionListener, KeyListener, MouseListener, MouseMotionListener {
     private Player player;
     private ArrayList<Zombie> zombies;
     private ArrayList<Bullet> bullets;
-    private Timer timer;
-    private Random random;
 
-    public GamePanel(JFrame frame) {
+    private Timer gameTimer;
+    private Timer fireTimer;
+
+    private Random random;
+    private ConfigHandler config;
+
+    public GamePanel(JFrame frame, ConfigHandler config) {
         setFocusable(true);
         requestFocusInWindow();
         setBackground(Color.BLACK);
@@ -27,13 +33,22 @@ public class GamePanel  extends JPanel implements ActionListener, KeyListener, M
         addMouseListener(this);
         addMouseMotionListener(this);
 
-        player = new Player(400, 400);
+        this.config = config;
+
+        player = new Player(config);
         zombies = new ArrayList<>();
         bullets = new ArrayList<>();
         random = new Random();
 
-        timer = new Timer(16, this);
-        timer.start();
+        gameTimer = new Timer(Globals.GAME_TICK_MS, this);
+        gameTimer.start();
+
+    }
+
+    @Override
+    public void addNotify() {
+        super.addNotify();
+        requestFocus();
     }
 
     @Override
@@ -45,28 +60,44 @@ public class GamePanel  extends JPanel implements ActionListener, KeyListener, M
             z.draw(g);
         }
 
-        for (Bullet b : bullets) {
-            b.draw(g);
+        for (Bullet bullet : bullets) {
+            if (bullet == null) continue;
+            bullet.draw(g);
         }
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        player.move();
+        player.update();
 
-        spawnZombie();
+        updateZombies();
 
-        for (Zombie z : zombies) {
-            z.moveTowards(player.getX(), player.getY());
-        }
-
-        for (Bullet b : bullets) {
-            b.move();
-        }
+        updateBullets ();
 
         checkCollisions();
 
         repaint();
+    }
+
+    private void updateZombies() {
+        if (zombies.size() < 1) spawnZombie();
+
+        for (Zombie z : zombies) {
+            z.update(player.getX(), player.getY());
+        }
+    }
+
+    private void updateBullets() {
+        Iterator<Bullet> iterator = bullets.iterator();
+        while (iterator.hasNext()) {
+            Bullet bullet = iterator.next();
+
+            if (bullet.isOutOfBounds(getWidth(), getHeight())) {
+                iterator.remove();
+            } else {
+                bullet.move();
+            }
+        }
     }
 
     private void spawnZombie() {
@@ -115,13 +146,13 @@ public class GamePanel  extends JPanel implements ActionListener, KeyListener, M
 
     @Override
     public void keyPressed(KeyEvent e) {
-        System.out.println("Key pressed: " + e.getKeyCode());
         switch (e.getKeyCode()) {
-            case KeyEvent.VK_A -> player.setDx(-5);
-            case KeyEvent.VK_D -> player.setDx(5);
-            case KeyEvent.VK_W -> player.setDy(-5);
-            case KeyEvent.VK_S -> player.setDy(5);
+            case KeyEvent.VK_A -> player.decrementX();
+            case KeyEvent.VK_D -> player.incrementX();
+            case KeyEvent.VK_W -> player.decrementY();
+            case KeyEvent.VK_S -> player.incrementY();
             case KeyEvent.VK_R -> player.getCurrentWeapon().reload();
+            case KeyEvent.VK_Q -> player.switchWeapon();
         }
     }
 
@@ -137,15 +168,36 @@ public class GamePanel  extends JPanel implements ActionListener, KeyListener, M
 
     }
 
-    @Override
-    public void mousePressed(MouseEvent e) {}
+    public void startFireTimer() {
+        if (this.fireTimer == null || !this.fireTimer.isRunning()) {
+            this.fireTimer = new Timer(Globals.GAME_TICK_MS, e -> triggerFireFunction()); // Calls function every 100ms
+            this.fireTimer.start();
+        }
+    }
+
+    public void stopFireTimer() {
+        if (this.fireTimer != null) {
+            this.fireTimer.stop();
+        }
+    }
+
+    public void triggerFireFunction() {
+        Bullet bullet = player.fire();
+        if (bullet != null)
+            bullets.add(bullet);
+    }
 
     @Override
     public void mouseEntered(MouseEvent e) {}
-    
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+        startFireTimer();
+    }
+
     @Override
     public void mouseReleased(MouseEvent e) {
-        bullets.add(new Bullet(player.getX(), player.getY(), player.getR()));
+        stopFireTimer();
     }
     
     @Override

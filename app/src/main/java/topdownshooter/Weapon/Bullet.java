@@ -43,4 +43,8 @@ public class Bullet {
     public Rectangle getBounds() {
         return new Rectangle(x, y, SIZE, SIZE);
     }
+
+    public boolean isOutOfBounds(int width, int height) {
+        return this.x < 0 || this.x > width || this.y < 0 || this.y > height;
+    }
 }

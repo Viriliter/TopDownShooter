@@ -5,15 +5,23 @@ package topdownshooter;
 
 import javax.swing.*;
 
+import topdownshooter.Core.Globals;
+import topdownshooter.Core.ConfigHandler.WindowProperties;
+import topdownshooter.Core.ConfigHandler;
+
 public class Game {
     public static void main(String[] args) {
+        ConfigHandler config = new ConfigHandler(Globals.CONFIGURATION_FILE);
+
+        WindowProperties windowProperties = config.getWindowProperties();
+
         SwingUtilities.invokeLater(() -> {
             JFrame frame = new JFrame("Zombie Shooter");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(800, 600);
+            frame.setSize(windowProperties.windowWidth(), windowProperties.windowHeight());
             frame.setResizable(false);
 
-            MenuPanel menuPanel = new MenuPanel(frame);
+            MenuPanel menuPanel = new MenuPanel(frame, config);
             frame.add(menuPanel);
             frame.setVisible(true);
         });

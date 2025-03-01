@@ -5,11 +5,15 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import topdownshooter.Core.ConfigHandler;
+
 public class MenuPanel extends JPanel {
     private JFrame frame;
+    private ConfigHandler config = null;
 
-    public MenuPanel(JFrame frame) {
+    public MenuPanel(JFrame frame, ConfigHandler config) {
         this.frame = frame;
+        this.config = config;
         setLayout(new BorderLayout());
 
         JLabel title = new JLabel("Zombie Shooter", SwingConstants.CENTER);
@@ -30,7 +34,7 @@ public class MenuPanel extends JPanel {
 
     private void startGame() {
         frame.getContentPane().removeAll();
-        frame.add(new GamePanel(frame));
+        frame.add(new GamePanel(frame, config));
         frame.revalidate();
         frame.repaint();
     }

@@ -2,8 +2,8 @@ package topdownshooter.Weapon;
 
 import topdownshooter.Core.ConfigHandler.WeaponProperties;
 
-public class Pistol extends AbstractWeapon {
-    public Pistol(WeaponProperties properties) {
+public class AssaultRifle extends AbstractWeapon {
+    public AssaultRifle(WeaponProperties properties) {
         super(properties);
     }
 }

@@ -1,15 +1,7 @@
 package topdownshooter.Weapon;
 
 public interface Weapon {
-    int damage = 0;
-    int fireRate = 0;
-    int reloadTime = 0;
-    int ammo = 0;
-    int maxAmmo = 0;
-    int reloadTimer = 0;
-    int fireTimer = 0;
-
-    void fire();
+    Bullet fire(int x, int y, double r);
 
     void reload();
 
@@ -17,7 +9,9 @@ public interface Weapon {
 
     int getAmmo();
 
-    int getMaxAmmo();
+    int getMagazineCapacity();
+
+    int getMagazineCount();
 
     int getReloadTimer();
 
