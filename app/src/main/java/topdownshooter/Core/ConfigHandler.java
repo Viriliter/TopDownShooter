@@ -8,7 +8,9 @@ import java.io.InputStream;
 public final class ConfigHandler {
     public record WindowProperties (
         int windowWidth,
-        int windowHeight
+        int windowHeight,
+        int x,
+        int y
     ) {}
 
     public record WeaponProperties (
@@ -54,10 +56,16 @@ public final class ConfigHandler {
         }
     }
 
+    public <T> void setProperty(String section, String key, T value) {
+        ConfigHandler.ini.put(section, key, value);
+    }
+
     public WindowProperties getWindowProperties() {
         Integer windowWidth = Integer.parseInt(ConfigHandler.ini.get("Window").get("Width"));
         Integer windowHeight = Integer.parseInt(ConfigHandler.ini.get("Window").get("Height"));
-        return new WindowProperties(windowWidth, windowHeight);
+        Integer x = Integer.parseInt(ConfigHandler.ini.get("Window").get("X"));
+        Integer y = Integer.parseInt(ConfigHandler.ini.get("Window").get("Y"));
+        return new WindowProperties(windowWidth, windowHeight, x ,y);
     }
 
     public WeaponProperties getPistolProperties() {

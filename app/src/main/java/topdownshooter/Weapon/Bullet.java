@@ -6,6 +6,7 @@ import java.awt.geom.AffineTransform;
 public class Bullet {
     private int x, y;
     private double r;
+    private int damage;
     private final int SIZE = 5;
     private final int SPEED = 10;
 
@@ -13,6 +14,14 @@ public class Bullet {
         this.x = x;
         this.y = y;
         this.r = r;
+        this.damage = 0;
+    }
+
+    public Bullet(int x, int y, double r, int damage) {
+        this.x = x;
+        this.y = y;
+        this.r = r;
+        this.damage = damage;
     }
 
     public void move() {
@@ -46,5 +55,9 @@ public class Bullet {
 
     public boolean isOutOfBounds(int width, int height) {
         return this.x < 0 || this.x > width || this.y < 0 || this.y > height;
+    }
+
+    public int getDamage() {
+        return this.damage;
     }
 }

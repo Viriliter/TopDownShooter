@@ -5,6 +5,7 @@ import javax.swing.*;
 import topdownshooter.Weapon.Weapon;
 import topdownshooter.Core.ConfigHandler;
 import topdownshooter.Core.ConfigHandler.PlayerProperties;
+import topdownshooter.Core.PlayerItem;
 import topdownshooter.Weapon.WeaponFactory;
 import topdownshooter.Weapon.WeaponType;
 import topdownshooter.Weapon.Bullet;
@@ -14,8 +15,8 @@ import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 
 public class Player extends JPanel{
-    private double score = 0;
-    private double health = 0;
+    private int score = 0;
+    private int health = 0;
     private int x, y, dx, dy;
     private double r;
     private int speed;
@@ -90,11 +91,22 @@ public class Player extends JPanel{
 
     public void moveY() { this.y += this.dy; }
 
-    public double getHealth() {return this.health;}
+    public void heal(int healPoints) {this.health = this.health+healPoints > 100 ? 100: this.health+healPoints;}
 
-    public double getScore() {return this.score;}
+    public int getHealth() {return this.health;}
+
+    public void addScore(int points) {
+        this.score += points<0 ? 0 : points;
+    }
+
+    public void addPlayerItem(PlayerItem item) {
+        if (item == null) return;
+
+    }
+
+    public int getScore() {return this.score;}
     
-    public void takeDamage(double damage) {this.health -= damage;}
+    public void takeDamage(int damage) {this.health = this.health-damage <= 0 ? 0: this.health-damage;}
     
     public void switchWeapon() {this.currentWeaponIndex = (this.currentWeaponIndex + 1) % this.inventory.size();}
     

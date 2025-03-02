@@ -32,7 +32,7 @@ public abstract class AbstractWeapon implements Weapon {
         if (this.fireTimer <= 0 && this.ammo > 0) {
             this.ammo--;
             this.fireTimer = this.fireRateTick;
-            return new Bullet(x, y, r);
+            return new Bullet(x, y, r, this.damage);
         }
         return null;
     }
