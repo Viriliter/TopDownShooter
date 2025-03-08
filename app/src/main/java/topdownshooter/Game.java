@@ -7,6 +7,7 @@ import javax.swing.*;
 
 import topdownshooter.Core.Globals;
 import topdownshooter.Core.ConfigHandler.WindowProperties;
+import topdownshooter.Panels.MenuPanel;
 import topdownshooter.Core.ConfigHandler;
 
 public class Game {

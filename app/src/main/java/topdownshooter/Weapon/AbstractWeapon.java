@@ -1,37 +1,59 @@
 package topdownshooter.Weapon;
 
 import topdownshooter.Core.Globals;
+import topdownshooter.Core.TimeTick;
 import topdownshooter.Core.ConfigHandler.WeaponProperties;
 
 public abstract class AbstractWeapon implements Weapon {
     protected int damage;
-    protected int fireRateTick;
     protected int magazineCapacity;
     protected int magazineCount;
-    protected int reloadTimeTick;
+    protected int fireRate;
+    protected int reloadDuration;
     protected int ammo;
-    protected int reloadTimer;
-    protected int fireTimer;
-    long initTime = 0;
+    protected TimeTick reloadTick;
+    protected TimeTick fireTick;
+    protected WeaponType type;
 
+    public AbstractWeapon() {}
 
     public AbstractWeapon(WeaponProperties properties) {
         this.damage = properties.damage();
-        this.fireRateTick = (1000 * 60) / (Globals.GAME_TICK_MS * properties.fireRate());  // Need to convert from 1/min to game ticks
+        this.fireRate = properties.fireRate() > 0 ? properties.fireRate(): 1;  // FireRate (1/min) cannot be zero
         this.magazineCapacity = properties.magazineCapacity();
         this.magazineCount = properties.magazineCount();
-        this.reloadTimeTick = 1; //(1000) / (Globals.GAME_TICK_MS * properties.reloadTime());  // Need to convert from seconds to game ticks
+        this.reloadDuration = properties.reloadDuration();  // In seconds
 
         this.ammo = this.magazineCapacity;  // Create the weapon fully loaded
-        this.reloadTimer = 0;
-        this.fireTimer = 0;
+        this.fireTick = new TimeTick(Globals.Time2GameTick(60*1000/this.fireRate));
+        this.fireTick.setRepeats(-1);  // Repeates indefinetly
+        this.reloadTick = new TimeTick(0/*Globals.Time2Tick(1000/this.reloadDuration)*/);
+        this.reloadTick.setRepeats(-1);  // Repeates indefinetly
+    }
+
+    public AbstractWeapon(int damage, int magazineCapacity, int magazineCount, 
+                          int fireRate, int reloadDuration, int ammo, TimeTick reloadTick, 
+                          TimeTick fireTick, WeaponType type) {
+        this.damage = damage;
+        this.magazineCapacity = magazineCapacity;
+        this.magazineCount = magazineCount;
+        this.fireRate = fireRate;
+        this.reloadDuration = reloadDuration;
+        this.ammo = ammo;
+        this.reloadTick = reloadTick;
+        this.reloadTick.setAction(null);
+        this.fireTick = fireTick;
+        this.fireTick.setAction(null);
+        this.type = type;
     }
 
     @Override
     public Bullet fire(int x, int y, double r) {
-        if (this.fireTimer <= 0 && this.ammo > 0) {
+        System.out.println(this.fireTick.getTick());
+
+        if (this.fireTick.isTimeOut() && this.ammo > 0) {
+            fireTick.reset();
             this.ammo--;
-            this.fireTimer = this.fireRateTick;
             return new Bullet(x, y, r, this.damage);
         }
         return null;
@@ -39,14 +61,13 @@ public abstract class AbstractWeapon implements Weapon {
 
     @Override
     public void reload() {
-        if (reloadTimer <= 0 && ammo < this.magazineCapacity) {
+        if (reloadTick.isTimeOut() && ammo < this.magazineCapacity) {
+            reloadTick.reset();
             if (magazineCount == -1) {  // Infinity number of magazine count
                 this.ammo = this.magazineCapacity;
-                this.reloadTimer = this.reloadTimeTick;
             } else if (magazineCount > 0){
                 this.magazineCount--;
                 this.ammo = this.magazineCapacity;
-                this.reloadTimer = this.reloadTimeTick;
             } else {
                 System.out.println("Out of ammo");
             }
@@ -55,16 +76,8 @@ public abstract class AbstractWeapon implements Weapon {
 
     @Override
     public void update() {
-        if (this.fireTimer == this.fireRateTick) {
-            initTime = (long) System.currentTimeMillis();
-        }
-        if (this.fireTimer == 0 && initTime != 0) {
-            System.out.println("Fire rate: " + (System.currentTimeMillis() - this.initTime));
-            initTime = 0;
-        }
-        
-        if (this.fireTimer > 0) this.fireTimer--;
-        if (this.reloadTimer > 0) this.reloadTimer--;
+        this.fireTick.updateTick();
+        this.reloadTick.updateTick();
     }
 
     @Override
@@ -83,17 +96,25 @@ public abstract class AbstractWeapon implements Weapon {
     }
 
     @Override
-    public int getReloadTimer() {
-        return this.reloadTimer;
+    public int getReloadDuration() {
+        return this.reloadDuration;
     }
 
     @Override
-    public int getFireTimer() {
-        return this.fireTimer;
+    public int getFireRate() {
+        return this.fireRate;
     }
 
     @Override
     public int getDamage() {
         return this.damage;
     }
+
+    @Override
+    public WeaponType getType() {
+        return this.type;
+    }
+
+    @Override
+    abstract public String toString();
 }

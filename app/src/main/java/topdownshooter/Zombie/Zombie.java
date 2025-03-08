@@ -1,11 +1,12 @@
 package topdownshooter.Zombie;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.Map;
 
 import topdownshooter.Core.PlayerItem;
 
-public interface Zombie {
+public interface Zombie extends Serializable{
     public void update(int px, int py);
 
     public void draw(Graphics g);

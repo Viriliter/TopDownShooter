@@ -13,6 +13,10 @@ public class CrawlerZombie extends AbstractZombie {
         this.y = x;
         this.type = ZombieType.CRAWLER;
     }
+    
+    public CrawlerZombie(int x, int y, double r, int health, int speed, int damage, int points, int range, ZombieType type) {
+        super(x, y, r, health, speed, damage, points, range, type);
+    }
 
     @Override
     public void draw(Graphics g) {
@@ -60,4 +64,21 @@ public class CrawlerZombie extends AbstractZombie {
         */
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("CrawlerZombie{");
+        sb.append("x=" + this.x + ", ");
+        sb.append("y=" + this.y + ", ");
+        sb.append("r=" + this.r + ", ");
+        sb.append("health=" + this.health + ", ");
+        sb.append("speed=" + this.speed + ", ");
+        sb.append("damage=" + this.damage + ", ");
+        sb.append("points=" + this.points + ", ");
+        sb.append("range=" + this.range + ", ");
+        sb.append("type=" + this.type);
+        sb.append("}");
+
+        return sb.toString();
+    }
 }

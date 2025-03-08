@@ -2,8 +2,9 @@ package topdownshooter.Weapon;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.io.Serializable;
 
-public class Bullet {
+public class Bullet implements Serializable{
     private int x, y;
     private double r;
     private int damage;
@@ -59,5 +60,18 @@ public class Bullet {
 
     public int getDamage() {
         return this.damage;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Bullet{");
+        sb.append("x=" + this.x + ", ");
+        sb.append("y=" + this.y + ", ");
+        sb.append("r=" + this.r + ", ");
+        sb.append("damage=" + this.damage + ", ");
+        sb.append("}");
+
+        return sb.toString();
     }
 }

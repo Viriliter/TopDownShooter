@@ -1,19 +1,16 @@
-package topdownshooter;
+package topdownshooter.Panels;
 
 import javax.swing.*;
 import java.awt.*;
 
 import topdownshooter.Core.Globals;
 import topdownshooter.Core.ConfigHandler.WindowProperties;
-import topdownshooter.Panels.GameAreaPanel;
-import topdownshooter.Panels.GameInfoPanel;
-import topdownshooter.Panels.GameOverPanel;
 import topdownshooter.Core.ConfigHandler;
 
 public class GamePanel extends JPanel {
-    private GameAreaPanel gameAreaPanel;
-    private GameInfoPanel gameInfoPanel;
-    private GameOverPanel gameOverPanel;
+    private GameAreaPanel gameAreaPanel = null;
+    private GameInfoPanel gameInfoPanel = null;
+    private GameOverPanel gameOverPanel = null;
 
     public GamePanel(JFrame frame, ConfigHandler config) {
         setLayout(new BorderLayout());
@@ -22,24 +19,43 @@ public class GamePanel extends JPanel {
         
         WindowProperties windowProperties = config.getWindowProperties();
 
+        // Create Game Info Panel which shows player health inventory, level info, etc. 
         this.gameInfoPanel = new GameInfoPanel(config);
+        this.gameInfoPanel.setParentPanel(this);
+
         add(this.gameInfoPanel, BorderLayout.NORTH);
 
+        // Create Layered Pane for Game Area and GameOver Panel
         JLayeredPane layeredPane = new JLayeredPane();
         layeredPane.setPreferredSize(new Dimension(windowProperties.windowWidth(), windowProperties.windowHeight()));
 
+        // Create Game Area Panel which where game is played. 
         this.gameAreaPanel = new GameAreaPanel(config);
         this.gameAreaPanel.setBounds(0, 0, windowProperties.windowWidth(), windowProperties.windowHeight());
+        this.gameAreaPanel.setParentPanel(this);
         layeredPane.add(this.gameAreaPanel, JLayeredPane.DEFAULT_LAYER);
 
+        // Create GameOver Panel which is visible if game is over
         this.gameOverPanel = new GameOverPanel();
         this.gameOverPanel.setBounds(0, 0, windowProperties.windowWidth(), windowProperties.windowHeight());
         this.gameOverPanel.setVisible(false);
-
         layeredPane.add(this.gameOverPanel, JLayeredPane.PALETTE_LAYER);
-
+        
         add(layeredPane, BorderLayout.CENTER);
 
         setVisible(true);
     }
+
+    public GameAreaPanel getGameAreaPanel() {
+        return this.gameAreaPanel;
+    }
+
+    public GameInfoPanel getGameInfoPanel() {
+        return this.gameInfoPanel;
+    }
+
+    public GameOverPanel getGameOverPanel() {
+        return this.gameOverPanel;
+    }
+
 }

@@ -18,12 +18,38 @@ public abstract class AbstractZombie implements Zombie {
     protected int range;
     protected ZombieType type;
 
+    public AbstractZombie() {}
+
     public AbstractZombie(ZombieProperties properties) {
         this.x = 0;
         this.y = 0;
         this.r = 0;
         this.damage = properties.damage();
         this.speed = properties.speed();
+    }
+    
+    public AbstractZombie(int x, int y, double r, int health, int speed, int damage, int points, int range, ZombieType type) {
+        this.x = x;
+        this.y = y;
+        this.r = r;
+        this.health = health;
+        this.speed = speed;
+        this.damage = damage;
+        this.points = points;
+        this.range = range;
+        this.type = type;
+    }
+
+    public AbstractZombie(AbstractZombie other) {
+        this.x = other.x;
+        this.y = other.y;
+        this.r = other.r;
+        this.health = other.health;
+        this.speed = other.speed;
+        this.damage = other.damage;
+        this.points = other.points;
+        this.range = other.range;
+        this.type = other.type;
     }
 
     @Override
@@ -86,4 +112,7 @@ public abstract class AbstractZombie implements Zombie {
     public Map.Entry<Integer, PlayerItem> kill() {
         return new AbstractMap.SimpleEntry<>(this.points, null);
     }
+
+    @Override
+    abstract public String toString();
 }

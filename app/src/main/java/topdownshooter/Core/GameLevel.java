@@ -1,5 +1,6 @@
 package topdownshooter.Core;
 
+import java.io.Serializable;
 import java.util.Random;
 
 import topdownshooter.Core.ConfigHandler.LevelProperties;
@@ -7,7 +8,7 @@ import topdownshooter.Zombie.Zombie;
 import topdownshooter.Zombie.ZombieFactory;
 import topdownshooter.Zombie.ZombieType;
 
-public class GameLevel {
+public class GameLevel implements Serializable {
     private static int level = 0;
     private static boolean waveOver = true;
     private static boolean waveStarted = false;
@@ -19,8 +20,8 @@ public class GameLevel {
     private int tankZombieCount;
     private int acidZombieCount;
     private int spawnPeriod;
-    private int spawnTimer;
-    private int waveTimer;
+    private TimeTick spawnTick;
+    private TimeTick waveTick;
 
     private Random random;
 
@@ -37,14 +38,40 @@ public class GameLevel {
         this.crawlerZombieCount = 0;
         this.tankZombieCount = 0;
         this.acidZombieCount = 0;
-
-        this.spawnTimer = 0;
         this.spawnPeriod = 0;
 
-        this.waveTimer = 0;
+        this.spawnTick = null;
+        this.waveTick = null;
+    }
+
+    public GameLevel(int level, boolean waveOver, boolean waveStarted, int waveDuration, int ordinaryZombieCount, int crawlerZombieCount, int tankZombieCount,
+                     int acidZombieCount, int spawnPeriod, TimeTick spawnTick, TimeTick waveTick) {
+        this.random = new Random();
+        
+        GameLevel.level = level;
+        GameLevel.waveOver = waveOver;
+        GameLevel.waveStarted = waveStarted;
+        this.waveDuration = 0;
+        this.ordinaryZombieCount = 0;
+        this.crawlerZombieCount = 0;
+        this.tankZombieCount = 0;
+        this.acidZombieCount = 0;
+        this.spawnPeriod = 0;
+
+        this.spawnTick = spawnTick;
+        this.waveTick = waveTick;
+    }
+
+    public void setConfig(ConfigHandler config) {
+        this.config = config;
     }
 
     private void loadLevel(long level) {
+        if (this.config==null) {
+            System.err.println("Cannot load level since no configuration is defined!");
+            return;
+        }
+        
         if (GameLevel.waveStarted) {
             return;
         }
@@ -93,22 +120,29 @@ public class GameLevel {
             this.tankZombieCount = levelProperties.tankZombieCount();
             this.acidZombieCount = levelProperties.acidZombieCount();
 
-            int totalZombies = getReaminingZombies();
+            int totalZombies = getRemainingZombies();
             if (totalZombies > 0) {
+                // Calculate zombie spawn period (Seconds per zombie) by normalizing the wave duration
                 this.spawnPeriod = this.waveDuration / totalZombies;
             }
-            this.spawnTimer = this.spawnPeriod * 1000 / Globals.GAME_TICK_MS ;
-            this.waveTimer = this.waveDuration * 1000 / Globals.GAME_TICK_MS ;
+
+            this.spawnTick = new TimeTick(Globals.Time2GameTick(this.spawnPeriod * 1000));
+            this.spawnTick.setRepeats(-1);  // Repeats indefinetly
+            this.waveTick = new TimeTick(Globals.Time2GameTick(this.waveDuration * 1000));
+            this.waveTick.setRepeats(0);  // Repeats indefinetly
         }
     }
 
     public Zombie update(final int maxWidth, final int maxHeight) {
-        if (GameLevel.waveStarted) {
-            if (this.spawnTimer>0) this.spawnTimer--;
-            if (this.waveTimer>0) this.waveTimer--;
+        if (this.spawnTick==null) return null;
 
-            Zombie zombie = spawnZombie(maxWidth, maxHeight);
-            if (getReaminingZombies() <= 0) {
+        if (GameLevel.waveStarted) {
+            this.spawnTick.updateTick();
+            this.waveTick.updateTick();
+
+            Zombie zombie = null;
+            zombie = spawnZombie(maxWidth, maxHeight);
+            if (getRemainingZombies() <= 0) {
                 endWave();
             }
             return zombie;
@@ -116,12 +150,13 @@ public class GameLevel {
         return null;
     }
 
-    private int getReaminingZombies() {
+    public int getRemainingZombies() {
         return this.ordinaryZombieCount + this.crawlerZombieCount + this.tankZombieCount + this.acidZombieCount;
     }
 
     public Zombie spawnZombie(final int maxWidth, final int maxHeight) {
-        if (spawnTimer > 0) return null;
+        // If no enough time is elapsed to spawn the zombie, do not create a new one.
+        if (!this.spawnTick.isTimeOut()) return null;
 
         // Randomize spawn edge
         int spawnEdge = random.nextInt(4); // 0 = top, 1 = bottom, 2 = left, 3 = right
@@ -147,7 +182,7 @@ public class GameLevel {
         }
 
         // Check if there are any zombies left to spawn
-        if (getReaminingZombies() <= 0) {
+        if (getRemainingZombies() <= 0) {
             return null;
         }
 
@@ -160,23 +195,21 @@ public class GameLevel {
             if (randZombieType == 2 && this.tankZombieCount > 0) break;
             if (randZombieType == 3 && this.acidZombieCount > 0) break;
     
-        } while (getReaminingZombies() > 0); // Retry if no zombies left for that type
+        } while (getRemainingZombies() > 0); // Retry if no zombies left for that type
 
-        this.spawnTimer = this.spawnPeriod * 1000 / Globals.GAME_TICK_MS ;  // Reset spawn timer
+        this.spawnTick.reset();  // Reset spawn timer
+
         // Spawn the zombie
         if (randZombieType == 0 && this.ordinaryZombieCount > 0) {
             this.ordinaryZombieCount--;
             return ZombieFactory.createZombie(this.config, ZombieType.ORDINARY, x, y);
-        }
-        if (randZombieType == 1 && this.crawlerZombieCount > 0) {
+        } else if (randZombieType == 1 && this.crawlerZombieCount > 0) {
             this.crawlerZombieCount--;
             return ZombieFactory.createZombie(this.config, ZombieType.CRAWLER, x, y);
-        }
-        if (randZombieType == 2 && this.tankZombieCount > 0) {
+        } else if (randZombieType == 2 && this.tankZombieCount > 0) {
             this.tankZombieCount--;
             return ZombieFactory.createZombie(this.config, ZombieType.TANK, x, y);
-        }
-        if (randZombieType == 3 && this.acidZombieCount > 0) {
+        } else if (randZombieType == 3 && this.acidZombieCount > 0) {
             this.acidZombieCount--;
             return ZombieFactory.createZombie(this.config, ZombieType.ACID, x, y);
         }
@@ -203,5 +236,29 @@ public class GameLevel {
 
     public int getLevel() {
         return level;
+    }
+
+    public int getRemainingTime() {
+        return Globals.GameTick2Time(this.waveTick==null? 0 : this.waveTick.getTick());
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("GameLevel{");
+        sb.append("level=" + GameLevel.level + ", ");
+        sb.append("waveOver=" + GameLevel.waveOver + ", ");
+        sb.append("waveStarted=" + GameLevel.waveStarted + ", ");       
+        sb.append("waveDuration=" + this.waveDuration + ", ");
+        sb.append("ordinaryZombieCount=" + this.ordinaryZombieCount + ", ");
+        sb.append("crawlerZombieCount=" + this.crawlerZombieCount + ", ");
+        sb.append("tankZombieCount=" + this.tankZombieCount + ", ");
+        sb.append("acidZombieCount=" + this.acidZombieCount + ", ");
+        sb.append("spawnPeriod=" + this.spawnPeriod + ", ");
+        sb.append("spawnTick=" + this.spawnTick + ", ");
+        sb.append("waveTick=" + this.waveTick);
+        sb.append("}");
+
+        return sb.toString();
     }
 }

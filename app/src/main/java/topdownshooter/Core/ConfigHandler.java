@@ -18,7 +18,7 @@ public final class ConfigHandler {
         int fireRate,
         int magazineCapacity,
         int magazineCount,
-        int reloadTime
+        int reloadDuration
     ) {}
 
     public record PlayerProperties (
@@ -73,8 +73,8 @@ public final class ConfigHandler {
         Integer weaponFireRate = Integer.parseInt(ConfigHandler.ini.get("Pistol").get("FireRate"));
         Integer weaponMagazineCapacity = Integer.parseInt(ConfigHandler.ini.get("Pistol").get("MagazineCapacity"));
         Integer weaponMagazineCount = Integer.parseInt(ConfigHandler.ini.get("Pistol").get("MagazineCount"));
-        Integer reloadTime = Integer.parseInt(ConfigHandler.ini.get("Pistol").get("ReloadTime"));
-        return new WeaponProperties(weaponDamage, weaponFireRate, weaponMagazineCapacity, weaponMagazineCount, reloadTime);
+        Integer reloadDuration = Integer.parseInt(ConfigHandler.ini.get("Pistol").get("ReloadDuration"));
+        return new WeaponProperties(weaponDamage, weaponFireRate, weaponMagazineCapacity, weaponMagazineCount, reloadDuration);
     }
 
     public WeaponProperties getAssaultRifleProperties() {
@@ -82,8 +82,8 @@ public final class ConfigHandler {
         Integer weaponFireRate = Integer.parseInt(ConfigHandler.ini.get("AssaultRifle").get("FireRate"));
         Integer weaponMagazineCapacity = Integer.parseInt(ConfigHandler.ini.get("AssaultRifle").get("MagazineCapacity"));
         Integer weaponMagazineCount = Integer.parseInt(ConfigHandler.ini.get("AssaultRifle").get("MagazineCount"));
-        Integer reloadTime = Integer.parseInt(ConfigHandler.ini.get("AssaultRifle").get("ReloadTime"));
-        return new WeaponProperties(weaponDamage, weaponFireRate, weaponMagazineCapacity, weaponMagazineCount, reloadTime);
+        Integer reloadDuration = Integer.parseInt(ConfigHandler.ini.get("AssaultRifle").get("ReloadDuration"));
+        return new WeaponProperties(weaponDamage, weaponFireRate, weaponMagazineCapacity, weaponMagazineCount, reloadDuration);
     }
 
     public WeaponProperties getShotgunProperties() {
@@ -91,8 +91,8 @@ public final class ConfigHandler {
         Integer weaponFireRate = Integer.parseInt(ConfigHandler.ini.get("Shotgun").get("FireRate"));
         Integer weaponMagazineCapacity = Integer.parseInt(ConfigHandler.ini.get("Shotgun").get("MagazineCapacity"));
         Integer weaponMagazineCount = Integer.parseInt(ConfigHandler.ini.get("Shotgun").get("MagazineCount"));
-        Integer reloadTime = Integer.parseInt(ConfigHandler.ini.get("Shotgun").get("ReloadTime"));
-        return new WeaponProperties(weaponDamage, weaponFireRate, weaponMagazineCapacity, weaponMagazineCount, reloadTime);
+        Integer reloadDuration = Integer.parseInt(ConfigHandler.ini.get("Shotgun").get("ReloadDuration"));
+        return new WeaponProperties(weaponDamage, weaponFireRate, weaponMagazineCapacity, weaponMagazineCount, reloadDuration);
     }
 
     public WeaponProperties getSniperRifleProperties() {
@@ -100,8 +100,8 @@ public final class ConfigHandler {
         Integer weaponFireRate = Integer.parseInt(ConfigHandler.ini.get("SniperRifle").get("FireRate"));
         Integer weaponMagazineCapacity = Integer.parseInt(ConfigHandler.ini.get("SniperRifle").get("MagazineCapacity"));
         Integer weaponMagazineCount = Integer.parseInt(ConfigHandler.ini.get("SniperRifle").get("MagazineCount"));
-        Integer reloadTime = Integer.parseInt(ConfigHandler.ini.get("SniperRifle").get("ReloadTime"));
-        return new WeaponProperties(weaponDamage, weaponFireRate, weaponMagazineCapacity, weaponMagazineCount, reloadTime);
+        Integer reloadDuration = Integer.parseInt(ConfigHandler.ini.get("SniperRifle").get("ReloadDuration"));
+        return new WeaponProperties(weaponDamage, weaponFireRate, weaponMagazineCapacity, weaponMagazineCount, reloadDuration);
     }
 
     public WeaponProperties getRocketLauncherProperties() {
@@ -109,8 +109,8 @@ public final class ConfigHandler {
         Integer weaponFireRate = Integer.parseInt(ConfigHandler.ini.get("Rocketlauncher").get("FireRate"));
         Integer weaponMagazineCapacity = Integer.parseInt(ConfigHandler.ini.get("Rocketlauncher").get("MagazineCapacity"));
         Integer weaponMagazineCount = Integer.parseInt(ConfigHandler.ini.get("Rocketlauncher").get("MagazineCount"));
-        Integer reloadTime = Integer.parseInt(ConfigHandler.ini.get("Rocketlauncher").get("ReloadTime"));
-        return new WeaponProperties(weaponDamage, weaponFireRate, weaponMagazineCapacity, weaponMagazineCount, reloadTime);
+        Integer reloadDuration = Integer.parseInt(ConfigHandler.ini.get("Rocketlauncher").get("ReloadDuration"));
+        return new WeaponProperties(weaponDamage, weaponFireRate, weaponMagazineCapacity, weaponMagazineCount, reloadDuration);
     }
 
     public PlayerProperties getPlayerProperties() {

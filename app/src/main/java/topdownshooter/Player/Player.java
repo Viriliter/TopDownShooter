@@ -2,6 +2,10 @@ package topdownshooter.Player;
 
 import javax.swing.*;
 
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.util.ArrayList;
+
 import topdownshooter.Weapon.Weapon;
 import topdownshooter.Core.ConfigHandler;
 import topdownshooter.Core.ConfigHandler.PlayerProperties;
@@ -10,11 +14,8 @@ import topdownshooter.Weapon.WeaponFactory;
 import topdownshooter.Weapon.WeaponType;
 import topdownshooter.Weapon.Bullet;
 
-import java.awt.*;
-import java.awt.geom.AffineTransform;
-import java.util.ArrayList;
 
-public class Player extends JPanel{
+public class Player extends JPanel {
     private int score = 0;
     private int health = 0;
     private int x, y, dx, dy;
@@ -23,6 +24,8 @@ public class Player extends JPanel{
     private final int SIZE = 30;
     private ArrayList<Weapon> inventory;
     private int currentWeaponIndex = 0;
+
+    public Player() {}
 
     public Player(ConfigHandler config) {
         PlayerProperties playerProperties = config.getPlayerProperties();
@@ -44,10 +47,12 @@ public class Player extends JPanel{
         this.r = rRad;
     }
 
-    public void update() {
+    public void update(final int maxWidth, final int maxHeight) {
         // Update location
-        this.x += this.dx;
-        this.y += this.dy;
+        this.x = this.x + this.dx > maxWidth-SIZE ? maxWidth-SIZE : this.x + this.dx;
+        this.x = this.x + this.dx < 0 ? 0 : this.x + this.dx;
+        this.y = this.y + this.dy > maxHeight-SIZE ? maxHeight-SIZE : this.y + this.dy;
+        this.y = this.y + this.dy < 0 ? 0 : this.y + this.dy;
 
         // Update weapons
         for (Weapon w : inventory) {
@@ -118,5 +123,24 @@ public class Player extends JPanel{
 
     public void addNewWeapon(ConfigHandler config, WeaponType type) {
         this.inventory.add(WeaponFactory.createWeapon(config, type));
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Player{");
+        sb.append("score=" + this.score + ", ");
+        sb.append("health=" + this.health + ", ");
+        sb.append("x=" + this.x + ", ");
+        sb.append("y=" + this.y + ", ");
+        sb.append("dx=" + this.dx + ", ");
+        sb.append("dy=" + this.dy + ", ");
+        sb.append("r=" + this.r + ", ");
+        sb.append("speed=" + this.speed + ", ");
+        sb.append("inventory=" + this.inventory + ", ");
+        sb.append("currentWeaponIndex=" + this.currentWeaponIndex);
+        sb.append("}");
+
+        return sb.toString();
     }
 }

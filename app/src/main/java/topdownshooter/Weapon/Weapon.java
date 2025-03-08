@@ -1,6 +1,8 @@
 package topdownshooter.Weapon;
 
-public interface Weapon {
+import java.io.Serializable;
+
+public interface Weapon extends Serializable{
     Bullet fire(int x, int y, double r);
 
     void reload();
@@ -13,10 +15,12 @@ public interface Weapon {
 
     int getMagazineCount();
 
-    int getReloadTimer();
+    int getReloadDuration();
 
-    int getFireTimer();
+    int getFireRate();
 
     int getDamage();
+
+    WeaponType getType();
 }
 

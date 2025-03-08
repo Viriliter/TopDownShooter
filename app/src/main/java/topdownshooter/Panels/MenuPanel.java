@@ -1,4 +1,4 @@
-package topdownshooter;
+package topdownshooter.Panels;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -7,7 +7,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 import java.io.InputStream;
-
 
 import topdownshooter.Core.ConfigHandler;
 import topdownshooter.Core.Globals;
