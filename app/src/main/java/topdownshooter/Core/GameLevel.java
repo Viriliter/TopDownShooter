@@ -9,9 +9,9 @@ import topdownshooter.Zombie.ZombieFactory;
 import topdownshooter.Zombie.ZombieType;
 
 public class GameLevel implements Serializable {
-    private static int level = 0;
-    private static boolean waveOver = true;
-    private static boolean waveStarted = false;
+    private int level = 0;
+    private boolean waveOver = true;
+    private boolean waveStarted = false;
 
     private ConfigHandler config;
     private int waveDuration;
@@ -48,9 +48,9 @@ public class GameLevel implements Serializable {
                      int acidZombieCount, int spawnPeriod, TimeTick spawnTick, TimeTick waveTick) {
         this.random = new Random();
         
-        GameLevel.level = level;
-        GameLevel.waveOver = waveOver;
-        GameLevel.waveStarted = waveStarted;
+        this.level = level;
+        this.waveOver = waveOver;
+        this.waveStarted = waveStarted;
         this.waveDuration = 0;
         this.ordinaryZombieCount = 0;
         this.crawlerZombieCount = 0;
@@ -72,7 +72,7 @@ public class GameLevel implements Serializable {
             return;
         }
         
-        if (GameLevel.waveStarted) {
+        if (this.waveStarted) {
             return;
         }
 
@@ -136,7 +136,7 @@ public class GameLevel implements Serializable {
     public Zombie update(final int maxWidth, final int maxHeight) {
         if (this.spawnTick==null) return null;
 
-        if (GameLevel.waveStarted) {
+        if (this.waveStarted) {
             this.spawnTick.updateTick();
             this.waveTick.updateTick();
 
@@ -217,21 +217,20 @@ public class GameLevel implements Serializable {
     }
 
     public void startWave() {
-        if (GameLevel.waveStarted) return;
+        if (this.waveStarted) return;
 
-        System.out.println("Starting new level: " + (GameLevel.level + 1));
-        loadLevel(++GameLevel.level);
-        GameLevel.waveStarted = true;
-        GameLevel.waveOver = false;
+        loadLevel(++this.level);
+        this.waveStarted = true;
+        this.waveOver = false;
     }
 
     public void endWave() {
-        GameLevel.waveStarted = false;
-        GameLevel.waveOver = true;
+        this.waveStarted = false;
+        this.waveOver = true;
     }
 
     public boolean isWaveOver() {
-        return GameLevel.waveOver;
+        return this.waveOver;
     }
 
     public int getLevel() {
@@ -246,9 +245,9 @@ public class GameLevel implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append("GameLevel{");
-        sb.append("level=" + GameLevel.level + ", ");
-        sb.append("waveOver=" + GameLevel.waveOver + ", ");
-        sb.append("waveStarted=" + GameLevel.waveStarted + ", ");       
+        sb.append("level=" + this.level + ", ");
+        sb.append("waveOver=" + this.waveOver + ", ");
+        sb.append("waveStarted=" + this.waveStarted + ", ");       
         sb.append("waveDuration=" + this.waveDuration + ", ");
         sb.append("ordinaryZombieCount=" + this.ordinaryZombieCount + ", ");
         sb.append("crawlerZombieCount=" + this.crawlerZombieCount + ", ");

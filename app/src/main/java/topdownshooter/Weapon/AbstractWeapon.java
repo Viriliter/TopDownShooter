@@ -49,8 +49,6 @@ public abstract class AbstractWeapon implements Weapon {
 
     @Override
     public Bullet fire(int x, int y, double r) {
-        System.out.println(this.fireTick.getTick());
-
         if (this.fireTick.isTimeOut() && this.ammo > 0) {
             fireTick.reset();
             this.ammo--;

@@ -161,13 +161,15 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
             while (zombieIterator.hasNext()) {
                 Zombie zombie = zombieIterator.next();
                 if (bullet.getBounds().intersects(zombie.getBounds())) {
-                    bulletIterator.remove();
-                    zombie.takeDamage(10);
+                    zombie.takeDamage(bullet.getDamage());
+                    bulletIterator.remove();  // After damaging zombie, remove it.
                     // If health of zombie is non positive, it is killed 
                     if (zombie.getHealth() <= 0) {
+                        // Killing zombie will give score, and possibility of dropping player items. 
                         Map.Entry<Integer, PlayerItem> tuple = zombie.kill();
                         int points = tuple.getKey();
                         PlayerItem playerItem = tuple.getValue();
+
                         this.player.addScore(points);
                         this.player.addPlayerItem(playerItem);
 
@@ -181,8 +183,15 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         Iterator<Zombie> zombieIterator = zombies.iterator();
         while (zombieIterator.hasNext()) {
             Zombie zombie = zombieIterator.next();
-            if (zombie.getBounds().intersects(this.player.getBounds())) {
-                this.player.takeDamage(zombie.giveDamage());
+            // If zombie attacked the player it gives damage
+            boolean isColliding = zombie.getBounds().intersects(player.getBounds()) || 
+                                  player.getBounds().contains(zombie.getBounds()) || 
+                                  zombie.getBounds().contains(player.getBounds());
+
+            if (isColliding) {
+                // Normalize damage according to game tick (Full damage is taken by player in 500ms)
+                double damagePerTick = (double) zombie.giveDamage() * ((double) Globals.GAME_TICK_MS / Globals.FULL_DAMAGE_PERIOD);
+                this.player.takeDamage(damagePerTick);
             }
         }
     }
@@ -207,7 +216,10 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
     }
 
     private void showGameOverDialog() {
-        
+        GameOverPanel gameOverPanel = this.parentPanel.getGameOverPanel();
+        gameOverPanel.setPlayerScore(this.player.getScore());
+        gameOverPanel.setGameLevel(this.gameLevel.getLevel());
+        gameOverPanel.fadeIn();  // Animated pop up 
     }
 
     private void resetGame() {
@@ -341,10 +353,11 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
 
     public void endGame() {
         this.gameTimer.stop();
-        this.fireRateTick.reset();
-        this.waveSuspendTick.reset();
+        if (this.fireRateTick != null) this.fireRateTick.reset();
+        if (this.waveSuspendTick != null) this.waveSuspendTick.reset();
 
         System.out.println("GAME OVER");
+        showGameOverDialog();
     }
 
     @Override
@@ -366,10 +379,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
     }
 
     @Override
-    public void keyTyped(KeyEvent e) {
-        System.out.println("Key typed: " + e.getKeyCode());
-
-    }
+    public void keyTyped(KeyEvent e) { }
 
     @Override
     public void mouseEntered(MouseEvent e) {}

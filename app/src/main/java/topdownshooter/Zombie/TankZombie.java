@@ -8,11 +8,11 @@ public class TankZombie extends AbstractZombie {
     public TankZombie(ZombieProperties properties, int x, int y) {
         super(properties);
         this.x = x;
-        this.y = x;
+        this.y = y;
         this.type = ZombieType.TANK;
     }
 
-    public TankZombie(int x, int y, double r, int health, int speed, int damage, int points, int range, ZombieType type) {
+    public TankZombie(int x, int y, double r, double health, int speed, int damage, int points, int range, ZombieType type) {
         super(x, y, r, health, speed, damage, points, range, type);
     }
 

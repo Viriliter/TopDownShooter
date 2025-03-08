@@ -17,7 +17,7 @@ import topdownshooter.Weapon.Bullet;
 
 public class Player extends JPanel {
     private int score = 0;
-    private int health = 0;
+    private double health = 0.0;
     private int x, y, dx, dy;
     private double r;
     private int speed;
@@ -98,7 +98,7 @@ public class Player extends JPanel {
 
     public void heal(int healPoints) {this.health = this.health+healPoints > 100 ? 100: this.health+healPoints;}
 
-    public int getHealth() {return this.health;}
+    public double getHealth() {return this.health;}
 
     public void addScore(int points) {
         this.score += points<0 ? 0 : points;
@@ -111,7 +111,7 @@ public class Player extends JPanel {
 
     public int getScore() {return this.score;}
     
-    public void takeDamage(int damage) {this.health = this.health-damage <= 0 ? 0: this.health-damage;}
+    public void takeDamage(double damage) {this.health = this.health-damage <= 0 ? 0.0: this.health-damage;}
     
     public void switchWeapon() {this.currentWeaponIndex = (this.currentWeaponIndex + 1) % this.inventory.size();}
     
@@ -123,6 +123,10 @@ public class Player extends JPanel {
 
     public void addNewWeapon(ConfigHandler config, WeaponType type) {
         this.inventory.add(WeaponFactory.createWeapon(config, type));
+    }
+
+    public Rectangle getBounds() {
+        return new Rectangle(this.x, this.y, this.SIZE, this.SIZE);
     }
 
     @Override

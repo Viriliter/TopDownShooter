@@ -6,15 +6,16 @@ import topdownshooter.Core.ConfigHandler.ZombieProperties;
 
 public class CrawlerZombie extends AbstractZombie {
     static final int JUMP_DISTANCE = 30;
+    private boolean isJumped = false;
 
     public CrawlerZombie(ZombieProperties properties, int x, int y) {
         super(properties);
         this.x = x;
-        this.y = x;
+        this.y = y;
         this.type = ZombieType.CRAWLER;
     }
     
-    public CrawlerZombie(int x, int y, double r, int health, int speed, int damage, int points, int range, ZombieType type) {
+    public CrawlerZombie(int x, int y, double r, double health, int speed, int damage, int points, int range, ZombieType type) {
         super(x, y, r, health, speed, damage, points, range, type);
     }
 
@@ -41,27 +42,30 @@ public class CrawlerZombie extends AbstractZombie {
 
     @Override
     public void update(int px, int py) {
-        if (this.x < px) this.x += 1;
-        if (this.x > px) this.x -= 1;
-        if (this.y < py) this.y += 1;
-        if (this.y > py) this.y -= 1;
+        // Try to catch the player
+        if (this.x < px) this.x += this.speed;
+        if (this.x > px) this.x -= this.speed;
+        if (this.y < py) this.y += this.speed;
+        if (this.y > py) this.y -= this.speed;
     
+        // Rotate the zombie towards player
         int dx = px - this.x;
         int dy = py - this.y;
 
         this.r = Math.atan2(dy, dx); // Radians (used for rotation)
+
+        // Calculate distance between the zombie and the player
         double distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance <= JUMP_DISTANCE) {
+
+        // Check zombie is at the jump range to the player
+        // If it has already jumped, do not jump again.
+        if (distance <= JUMP_DISTANCE && !isJumped) {
             this.x = px - SIZE / 2;
             this.y = py - SIZE / 2;
+            isJumped = true;
+        } else {
+            isJumped = false;
         }
-        /*
-            
-            if (length != 0) {
-                this.x += (int) (speed * (dx / length));
-                this.y += (int) (speed * (dy / length));
-            }
-        */
     }
 
     @Override

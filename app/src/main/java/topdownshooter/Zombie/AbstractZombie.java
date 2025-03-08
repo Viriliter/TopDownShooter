@@ -8,14 +8,14 @@ import topdownshooter.Core.ConfigHandler.ZombieProperties;
 import topdownshooter.Core.PlayerItem;
 
 public abstract class AbstractZombie implements Zombie {
-    protected int x, y;
-    protected double r; // Rotation angle in radians
+    protected int x = 0, y = 0;
+    protected double r = 0.0; // Rotation angle in radians
     protected final int SIZE = 30;
-    protected int health;
-    protected int speed;
-    protected int damage;
-    protected int points;
-    protected int range;
+    protected double health = 0;
+    protected int speed = 0;
+    protected int damage = 0;
+    protected int points = 0;
+    protected int range = 0;
     protected ZombieType type;
 
     public AbstractZombie() {}
@@ -24,11 +24,14 @@ public abstract class AbstractZombie implements Zombie {
         this.x = 0;
         this.y = 0;
         this.r = 0;
-        this.damage = properties.damage();
+        this.health = properties.health();
         this.speed = properties.speed();
+        this.damage = properties.damage();
+        this.range = properties.range();
+        this.points = properties.points();
     }
     
-    public AbstractZombie(int x, int y, double r, int health, int speed, int damage, int points, int range, ZombieType type) {
+    public AbstractZombie(int x, int y, double r, double health, int speed, int damage, int points, int range, ZombieType type) {
         this.x = x;
         this.y = y;
         this.r = r;
@@ -54,11 +57,13 @@ public abstract class AbstractZombie implements Zombie {
 
     @Override
     public void update(int px, int py) {
-        if (this.x < px) this.x += 1;
-        if (this.x > px) this.x -= 1;
-        if (this.y < py) this.y += 1;
-        if (this.y > py) this.y -= 1;
+        // Try to catch the player
+        if (this.x < px) this.x += this.speed;
+        if (this.x > px) this.x -= this.speed;
+        if (this.y < py) this.y += this.speed;
+        if (this.y > py) this.y -= this.speed;
     
+        // Rotate the zombie towards player
         int dx = px - this.x;
         int dy = py - this.y;
 
@@ -83,15 +88,15 @@ public abstract class AbstractZombie implements Zombie {
     }
 
     @Override
-    public int getHealth() {
+    public double getHealth() {
         return this.health;
     }
 
     @Override
-    public boolean takeDamage(int damage) {
+    public boolean takeDamage(double damage) {
         this.health -= damage;
         
-        if (this.health <= 0) {
+        if (this.health <= 0.0) {
             return true;
         } else {
             return false;

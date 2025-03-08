@@ -8,6 +8,7 @@ import topdownshooter.Core.ConfigHandler.WindowProperties;
 import topdownshooter.Core.ConfigHandler;
 
 public class GamePanel extends JPanel {
+    private MenuPanel parentPanel = null;
     private GameAreaPanel gameAreaPanel = null;
     private GameInfoPanel gameInfoPanel = null;
     private GameOverPanel gameOverPanel = null;
@@ -39,6 +40,7 @@ public class GamePanel extends JPanel {
         this.gameOverPanel = new GameOverPanel();
         this.gameOverPanel.setBounds(0, 0, windowProperties.windowWidth(), windowProperties.windowHeight());
         this.gameOverPanel.setVisible(false);
+        this.gameOverPanel.setParentPanel(this);
         layeredPane.add(this.gameOverPanel, JLayeredPane.PALETTE_LAYER);
         
         add(layeredPane, BorderLayout.CENTER);
@@ -56,6 +58,14 @@ public class GamePanel extends JPanel {
 
     public GameOverPanel getGameOverPanel() {
         return this.gameOverPanel;
+    }
+
+    public void setParentPanel(MenuPanel panel) {
+        this.parentPanel = panel;
+    }
+
+    public void switchToMenu() {
+        this.parentPanel.showMenu();
     }
 
 }

@@ -15,9 +15,9 @@ public interface Zombie extends Serializable{
 
     public int getPoints();
 
-    public int getHealth();
+    public double getHealth();
 
-    public boolean takeDamage(int damage);
+    public boolean takeDamage(double damage);
 
     public int giveDamage();
 

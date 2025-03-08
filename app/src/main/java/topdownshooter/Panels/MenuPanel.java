@@ -20,6 +20,11 @@ public class MenuPanel extends JPanel {
     public MenuPanel(JFrame frame, ConfigHandler config) {
         this.frame = frame;
         this.config = config;
+
+        initPanel();
+    }
+
+    private void initPanel() {
         setLayout(new BorderLayout());
 
         // Get window properties from config
@@ -123,9 +128,19 @@ public class MenuPanel extends JPanel {
         frame.repaint();
     }
 
+    public void showMenu() {
+        this.frame.getContentPane().removeAll();  // It will clear out if there is any GamePanel
+
+        MenuPanel menuPanel = new MenuPanel(this.frame, config);
+        this.frame.add(menuPanel);
+        this.frame.setVisible(true);
+    }
+
     private void startGame() {
         frame.getContentPane().removeAll();
-        frame.add(new GamePanel(frame, config));
+        GamePanel gamePanel = new GamePanel(frame, config);
+        gamePanel.setParentPanel(this);
+        frame.add(gamePanel);
         frame.revalidate();
         frame.repaint();
     }

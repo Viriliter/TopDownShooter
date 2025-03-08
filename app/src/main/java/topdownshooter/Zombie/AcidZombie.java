@@ -8,11 +8,11 @@ public class AcidZombie extends AbstractZombie {
     public AcidZombie(ZombieProperties properties, int x, int y) {
         super(properties);
         this.x = x;
-        this.y = x;
+        this.y = y;
         this.type = ZombieType.ACID;
     }
     
-    public AcidZombie(int x, int y, double r, int health, int speed, int damage, int points, int range, ZombieType type) {
+    public AcidZombie(int x, int y, double r, double health, int speed, int damage, int points, int range, ZombieType type) {
         super(x, y, r, health, speed, damage, points, range, type);
     }
 

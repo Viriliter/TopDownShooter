@@ -92,8 +92,8 @@ public class GameInfoPanel extends JPanel implements ActionListener, MouseListen
         this.parentPanel = panel;
     }
 
-    public void updatePlayerHealth(int health) {
-        this.healthLabel.setText("Health: " + health);
+    public void updatePlayerHealth(double health) {
+        this.healthLabel.setText("Health: " + (int) health);
     }
 
     public void updatePlayerScore(int score) {
