@@ -212,6 +212,8 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
     }
 
     public void resumeGame() {
+        requestFocus();
+
         gameTimer.start();
     }
 
@@ -266,7 +268,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         }
     }
 
-    private void loadGame() {
+    public void loadGame() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Open File");
 
@@ -297,7 +299,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         }
     }
 
-    private void saveGame() {
+    public void saveGame() {
         SwingUtilities.invokeLater(() -> {
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setDialogTitle("Save File"); // Set dialog title
@@ -360,6 +362,13 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         showGameOverDialog();
     }
 
+    private void openInGameMenu() {
+        pauseGame();
+
+        InGameMenuPanel inGameMenuPanel = this.parentPanel.getInGameMenuPanel();
+        inGameMenuPanel.fadeIn();
+    }
+
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
@@ -369,6 +378,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
             case KeyEvent.VK_S -> player.incrementDy();
             case KeyEvent.VK_R -> player.getCurrentWeapon().reload();
             case KeyEvent.VK_Q -> player.switchWeapon();
+            case KeyEvent.VK_ESCAPE -> openInGameMenu();
         }
     }
 

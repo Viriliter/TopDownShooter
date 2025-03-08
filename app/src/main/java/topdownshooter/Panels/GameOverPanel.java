@@ -1,66 +1,69 @@
 package topdownshooter.Panels;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 public class GameOverPanel extends AbstractActionPanel {
-    private int playerScore = 0;
-    private int gameLevel = 1;
+    private JFrame frame;
+    private JLabel gameOverLabel;
+    private JLabel scoreLabel;
+    private JLabel levelLabel;
     private JButton backButton;
     private GamePanel parentPanel;
 
-    public GameOverPanel() {
+    public GameOverPanel(JFrame frame) {
         super();
+        this.frame = frame;
         setLayout(null); // Use absolute positions
 
-        // Create Back to Menu button
-        backButton = new JButton("Back to Menu");
-        backButton.setFont(new Font("Arial", Font.BOLD, 20));
-        backButton.setBounds( // Centering the button
-                200, 300, 200, 50
-        );
-        backButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                returnToMenu();
-            }
-        });
+        // Create and configure the labels
+        gameOverLabel = createLabel("GAME OVER", 50, Color.RED);
+        scoreLabel = createLabel("Final Score: " + 0, 30, Color.WHITE);
+        levelLabel = createLabel("Reached Level: " + 1, 30, Color.WHITE);
 
+        // Create Back to Menu button
+        backButton = createButton("Back to Menu");
+        backButton.addActionListener(e -> returnToMenu());
+
+        // Add components to the panel
+        add(gameOverLabel);
+        add(scoreLabel);
+        add(levelLabel);
         add(backButton);
+    }
+
+    private JLabel createLabel(String text, int fontSize, Color color) {
+        JLabel label = new JLabel(text, JLabel.CENTER);
+        label.setFont(new Font("Arial", Font.BOLD, fontSize));
+        label.setForeground(color);
+        return label;
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        // Darken the background with transparency
         g.setColor(new Color(0, 0, 0, 150)); // Black with 150 alpha (out of 255)
         g.fillRect(0, 0, getWidth(), getHeight());
 
-        // "Game Over" text
-        g.setColor(Color.RED);
-        g.setFont(new Font("Arial", Font.BOLD, 50));
-        String message = "GAME OVER";
-        int x = (getWidth() - g.getFontMetrics().stringWidth(message)) / 2;
-        int y = getHeight() / 2;
-        g.drawString(message, x, y);
+        // Position the labels
+        int x;
 
-        // Player score
-        g.setFont(new Font("Arial", Font.BOLD, 30));
-        g.setColor(Color.WHITE);
-        String scoreText = "Final Score: " + playerScore;
-        x = (getWidth() - g.getFontMetrics().stringWidth(scoreText)) / 2;
-        g.drawString(scoreText, x, y + 50);
+        x = (getWidth() - gameOverLabel.getPreferredSize().width) / 2;
+        gameOverLabel.setBounds(x, getHeight() / 2 - 50, gameOverLabel.getPreferredSize().width, gameOverLabel.getPreferredSize().height);
 
-        // Game level
-        String levelText = "Reached Level: " + gameLevel;
-        x = (getWidth() - g.getFontMetrics().stringWidth(levelText)) / 2;
-        g.drawString(levelText, x, y + 100);
+        x = (getWidth() - scoreLabel.getPreferredSize().width) / 2;
+        scoreLabel.setBounds(x, gameOverLabel.getY() + 60, scoreLabel.getPreferredSize().width, scoreLabel.getPreferredSize().height);
 
-        backButton.setBounds((getWidth() - 200) / 2, y + 150, 200, 50);
+        x = (getWidth() - levelLabel.getPreferredSize().width) / 2;
+        levelLabel.setBounds(x, scoreLabel.getY() + 60, levelLabel.getPreferredSize().width, levelLabel.getPreferredSize().height);
+    
+        // Position the button
+        backButton.setBounds((getWidth() - 200) / 2, levelLabel.getY() + 70, 200, 50);
+
+        this.frame.repaint();
     }
 
     void setParentPanel(GamePanel panel) {
@@ -68,17 +71,17 @@ public class GameOverPanel extends AbstractActionPanel {
     }
 
     void setPlayerScore(int score) {
-        this.playerScore = score;
+        this.scoreLabel.setText("Final Score: " + score);
         repaint();
     }
 
     void setGameLevel(int level) {
-        this.gameLevel = level;
+        this.levelLabel.setText("Reached Level: " + level);
         repaint();
     }
 
     void returnToMenu() {
         this.parentPanel.switchToMenu();
-        this.setVisible(false);
+        this.close();
     }
 }

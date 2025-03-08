@@ -6,6 +6,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 
 import topdownshooter.Core.ConfigHandler;
+import topdownshooter.Core.Globals;
 import topdownshooter.Weapon.Weapon;
 
 public class GameInfoPanel extends JPanel implements ActionListener, MouseListener{
@@ -27,9 +28,45 @@ public class GameInfoPanel extends JPanel implements ActionListener, MouseListen
         topPanel.setLayout(new BorderLayout());
 
         // Menu button on the upper left
-        JButton menuButton = new JButton("Menu");
         JPanel leftPanel = new JPanel();
+
+        ImageIcon pngIcon = Globals.loadPNGIcon("menu-icon.png", 16, 16); // Provide the path to your PNG file
+        JButton menuButton = new JButton(pngIcon);
+        menuButton.setBackground(Color.GRAY);
+        menuButton.setForeground(Color.WHITE);  // Set text color to white
+        menuButton.setBorder(BorderFactory.createEmptyBorder()); // Remove border
+        menuButton.setFocusPainted(false); // Disable the focus paint (no border on focu
+        menuButton.setPreferredSize(new Dimension(24, 24));
+        menuButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                menuButton.setBackground(Color.DARK_GRAY); // Darker gray on hover
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                menuButton.setBackground(Color.GRAY); // Back to original gray when the mouse leaves
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                menuButton.setBackground(Color.LIGHT_GRAY); // Light gray when clicked
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                menuButton.setBackground(Color.DARK_GRAY); // Darker gray when the mouse button is released
+            }
+        });
+        menuButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showInGameMenu(); // Call the click handler function
+            }
+        });
+
         leftPanel.add(menuButton);
+
         topPanel.add(leftPanel, BorderLayout.WEST);
 
         // Horizontal layout for Weapon Slots with ammo and magazine count
@@ -117,5 +154,10 @@ public class GameInfoPanel extends JPanel implements ActionListener, MouseListen
 
     }
 
+    private void showInGameMenu() {
+        this.parentPanel.getGameAreaPanel().pauseGame();
 
+        InGameMenuPanel inGameMenuPanel = this.parentPanel.getInGameMenuPanel();
+        inGameMenuPanel.fadeIn();
+    }
 }

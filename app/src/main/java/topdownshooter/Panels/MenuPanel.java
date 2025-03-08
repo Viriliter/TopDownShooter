@@ -41,7 +41,7 @@ public class MenuPanel extends JPanel {
             e.printStackTrace();
         }
 
-        // Panel that contains buttons
+        // Button Panel
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.Y_AXIS));
         buttonPanel.setOpaque(false); 
@@ -59,6 +59,10 @@ public class MenuPanel extends JPanel {
         JButton helpButton = createStyledButton("Help");
         helpButton.addActionListener(e -> help());
 
+        // Credits button
+        JButton creditButton = createStyledButton("Credits");
+        creditButton.addActionListener(e -> credits());
+        
         // Exit button
         JButton exitButton = createStyledButton("Exit");
         exitButton.addActionListener(e -> exitGame());
@@ -70,6 +74,8 @@ public class MenuPanel extends JPanel {
         buttonPanel.add(loadButton);
         buttonPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Space between buttons
         buttonPanel.add(helpButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Space between buttons
+        buttonPanel.add(creditButton);
         buttonPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Space between buttons
         buttonPanel.add(exitButton);
         buttonPanel.add(Box.createVerticalGlue()); // Push buttons to center
@@ -159,10 +165,50 @@ public class MenuPanel extends JPanel {
             + "<li><b>Shoot:</b> Aim using mouse and click to shoot your weapon.</li>"
             + "<li><b>Pause:</b> Press 'Q' to switch weapon.</li>"
             + "<li><b>Reload:</b> Press 'R' to reload your weapon.</li>"
+            + "<li><b>Reload:</b> Press 'ESC' to pause the game.</li>"
             + "</ul>"
             + "<p><b>Tips:</b></p>"
             + "<ul>"
             + "<li>Collect ammunation and medicals to get ready to next waves.</li>"
+            + "</ul>"
+            + "</html>";
+
+        JEditorPane helpTextArea = new JEditorPane("text/html", helpText);
+        helpTextArea.setEditable(false);  // Make sure the text area is not editable
+        helpTextArea.setBackground(Color.WHITE);
+
+        JScrollPane scrollPane = new JScrollPane(helpTextArea);
+        scrollPane.setPreferredSize(new Dimension(400, 300));
+
+        JDialog helpDialog = new JDialog(frame, "Game Help", true);
+        helpDialog.setSize(500, 400);  // Set dialog size
+        helpDialog.setLocationRelativeTo(frame);  // Center dialog on the main frame
+
+        helpDialog.add(scrollPane, BorderLayout.CENTER);
+
+        JButton closeButton = new JButton("Close");
+        closeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                helpDialog.dispose(); // Close the dialog when clicked
+            }
+        });
+
+        JPanel closePanel = new JPanel();
+        closePanel.setLayout(new FlowLayout());
+        closePanel.add(closeButton);
+
+        helpDialog.add(closePanel, BorderLayout.SOUTH);
+        helpDialog.setVisible(true);  // Show the dialog
+    }
+
+    private void credits() {
+        // Create and display a dialog with instructions on how to play the game
+        String helpText = "<html><h2>Credits</h2>"
+            + "<p> This top down view zombie shooter game created for BIL015 course project.</p>"
+            + "<p><b>Author:</b></p>"
+            + "<ul>"
+            + "<li><b>Mert LİMONCUOĞLU</b></li>"
             + "</ul>"
             + "</html>";
 

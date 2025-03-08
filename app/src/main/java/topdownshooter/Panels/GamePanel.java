@@ -9,11 +9,14 @@ import topdownshooter.Core.ConfigHandler;
 
 public class GamePanel extends JPanel {
     private MenuPanel parentPanel = null;
+    private JFrame frame; 
     private GameAreaPanel gameAreaPanel = null;
     private GameInfoPanel gameInfoPanel = null;
     private GameOverPanel gameOverPanel = null;
+    private InGameMenuPanel inGameMenuPanel = null;
 
     public GamePanel(JFrame frame, ConfigHandler config) {
+        this.frame = frame;
         setLayout(new BorderLayout());
 
         setBackground(Color.ORANGE);
@@ -37,12 +40,19 @@ public class GamePanel extends JPanel {
         layeredPane.add(this.gameAreaPanel, JLayeredPane.DEFAULT_LAYER);
 
         // Create GameOver Panel which is visible if game is over
-        this.gameOverPanel = new GameOverPanel();
+        this.gameOverPanel = new GameOverPanel(this.frame);
         this.gameOverPanel.setBounds(0, 0, windowProperties.windowWidth(), windowProperties.windowHeight());
         this.gameOverPanel.setVisible(false);
         this.gameOverPanel.setParentPanel(this);
         layeredPane.add(this.gameOverPanel, JLayeredPane.PALETTE_LAYER);
-        
+
+        // Create InGameMenu Panel
+        this.inGameMenuPanel = new InGameMenuPanel(this.frame);
+        this.inGameMenuPanel.setBounds(0, 0, windowProperties.windowWidth(), windowProperties.windowHeight());
+        this.inGameMenuPanel.setVisible(false);
+        this.inGameMenuPanel.setParentPanel(this);
+        layeredPane.add(this.inGameMenuPanel, JLayeredPane.PALETTE_LAYER);
+
         add(layeredPane, BorderLayout.CENTER);
 
         setVisible(true);
@@ -58,6 +68,10 @@ public class GamePanel extends JPanel {
 
     public GameOverPanel getGameOverPanel() {
         return this.gameOverPanel;
+    }
+
+    public InGameMenuPanel getInGameMenuPanel() {
+        return this.inGameMenuPanel;
     }
 
     public void setParentPanel(MenuPanel panel) {
