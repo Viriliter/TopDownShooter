@@ -33,6 +33,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
     private ArrayList<Zombie> zombies = null;
     private ArrayList<Bullet> bullets = null;
 
+    private boolean isGamePaused = false;
     private Timer gameTimer;
     private TimeTick fireRateTick = null;
     private TimeTick waveSuspendTick = null;
@@ -208,6 +209,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
     }
 
     public void pauseGame() {
+        this.isGamePaused = true;
         gameTimer.stop();
     }
 
@@ -215,6 +217,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         requestFocus();
 
         gameTimer.start();
+        this.isGamePaused = false;
     }
 
     private void showGameOverDialog() {
@@ -415,6 +418,8 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
 
     @Override
     public void mouseMoved(MouseEvent e) {
+        if (this.isGamePaused) return;  // Do not move player when game is paused
+
         double rRad = Math.atan2(e.getY() - player.getY(), e.getX() - player.getX());
         player.rotate(rRad);
     }
