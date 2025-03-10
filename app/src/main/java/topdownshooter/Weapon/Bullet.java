@@ -9,7 +9,7 @@ public class Bullet implements Serializable{
     private double r;
     private int damage;
     private final int SIZE = 5;
-    private final int SPEED = 10;
+    private final int SPEED = 30;
 
     public Bullet(int x, int y, double r) {
         this.x = x;
