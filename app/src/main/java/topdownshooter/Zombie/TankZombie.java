@@ -26,7 +26,7 @@ public class TankZombie extends AbstractZombie {
         g2d.rotate(r);  // Rotate to face the player
 
         // Draw rotated rectangle as zombie
-        g2d.fillRect(-SIZE / 2, -SIZE / 2, SIZE, SIZE);
+        g2d.fillRect(-WIDTH / 2, -WIDTH / 2, WIDTH, WIDTH);
 
         // Reset transformation
         g2d.rotate(-r);

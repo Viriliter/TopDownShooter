@@ -3,6 +3,7 @@ package topdownshooter.Weapon;
 import topdownshooter.Core.Globals;
 import topdownshooter.Core.TimeTick;
 import topdownshooter.Core.ConfigHandler.WeaponProperties;
+import topdownshooter.Weapon.Projectiles.Bullet;
 
 public abstract class AbstractWeapon implements Weapon {
     protected int damage;

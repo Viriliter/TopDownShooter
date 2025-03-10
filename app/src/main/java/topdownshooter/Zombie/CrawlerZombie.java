@@ -29,7 +29,7 @@ public class CrawlerZombie extends AbstractZombie {
         g2d.rotate(r);  // Rotate to face the player
 
         // Draw rotated rectangle as zombie
-        g2d.fillRect(-SIZE / 2, -SIZE / 2, SIZE, SIZE);
+        g2d.fillRect(-WIDTH / 2, -WIDTH / 2, WIDTH, WIDTH);
 
         // Reset transformation
         g2d.rotate(-r);
@@ -60,8 +60,8 @@ public class CrawlerZombie extends AbstractZombie {
         // Check zombie is at the jump range to the player
         // If it has already jumped, do not jump again.
         if (distance <= JUMP_DISTANCE && !isJumped) {
-            this.x = px - SIZE / 2;
-            this.y = py - SIZE / 2;
+            this.x = px - WIDTH / 2;
+            this.y = py - WIDTH / 2;
             isJumped = true;
         } else {
             isJumped = false;

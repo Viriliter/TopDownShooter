@@ -5,18 +5,24 @@ import java.util.AbstractMap;
 import java.util.Map;
 
 import topdownshooter.Core.ConfigHandler.ZombieProperties;
+import topdownshooter.Core.Globals;
 import topdownshooter.Core.PlayerItem;
+import topdownshooter.Core.SpriteAnimation;
 
 public abstract class AbstractZombie implements Zombie {
     protected int x = 0, y = 0;
     protected double r = 0.0; // Rotation angle in radians
-    protected final int SIZE = 30;
+    protected int WIDTH = 60;
+    protected int HEIGHT = 50;
     protected double health = 0;
     protected int speed = 0;
     protected int damage = 0;
     protected int points = 0;
     protected int range = 0;
     protected ZombieType type;
+
+    protected SpriteAnimation spriteAnimation = null;
+
 
     public AbstractZombie() {}
 
@@ -29,6 +35,9 @@ public abstract class AbstractZombie implements Zombie {
         this.damage = properties.damage();
         this.range = properties.range();
         this.points = properties.points();
+        
+        this.spriteAnimation = new SpriteAnimation(Globals.ORDINARY_ZOMBIE_MOVE);
+        this.spriteAnimation.setTargetSize(WIDTH, HEIGHT);
     }
     
     public AbstractZombie(int x, int y, double r, double health, int speed, int damage, int points, int range, ZombieType type) {
@@ -41,6 +50,9 @@ public abstract class AbstractZombie implements Zombie {
         this.points = points;
         this.range = range;
         this.type = type;
+
+        this.spriteAnimation = new SpriteAnimation(Globals.ORDINARY_ZOMBIE_MOVE);
+        this.spriteAnimation.setTargetSize(WIDTH, HEIGHT);
     }
 
     public AbstractZombie(AbstractZombie other) {
@@ -53,6 +65,9 @@ public abstract class AbstractZombie implements Zombie {
         this.points = other.points;
         this.range = other.range;
         this.type = other.type;
+
+        this.spriteAnimation = other.spriteAnimation;
+        this.spriteAnimation.setTargetSize(WIDTH, HEIGHT);
     }
 
     @Override
@@ -67,7 +82,12 @@ public abstract class AbstractZombie implements Zombie {
         int dx = px - this.x;
         int dy = py - this.y;
 
-        this.r = Math.atan2(dy, dx); // Radians (used for rotation)
+        // If zombie cathes the survivor do not update rotation
+        double distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance > 2) {
+            this.r = Math.atan2(dy, dx); // Radians (used for rotation)
+        }
+
         /*
             double length = Math.sqrt(dx * dx + dy * dy);
             if (length != 0) {
@@ -75,11 +95,17 @@ public abstract class AbstractZombie implements Zombie {
                 this.y += (int) (speed * (dy / length));
             }
         */
+        
+        // Update sprite animation
+        this.spriteAnimation.update();
     }
 
     @Override
+    abstract public void draw(Graphics g);
+
+    @Override
     public Rectangle getBounds() {
-        return new Rectangle(x-SIZE/2, y-SIZE/2, SIZE, SIZE);
+        return new Rectangle(x-WIDTH/2, y-HEIGHT/2, WIDTH, HEIGHT);
     }
 
     @Override

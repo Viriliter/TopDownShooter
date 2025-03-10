@@ -14,7 +14,7 @@ import topdownshooter.Core.PlayerItem;
 import topdownshooter.Core.SpriteAnimation;
 import topdownshooter.Weapon.WeaponFactory;
 import topdownshooter.Weapon.WeaponType;
-import topdownshooter.Weapon.Bullet;
+import topdownshooter.Weapon.Projectiles.Bullet;
 
 
 public class Player extends JPanel {
@@ -72,6 +72,18 @@ public class Player extends JPanel {
     }
 
     public void draw(Graphics g) {
+        Graphics2D g2d = (Graphics2D) g;
+
+        // Save the current transformation matrix
+        AffineTransform oldTransform = g2d.getTransform();
+
+        g2d.setColor(Color.BLUE);
+        g2d.translate(this.x + WIDTH / 2, this.y + HEIGHT / 2);
+        g2d.rotate(this.r); 
+        g2d.fillRect(-WIDTH / 2, -HEIGHT / 2, WIDTH, HEIGHT);
+        
+        g2d.setTransform(oldTransform);
+
         this.spriteAnimation.draw(g, this.x, this.y, this.r);
     }
 
