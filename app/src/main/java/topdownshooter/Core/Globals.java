@@ -9,11 +9,16 @@ import javax.swing.ImageIcon;
 
 public interface Globals {
     public static final String CONFIGURATION_FILE = "config.ini";
-    public static final int GAME_TICK_MS = 15;
+    public static final int GAME_TICK_MS = 10;
     public static final int WINDOW_WIDTH = 800;
     public static final int WINDOW_HEIGHT = 600;
     public static final int WAVE_SUSPEND_DURATION_MS = 5000;
     public static final int FULL_DAMAGE_PERIOD = 500;  // Period of zombie gives full damage if attacks continue  
+
+    public static int FRAME_DELAY = 5;
+    public static final SpriteAnimationStruct HUNTER_PISTOL_IDLE = new SpriteAnimationStruct("Textures/Survivor/Pistol/survivor_pistol_idle.png", 20, FRAME_DELAY, 5, 4, 30, 12);
+    public static final SpriteAnimationStruct HUNTER_PISTOL_MOVE = new SpriteAnimationStruct("Textures/Survivor/Pistol/survivor_pistol_move.png", 20, FRAME_DELAY, 3, 7, 30, 12);
+    public static final SpriteAnimationStruct HUNTER_PISTOL_SHOOT = new SpriteAnimationStruct("Textures/Survivor/Pistol/survivor_pistol_shoot.png", 3, FRAME_DELAY, 1, 3, 30, 12);
 
     static int Time2GameTick(int durationMs) {
         return durationMs / GAME_TICK_MS;

@@ -8,8 +8,10 @@ import java.util.ArrayList;
 
 import topdownshooter.Weapon.Weapon;
 import topdownshooter.Core.ConfigHandler;
+import topdownshooter.Core.Globals;
 import topdownshooter.Core.ConfigHandler.PlayerProperties;
 import topdownshooter.Core.PlayerItem;
+import topdownshooter.Core.SpriteAnimation;
 import topdownshooter.Weapon.WeaponFactory;
 import topdownshooter.Weapon.WeaponType;
 import topdownshooter.Weapon.Bullet;
@@ -21,9 +23,12 @@ public class Player extends JPanel {
     private int x, y, dx, dy;
     private double r;
     private int speed;
-    private final int SIZE = 30;
+    private final int WIDTH = 60;
+    private final int HEIGHT = 51;
     private ArrayList<Weapon> inventory;
     private int currentWeaponIndex = 0;
+
+    private SpriteAnimation spriteAnimation = null;
 
     public Player() {}
 
@@ -38,9 +43,12 @@ public class Player extends JPanel {
         this.speed = playerProperties.speed();
         this.score = 0;
 
-        inventory = new ArrayList<>();
+        this.spriteAnimation = new SpriteAnimation(Globals.HUNTER_PISTOL_IDLE);
+        this.spriteAnimation.setTargetSize(WIDTH, HEIGHT);
+
+        this.inventory = new ArrayList<>();
         // Every player starts with a pistol
-        inventory.add(WeaponFactory.createWeapon(config, WeaponType.PISTOL));
+        this.inventory.add(WeaponFactory.createWeapon(config, WeaponType.PISTOL));
     }
 
     public void rotate(double rRad) {
@@ -49,29 +57,22 @@ public class Player extends JPanel {
 
     public void update(final int maxWidth, final int maxHeight) {
         // Update location
-        this.x = this.x + this.dx > maxWidth-SIZE ? maxWidth-SIZE : this.x + this.dx;
+        this.x = this.x + this.dx > maxWidth-WIDTH ? maxWidth-WIDTH : this.x + this.dx;
         this.x = this.x + this.dx < 0 ? 0 : this.x + this.dx;
-        this.y = this.y + this.dy > maxHeight-SIZE ? maxHeight-SIZE : this.y + this.dy;
+        this.y = this.y + this.dy > maxHeight-HEIGHT ? maxHeight-HEIGHT : this.y + this.dy;
         this.y = this.y + this.dy < 0 ? 0 : this.y + this.dy;
 
         // Update weapons
         for (Weapon w : inventory) {
             w.update();
         }
+
+        // Update sprite animation
+        this.spriteAnimation.update();
     }
 
     public void draw(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g;
-
-        // Save the current transformation matrix
-        AffineTransform oldTransform = g2d.getTransform();
-
-        g2d.setColor(Color.BLUE);
-        g2d.translate(this.x + SIZE / 2, this.y + SIZE / 2);
-        g2d.rotate(this.r); 
-        g2d.fillRect(-SIZE / 2, -SIZE / 2, SIZE, SIZE);
-        
-        g2d.setTransform(oldTransform);
+        this.spriteAnimation.draw(g, this.x, this.y, this.r);
     }
 
     public void decrementDx() { this.dx = -this.speed; }
@@ -86,9 +87,9 @@ public class Player extends JPanel {
 
     public void setDy(int dy) { this.dy = dy; }
     
-    public int getX() { return this.x + SIZE / 2 ; }
+    public int getX() { return this.x + WIDTH / 2 ; }
     
-    public int getY() { return this.y + SIZE / 2 ; }
+    public int getY() { return this.y + HEIGHT / 2 ; }
     
     public double getR() { return this.r; }
 
@@ -118,7 +119,9 @@ public class Player extends JPanel {
     public Weapon getCurrentWeapon() {return this.inventory.get(currentWeaponIndex);}
 
     public Bullet fire() {
-        return this.getCurrentWeapon().fire(this.x + SIZE / 2, this.y + SIZE / 2, this.r);
+        double translatedX = this.x + WIDTH / 2 + this.spriteAnimation.getOffset().getX() * Math.cos(this.r) - this.spriteAnimation.getOffset().getY() * Math.sin(this.r);
+        double translatedY = this.y + HEIGHT / 2 + this.spriteAnimation.getOffset().getX() * Math.sin(this.r) + this.spriteAnimation.getOffset().getY() * Math.cos(this.r);
+        return this.getCurrentWeapon().fire((int) translatedX, (int) translatedY, this.r);
     }
 
     public void addNewWeapon(ConfigHandler config, WeaponType type) {
@@ -126,7 +129,7 @@ public class Player extends JPanel {
     }
 
     public Rectangle getBounds() {
-        return new Rectangle(this.x, this.y, this.SIZE, this.SIZE);
+        return new Rectangle(this.x, this.y, this.WIDTH, this.HEIGHT);
     }
 
     @Override
