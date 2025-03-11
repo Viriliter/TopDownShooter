@@ -2,6 +2,7 @@ package topdownshooter.Weapon;
 
 import topdownshooter.Core.ConfigHandler.WeaponProperties;
 import topdownshooter.Core.TimeTick;
+import topdownshooter.Weapon.Projectiles.Rocket;
 
 public class RocketLauncher extends AbstractWeapon {
     public RocketLauncher(WeaponProperties properties) {
@@ -12,6 +13,16 @@ public class RocketLauncher extends AbstractWeapon {
                        int fireRate, int reloadDuration, int ammo, TimeTick reloadTick, 
                        TimeTick fireTick, WeaponType type) {
         super(damage, magazineCapacity, magazineCount, fireRate, reloadDuration, ammo, reloadTick, fireTick, type);
+    }
+
+    @Override
+    public Rocket fire(int x, int y, double r) {
+        if (this.fireTick.isTimeOut() && this.ammo > 0) {
+            fireTick.reset();
+            this.ammo--;
+            return new Rocket(x, y, r, this.damage);
+        }
+        return null;
     }
 
     @Override

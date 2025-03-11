@@ -5,18 +5,17 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 
-public class Bullet extends Projectile {
-
-    public Bullet(int x, int y, double r) {
+public class ArmorPiercingBullet extends Projectile {
+    public ArmorPiercingBullet(int x, int y, double r) {
         super(x, y, r, 0);
 
-        this.type = ProjectileType.BULLET;
+        this.type = ProjectileType.ARMOR_PIERCING_BULLET;
     }
 
-    public Bullet(int x, int y, double r, int damage) {
+    public ArmorPiercingBullet(int x, int y, double r, int damage) {
         super(x, y, r, damage);
 
-        this.type = ProjectileType.BULLET;
+        this.type = ProjectileType.ARMOR_PIERCING_BULLET;
     }
 
     @Override   
@@ -42,7 +41,7 @@ public class Bullet extends Projectile {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Bullet{");
+        sb.append("ArmorPiercingBullet{");
         sb.append("x=" + this.x + ", ");
         sb.append("y=" + this.y + ", ");
         sb.append("r=" + this.r + ", ");

@@ -2,6 +2,7 @@ package topdownshooter.Weapon;
 
 import topdownshooter.Core.ConfigHandler.WeaponProperties;
 import topdownshooter.Core.TimeTick;
+import topdownshooter.Weapon.Projectiles.ShotgunPellets;
 
 public class Shotgun extends AbstractWeapon {
     public Shotgun(WeaponProperties properties) {
@@ -12,6 +13,16 @@ public class Shotgun extends AbstractWeapon {
                        int fireRate, int reloadDuration, int ammo, TimeTick reloadTick, 
                        TimeTick fireTick, WeaponType type) {
         super(damage, magazineCapacity, magazineCount, fireRate, reloadDuration, ammo, reloadTick, fireTick, type);
+    }
+
+    @Override
+    public ShotgunPellets fire(int x, int y, double r) {
+        if (this.fireTick.isTimeOut() && this.ammo > 0) {
+            fireTick.reset();
+            this.ammo--;
+            return new ShotgunPellets(x, y, r, this.damage);
+        }
+        return null;
     }
 
     @Override

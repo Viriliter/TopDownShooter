@@ -5,18 +5,23 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 
-public class Bullet extends Projectile {
+public class Rocket extends Projectile {
+    private static final int EFFECTIVE_RANGE = 50;
 
-    public Bullet(int x, int y, double r) {
+    public Rocket(int x, int y, double r) {
         super(x, y, r, 0);
 
-        this.type = ProjectileType.BULLET;
+        this.type = ProjectileType.ROCKET;
     }
 
-    public Bullet(int x, int y, double r, int damage) {
+    public Rocket(int x, int y, double r, int damage) {
         super(x, y, r, damage);
 
-        this.type = ProjectileType.BULLET;
+        this.type = ProjectileType.ROCKET;
+    }
+
+    public int getEffectiveRange() {
+        return Rocket.EFFECTIVE_RANGE;
     }
 
     @Override   
@@ -42,7 +47,7 @@ public class Bullet extends Projectile {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Bullet{");
+        sb.append("Rocket{");
         sb.append("x=" + this.x + ", ");
         sb.append("y=" + this.y + ", ");
         sb.append("r=" + this.r + ", ");

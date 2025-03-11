@@ -28,6 +28,8 @@ import topdownshooter.Weapon.Projectiles.AcidSpit;
 import topdownshooter.Weapon.Projectiles.Bullet;
 import topdownshooter.Weapon.Projectiles.Projectile;
 import topdownshooter.Weapon.Projectiles.ProjectileType;
+import topdownshooter.Weapon.Projectiles.Rocket;
+import topdownshooter.Weapon.Projectiles.ShotgunPellets;
 import topdownshooter.Zombie.AbstractZombie;
 import topdownshooter.Zombie.AcidZombie;
 import topdownshooter.Zombie.Zombie;
@@ -37,7 +39,6 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
     private GamePanel parentPanel = null;
     private Player player = null;
     private ArrayList<Zombie> zombies = null;
-    private ArrayList<Bullet> bullets = null;
     private ArrayList<Projectile> projectiles = null;
 
     private boolean isGamePaused = false;
@@ -64,7 +65,6 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
 
         player = new Player(this.config);
         zombies = new ArrayList<>();
-        bullets = new ArrayList<>();
         projectiles = new ArrayList<>();
 
         gameTimer = new Timer(Globals.GAME_TICK_MS, e -> this.update());
@@ -113,7 +113,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
 
         updateZombies();
 
-        updateBullets ();
+        updateProjectiles();
 
         checkCollisions();
 
@@ -155,21 +155,9 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
             // ACID zombies have special ranged attack
             if (z.getType() == ZombieType.ACID) {
                 AcidZombie acidZombie = (AcidZombie) z;
-                AcidSpit acidSplit = acidZombie.rangedAttack();
-            }
-        }
-    }
-
-    private void updateBullets() {
-        Iterator<Bullet> iterator = bullets.iterator();
-        while (iterator.hasNext()) {
-            Bullet bullet = iterator.next();
-
-            // If bullet is out of bounds, remove it
-            if (bullet.isOutOfBounds(getWidth(), getHeight())) {
-                iterator.remove();
-            } else {
-                bullet.move();
+                Projectile projectile = (Projectile) acidZombie.rangedAttack();
+                if (projectile != null)
+                this.projectiles.add(projectile);
             }
         }
     }
@@ -187,7 +175,6 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
             }
         }
     }
-    
 
     private void checkProjectileCollisions() {
         Iterator<Projectile> projectileIterator = this.projectiles.iterator();
@@ -203,37 +190,91 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
                     if (bullet.getBounds().intersects(zombie.getBounds())) {
                         zombie.takeDamage(bullet.getDamage());
                         projectileIterator.remove();  // After damaging zombie, remove it.
+
                         // If health of zombie is non positive, it is killed 
                         if (zombie.getHealth() <= 0) {
-                            // Killing zombie will give score, and possibility of dropping player items. 
-                            Map.Entry<Integer, PlayerItem> tuple = zombie.kill();
-                            int points = tuple.getKey();
-                            PlayerItem playerItem = tuple.getValue();
-    
-                            this.player.addScore(points);
-                            this.player.addPlayerItem(playerItem);
-    
-                            zombieIterator.remove();
+                            killZombie(zombie, zombieIterator);
                         }
                         break;
                     }
                 }
             } else if (projectile.getType() == ProjectileType.ARMOR_PIERCING_BULLET) {
+                Bullet bullet = (Bullet) projectile;
 
+                Iterator<Zombie> zombieIterator = zombies.iterator();
+                while (zombieIterator.hasNext()) {
+                    Zombie zombie = zombieIterator.next();
+                    if (bullet.getBounds().intersects(zombie.getBounds())) {
+                        zombie.takeDamage(bullet.getDamage());
+                        projectileIterator.remove();  // Do not remove armor piercing bullets on collision with zombie.
+
+                        // If health of zombie is non positive, it is killed 
+                        if (zombie.getHealth() <= 0) {
+                            killZombie(zombie, zombieIterator);
+                        }
+                    }
+                }
             } else if (projectile.getType() == ProjectileType.ROCKET) {
-            
+                Rocket rocket = (Rocket) projectile;
+
+                Iterator<Zombie> zombieIterator = zombies.iterator();
+                while (zombieIterator.hasNext()) {
+                    Zombie zombie = zombieIterator.next();
+                    if (rocket.getBounds().intersects(zombie.getBounds())) {
+                        // Rocket damages its surrounded area
+                        damageZombies(rocket.getX(), rocket.getY(), rocket.getDamage(), rocket.getEffectiveRange());
+
+                        projectileIterator.remove();  // After detonation, remove it.
+
+                        // If health of zombie is non positive, it is killed 
+                        if (zombie.getHealth() <= 0) {
+                            killZombie(zombie, zombieIterator);
+                        }
+                        break;
+                    }
+                }
             } else if (projectile.getType() == ProjectileType.SHOTGUN_PELLETS) {
-            
+                ShotgunPellets pellets = (ShotgunPellets) projectile;
+
+                Iterator<Zombie> zombieIterator = zombies.iterator();
+                while (zombieIterator.hasNext()) {
+                    Zombie zombie = zombieIterator.next();
+
+                    Iterator<Bullet> pelletIterator = pellets.getPellets().iterator();
+                    while (pelletIterator.hasNext()) {
+                        Bullet bullet = pelletIterator.next();
+                        if (bullet.getBounds().intersects(zombie.getBounds())) {
+                            zombie.takeDamage(bullet.getDamage());
+                            pelletIterator.remove();  // After damaging zombie, remove it.
+
+                            // If health of zombie is non positive, it is killed 
+                            if (zombie.getHealth() <= 0) {
+                                killZombie(zombie, zombieIterator);
+                            }
+                        }
+                    }
+                }
             } else if (projectile.getType() == ProjectileType.ACID_SPIT) {
                 AcidSpit acidSpit = (AcidSpit) projectile;
 
                 boolean isColliding = isObjectsCollided(acidSpit.getBounds(), player.getBounds());
                 if (isColliding) {
-                    this.player.takeDamage(acidSpit.getDamage());
-                }
-            
-            }
+                    // Damage zombies and player if they are witrhin the effective range of toxic explosion
+                    damageZombies(acidSpit.getX(), acidSpit.getY(), acidSpit.getDamage(), acidSpit.getEffectiveRange());
+                    damagePlayer(acidSpit.getX(), acidSpit.getY(), acidSpit.getDamage(), acidSpit.getEffectiveRange());
 
+                    Iterator<Zombie> zombieIterator = zombies.iterator();
+                    while (zombieIterator.hasNext()) {
+                        Zombie zombie = zombieIterator.next();
+                        // If health of zombie is non positive, it is killed 
+                        if (zombie.getHealth() <= 0) {
+                            killZombie(zombie, zombieIterator);
+                        }
+                    }
+
+
+                }
+            }
         }
     }
 
@@ -241,6 +282,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         // Projectile collisions
         checkProjectileCollisions();
 
+        // Zombie collisions to the survivor (aka zombie attack)
         Iterator<Zombie> zombieIterator = zombies.iterator();
         while (zombieIterator.hasNext()) {
             Zombie zombie = zombieIterator.next();
@@ -255,6 +297,56 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         }
     }
 
+    private void damageZombies(int originX, int originY, int originDamage, int effectiveRange) {
+        double effectiveRangeSquared = effectiveRange * effectiveRange;
+
+        Iterator<Zombie> zombieIterator = zombies.iterator();
+        while (zombieIterator.hasNext()) {
+            Zombie zombie = zombieIterator.next();
+            topdownshooter.Core.Position position = zombie.getPosition();
+            int dx = position.x() - originX;
+            int dy = position.y() - originY;
+            double distanceSquared = dx * dx + dy * dy;  // Calculate distance from origin point of detonation
+
+            // If zombie is within the effective range of the detonation
+            if (distanceSquared < effectiveRangeSquared) {
+                double damage = (double) originDamage / (1 + distanceSquared*0.5);
+                zombie.takeDamage(damage);
+            }
+        }
+    }
+
+    private void damagePlayer(int originX, int originY, int originDamage, int effectiveRange) {
+        double effectiveRangeSquared = effectiveRange * effectiveRange;
+
+        int dx = this.player.getX() - originX;
+        int dy = this.player.getY() - originY;
+        double distanceSquared = dx * dx + dy * dy;  // Calculate distance from origin point of detonation
+
+        // If zombie is within the effective range of the detonation
+        if (distanceSquared < effectiveRangeSquared) {
+            double damage = (double) originDamage / (1 + distanceSquared*0.5);
+            this.player.takeDamage(damage);
+        }
+    }
+
+    private void killZombie(Zombie zombie, Iterator<Zombie> zombieIterator) {
+        // Killing zombie will give score, and possibility of dropping player items. 
+        Map.Entry<Integer, PlayerItem> tuple = zombie.kill();
+        int points = tuple.getKey();
+        PlayerItem playerItem = tuple.getValue();
+
+        this.player.addScore(points);
+        this.player.addPlayerItem(playerItem);
+        
+        // Acid zombies damages their surrounds when they killed
+        if (zombie.getType() == ZombieType.ACID) {
+            // TODO Add implementation here
+        }
+        
+        zombieIterator.remove();
+    }
+    
     private boolean isObjectsCollided(Rectangle rect1, Rectangle rect2) {
         return rect1.getBounds().intersects(rect2.getBounds()) || 
                rect2.getBounds().contains(rect1.getBounds()) || 
@@ -268,8 +360,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         gameInfoPanel.updateGameLevel(this.gameLevel==null ? 0 : this.gameLevel.getLevel());
         gameInfoPanel.updateGameRemainingTime(this.gameLevel==null ? 0 : this.gameLevel.getRemainingTime());
         gameInfoPanel.updateRemainingZombieCount(this.gameLevel==null ? 0 : this.gameLevel.getRemainingZombies());
-        //gameInfoPanel.updatePlayerInventory(this.player.getInventory());
-        
+        gameInfoPanel.updatePlayerInventory(this.player.getInventoryInfo());
     }
 
     public void pauseGame() {
@@ -292,7 +383,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
     }
 
     private void resetGame() {
-        this.bullets.clear();
+        this.projectiles.clear();
         this.zombies.clear();
         this.player = null;
 
@@ -415,9 +506,9 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
     }
 
     public void triggerFireFunction() {
-        Bullet bullet = player.fire();
-        if (bullet != null)
-            bullets.add(bullet);
+        Projectile projectile = player.fire();
+        if (projectile != null)
+            this.projectiles.add(projectile);
     }
 
     public void endGame() {

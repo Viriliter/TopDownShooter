@@ -55,11 +55,11 @@ public class CrawlerZombie extends AbstractZombie {
         this.r = Math.atan2(dy, dx); // Radians (used for rotation)
 
         // Calculate distance between the zombie and the player
-        double distance = Math.sqrt(dx * dx + dy * dy);
+        double distanceSquared = dx * dx + dy * dy;  // Avoid use of Math.sqrt if it is not really necessary
 
         // Check zombie is at the jump range to the player
         // If it has already jumped, do not jump again.
-        if (distance <= JUMP_DISTANCE && !isJumped) {
+        if (distanceSquared <= JUMP_DISTANCE*JUMP_DISTANCE && !isJumped) {
             this.x = px - WIDTH / 2;
             this.y = py - WIDTH / 2;
             isJumped = true;

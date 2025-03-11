@@ -3,7 +3,7 @@ package topdownshooter.Weapon;
 import topdownshooter.Core.Globals;
 import topdownshooter.Core.TimeTick;
 import topdownshooter.Core.ConfigHandler.WeaponProperties;
-import topdownshooter.Weapon.Projectiles.Bullet;
+import topdownshooter.Weapon.Projectiles.Projectile;
 
 public abstract class AbstractWeapon implements Weapon {
     protected int damage;
@@ -14,7 +14,7 @@ public abstract class AbstractWeapon implements Weapon {
     protected int ammo;
     protected TimeTick reloadTick;
     protected TimeTick fireTick;
-    protected WeaponType type;
+    protected WeaponType type = WeaponType.UNDEFINED;
 
     public AbstractWeapon() {}
 
@@ -49,14 +49,7 @@ public abstract class AbstractWeapon implements Weapon {
     }
 
     @Override
-    public Bullet fire(int x, int y, double r) {
-        if (this.fireTick.isTimeOut() && this.ammo > 0) {
-            fireTick.reset();
-            this.ammo--;
-            return new Bullet(x, y, r, this.damage);
-        }
-        return null;
-    }
+    abstract public Projectile fire(int x, int y, double r);
 
     @Override
     public void reload() {

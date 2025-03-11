@@ -3,7 +3,6 @@ package topdownshooter.Player;
 import javax.swing.*;
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 
 import topdownshooter.Weapon.Weapon;
@@ -14,7 +13,7 @@ import topdownshooter.Core.PlayerItem;
 import topdownshooter.Core.SpriteAnimation;
 import topdownshooter.Weapon.WeaponFactory;
 import topdownshooter.Weapon.WeaponType;
-import topdownshooter.Weapon.Projectiles.Bullet;
+import topdownshooter.Weapon.Projectiles.Projectile;
 
 
 public class Player extends JPanel {
@@ -72,6 +71,7 @@ public class Player extends JPanel {
     }
 
     public void draw(Graphics g) {
+        /*
         Graphics2D g2d = (Graphics2D) g;
 
         // Save the current transformation matrix
@@ -83,7 +83,7 @@ public class Player extends JPanel {
         g2d.fillRect(-WIDTH / 2, -HEIGHT / 2, WIDTH, HEIGHT);
         
         g2d.setTransform(oldTransform);
-
+        */
         this.spriteAnimation.draw(g, this.x, this.y, this.r);
     }
 
@@ -130,7 +130,7 @@ public class Player extends JPanel {
     
     public Weapon getCurrentWeapon() {return this.inventory.get(currentWeaponIndex);}
 
-    public Bullet fire() {
+    public Projectile fire() {
         double translatedX = this.x + WIDTH / 2 + this.spriteAnimation.getOffset().getX() * Math.cos(this.r) - this.spriteAnimation.getOffset().getY() * Math.sin(this.r);
         double translatedY = this.y + HEIGHT / 2 + this.spriteAnimation.getOffset().getX() * Math.sin(this.r) + this.spriteAnimation.getOffset().getY() * Math.cos(this.r);
         return this.getCurrentWeapon().fire((int) translatedX, (int) translatedY, this.r);
@@ -139,6 +139,43 @@ public class Player extends JPanel {
     public void addNewWeapon(ConfigHandler config, WeaponType type) {
         this.inventory.add(WeaponFactory.createWeapon(config, type));
     }
+
+    public InventoryInfo getInventoryInfo() {
+        InventoryInfo inventoryInfo = new InventoryInfo();
+        
+        inventoryInfo.selectedWeaponID = this.currentWeaponIndex;
+        for (Weapon weapon: this.inventory) {
+            switch (weapon.getType()) {
+                case UNDEFINED:
+                    break;
+                case PISTOL:
+                    inventoryInfo.pistolAmmo = weapon.getAmmo();
+                    inventoryInfo.pistolMagazine = weapon.getMagazineCount();
+                    break;
+                case ASSAULTRIFLE:
+                    inventoryInfo.assultRifleAmmo = weapon.getAmmo();
+                    inventoryInfo.assultRifleMagazine = weapon.getMagazineCount();
+                    break;
+                case SHOTGUN:
+                    inventoryInfo.shotgunAmmo = weapon.getAmmo();
+                    inventoryInfo.shotgunMagazine = weapon.getMagazineCount();
+                    break;
+                case SNIPERRIFLE:
+                    inventoryInfo.sniperRifleAmmo = weapon.getAmmo();
+                    inventoryInfo.sniperRifleMagazine = weapon.getMagazineCount();
+                    break;
+                case ROCKETLAUNCHER:
+                    inventoryInfo.rocketLauncherAmmo = weapon.getAmmo();
+                    inventoryInfo.rocketLauncherMagazine = weapon.getMagazineCount();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return inventoryInfo;
+    }
+
 
     public Rectangle getBounds() {
         return new Rectangle(this.x, this.y, this.WIDTH, this.HEIGHT);

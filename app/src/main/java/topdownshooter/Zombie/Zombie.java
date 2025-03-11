@@ -5,6 +5,7 @@ import java.io.Serializable;
 import java.util.Map;
 
 import topdownshooter.Core.PlayerItem;
+import topdownshooter.Core.Position;
 
 public interface Zombie extends Serializable{
     public void update(int px, int py);
@@ -24,4 +25,6 @@ public interface Zombie extends Serializable{
     public ZombieType getType();
 
     public Map.Entry<Integer, PlayerItem> kill();
+
+    public Position getPosition();
 }

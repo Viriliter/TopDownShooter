@@ -4,14 +4,126 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.List;
 
 import topdownshooter.Core.ConfigHandler;
 import topdownshooter.Core.Globals;
-import topdownshooter.Weapon.Weapon;
+import topdownshooter.Player.InventoryInfo;
 
 public class GameInfoPanel extends JPanel implements ActionListener, MouseListener{
+    private class WeaponSlot extends JPanel {
+        private final JLabel iconLabel;
+        private final JLabel ammoLabel;
+        private final JLabel magazineLabel;
+    
+        public WeaponSlot(ImageIcon icon, int ammo, int magazine) {
+            // Set up the layout to arrange icon and labels vertically
+            setLayout(new BorderLayout());
+    
+            // Create the icon label
+            iconLabel = new JLabel(icon);
+            iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
+    
+            // Create the ammo and magazine labels
+            ammoLabel = new JLabel("-");
+            magazineLabel = new JLabel("-");
+            
+            // Set font style for ammo/magazine counts
+            ammoLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+            magazineLabel.setFont(new Font("Arial", Font.PLAIN, 12));
+    
+            // Create a panel for ammo and magazine count and add labels to it
+            JPanel countPanel = new JPanel();
+            countPanel.setLayout(new BoxLayout(countPanel, BoxLayout.Y_AXIS));
+            countPanel.add(ammoLabel);
+            countPanel.add(magazineLabel);
+    
+            // Add components to the main panel
+            add(iconLabel, BorderLayout.CENTER);
+            add(countPanel, BorderLayout.SOUTH);
+        }
+    
+        public void updateAmmo(int ammo, int magazine) {
+            ammoLabel.setText(ammo < 0 ? "-": String.valueOf(ammo));
+            magazineLabel.setText(ammo < 0 ? "-": String.valueOf(ammo));
+        }
+
+        public void setIcon(ImageIcon icon) {
+
+        }
+    }
+
+    private class WeaponInventoryPanel extends JPanel {
+        private final List<WeaponSlot> weaponSlots;
+        private int lastWeaponIndex = -1;
+        WeaponSlot slot1 = null, slot2 = null, slot3 = null, slot4 = null, slot5 = null;
+    
+        public WeaponInventoryPanel() {
+            weaponSlots = new ArrayList<>();
+    
+            setLayout(new GridLayout(2, 5, 10, 10));
+    
+            this.slot1 = new WeaponSlot(Globals.loadPNGIcon(Globals.ICON_PATH_PISTOL_INACTIVE, 30, 30), -1, -1);
+            weaponSlots.add(this.slot1);
+            add(this.slot1);  // Add the slot to the panel
+
+            this.slot2 = new WeaponSlot(Globals.loadPNGIcon(Globals.ICON_PATH_ASSULT_RIFLE_INACTIVE, 30, 30), -1, -1);
+            weaponSlots.add(this.slot2);
+            add(this.slot2);  // Add the slot to the panel
+
+            this.slot3 = new WeaponSlot(Globals.loadPNGIcon(Globals.ICON_PATH_SHOTGUN_INACTIVE, 30, 30), -1, -1);
+            weaponSlots.add(this.slot3);
+            add(this.slot3);  // Add the slot to the panel
+
+            this.slot4 = new WeaponSlot(Globals.loadPNGIcon(Globals.ICON_PATH_SNIPER_RIFLE_INACTIVE, 30, 30), -1, -1);
+            weaponSlots.add(this.slot4);
+            add(this.slot4);  // Add the slot to the panel
+
+            this.slot5 = new WeaponSlot(Globals.loadPNGIcon(Globals.ICON_PATH_ROCKET_LAUNCHER_INACTIVE, 30, 30), -1, -1);
+            weaponSlots.add(this.slot5);
+            add(this.slot5);  // Add the slot to the panel
+
+        }
+        
+        public void setCurrentWeapon(int index) {
+            if (this.lastWeaponIndex != index) {
+                this.lastWeaponIndex = index;
+
+                switch(this.lastWeaponIndex) {
+                    case 0:
+                        this.slot1.setIcon(new ImageIcon(Globals.ICON_PATH_PISTOL_SELECTED));
+                        break;
+                    case 1:
+                        this.slot2.setIcon(new ImageIcon(Globals.ICON_PATH_ASSULT_RIFLE_SELECTED));
+                        break;
+                    case 2:
+                        this.slot3.setIcon(new ImageIcon(Globals.ICON_PATH_SHOTGUN_SELECTED));
+                        break;
+                    case 3:
+                        this.slot4.setIcon(new ImageIcon(Globals.ICON_PATH_SNIPER_RIFLE_SELECTED));
+                        break;
+                    case 4:
+                        this.slot5.setIcon(new ImageIcon(Globals.ICON_PATH_ROCKET_LAUNCHER_SELECTED));
+                        break;
+                    default:
+                    break;
+                }
+            }
+        }
+
+        public void updateWeaponSlot(int index, int ammo, int magazine) {
+            if (index >= 0 && index < weaponSlots.size()) {
+                weaponSlots.get(index).updateAmmo(ammo, magazine);
+                if (ammo==-1 && magazine ==-1) {
+
+                }
+            }
+        }
+    }
+
     private GamePanel parentPanel = null;
 
+    WeaponInventoryPanel weaponPanel = null;
     private JLabel healthLabel;
     private JLabel scoreLabel;
     private JLabel gameLevelLabel;
@@ -69,18 +181,7 @@ public class GameInfoPanel extends JPanel implements ActionListener, MouseListen
 
         topPanel.add(leftPanel, BorderLayout.WEST);
 
-        // Horizontal layout for Weapon Slots with ammo and magazine count
-        JPanel weaponPanel = new JPanel();
-        weaponPanel.setLayout(new GridLayout(1, 4)); // 1 row, 4 columns for weapon slots
-
-        for (int i = 0; i < 4; i++) {
-            JPanel weaponSlot = new JPanel();
-            weaponSlot.setLayout(new BoxLayout(weaponSlot, BoxLayout.Y_AXIS)); // Vertical layout inside each weapon slot
-            weaponSlot.add(new JLabel("Weapon " + (i + 1)));
-            weaponSlot.add(new JLabel("Ammo: 100"));
-            weaponSlot.add(new JLabel("Mag: 30"));
-            weaponPanel.add(weaponSlot);
-        }
+        this.weaponPanel = new WeaponInventoryPanel();
         topPanel.add(weaponPanel, BorderLayout.CENTER);
 
         // Game level and remaining zombies at the upper middle
@@ -150,8 +251,13 @@ public class GameInfoPanel extends JPanel implements ActionListener, MouseListen
         this.remainingZombiesLabel.setText("Zombies left: " + zombieCount);
     }
 
-    public void updatePlayerInventory(final ArrayList<Weapon> weapon) {
-
+    public void updatePlayerInventory(final InventoryInfo inventoryInfo) {
+        this.weaponPanel.setCurrentWeapon(inventoryInfo.selectedWeaponID);
+        this.weaponPanel.updateWeaponSlot(0, inventoryInfo.pistolAmmo, inventoryInfo.pistolMagazine);
+        this.weaponPanel.updateWeaponSlot(1, inventoryInfo.assultRifleAmmo, inventoryInfo.assultRifleMagazine);
+        this.weaponPanel.updateWeaponSlot(2, inventoryInfo.shotgunAmmo, inventoryInfo.shotgunMagazine);
+        this.weaponPanel.updateWeaponSlot(3, inventoryInfo.sniperRifleAmmo, inventoryInfo.sniperRifleMagazine);
+        this.weaponPanel.updateWeaponSlot(4, inventoryInfo.rocketLauncherAmmo, inventoryInfo.rocketLauncherMagazine);
     }
 
     private void showInGameMenu() {

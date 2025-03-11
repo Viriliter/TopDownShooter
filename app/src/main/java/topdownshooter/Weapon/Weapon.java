@@ -2,10 +2,10 @@ package topdownshooter.Weapon;
 
 import java.io.Serializable;
 
-import topdownshooter.Weapon.Projectiles.Bullet;
+import topdownshooter.Weapon.Projectiles.Projectile;
 
 public interface Weapon extends Serializable{
-    Bullet fire(int x, int y, double r);
+    Projectile fire(int x, int y, double r);
 
     void reload();
 

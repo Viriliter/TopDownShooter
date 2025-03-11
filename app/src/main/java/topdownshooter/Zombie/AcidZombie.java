@@ -57,10 +57,10 @@ public class AcidZombie extends AbstractZombie {
         // Take distance between zombie and survivor
         int dx = px - this.x;
         int dy = py - this.y;
-        double distance = Math.sqrt(dx * dx + dy * dy);
+        double distanceSquared = dx * dx + dy * dy;  // Avoid use of Math.sqrt if it is not really necessary
 
         // If distance is bigger than spit range, try to catch the player
-        if (distance > SPIT_RANGE) {
+        if (distanceSquared > SPIT_RANGE*SPIT_RANGE) {
             if (this.x < px) this.x += this.speed;
             if (this.x > px) this.x -= this.speed;
             if (this.y < py) this.y += this.speed;

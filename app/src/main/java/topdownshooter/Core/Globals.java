@@ -18,7 +18,25 @@ public interface Globals {
     public static int FRAME_DELAY = 5;
 
     public static final String PLAYGROUND_TILE_PATH = "Textures/ground.jpg";
-    
+
+    // Path of In-Game Icons
+    public static final String ICON_PATH_ASSULT_RIFLE_INACTIVE = "Icons/assult-rifle-inactive.png";
+    public static final String ICON_PATH_ASSULT_RIFLE_UNSELECTED = "Icons/assult-rifle-selected.png";
+    public static final String ICON_PATH_ASSULT_RIFLE_SELECTED = "Icons/assult-rifle-unselected.png";
+    public static final String ICON_PATH_PISTOL_INACTIVE = "Icons/pistol-inactive.png";
+    public static final String ICON_PATH_PISTOL_UNSELECTED = "Icons/pistol-selected.png";
+    public static final String ICON_PATH_PISTOL_SELECTED = "Icons/pistol-unselected.png";
+    public static final String ICON_PATH_ROCKET_LAUNCHER_INACTIVE = "Icons/rocket-launcher-inactive.png";
+    public static final String ICON_PATH_ROCKET_LAUNCHER_UNSELECTED = "Icons/rocket-launcher-selected.png";
+    public static final String ICON_PATH_ROCKET_LAUNCHER_SELECTED = "Icons/rocket-launcher-unselected.png";
+    public static final String ICON_PATH_SHOTGUN_INACTIVE = "Icons/shotgun-inactive.png";
+    public static final String ICON_PATH_SHOTGUN_UNSELECTED = "Icons/shotgun-selected.png";
+    public static final String ICON_PATH_SHOTGUN_SELECTED = "Icons/shotgun-unselected.png";
+    public static final String ICON_PATH_SNIPER_RIFLE_INACTIVE = "Icons/sniper-rifle-inactive.png";
+    public static final String ICON_PATH_SNIPER_RIFLE_UNSELECTED = "Icons/sniper-rifle-selected.png";
+    public static final String ICON_PATH_SNIPER_RIFLE_SELECTED = "Icons/sniper-rifle-unselected.png";
+
+
     public static final SpriteAnimationStruct HUNTER_PISTOL_IDLE = new SpriteAnimationStruct("Textures/Survivor/Pistol/survivor_pistol_idle.png", 20, FRAME_DELAY, 5, 4, 30, 12);
     public static final SpriteAnimationStruct HUNTER_PISTOL_MOVE = new SpriteAnimationStruct("Textures/Survivor/Pistol/survivor_pistol_move.png", 20, FRAME_DELAY, 3, 7, 30, 12);
     public static final SpriteAnimationStruct HUNTER_PISTOL_SHOOT = new SpriteAnimationStruct("Textures/Survivor/Pistol/survivor_pistol_shoot.png", 3, FRAME_DELAY, 1, 3, 30, 12);
@@ -71,5 +89,14 @@ public interface Globals {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public static double radToDeg(double radians) {
+        return Math.toDegrees(radians);
+    }
+
+    // Convert degrees to radians
+    public static double degToRad(double degrees) {
+        return Math.toRadians(degrees);
     }
 }

@@ -7,6 +7,7 @@ import java.util.Map;
 import topdownshooter.Core.ConfigHandler.ZombieProperties;
 import topdownshooter.Core.Globals;
 import topdownshooter.Core.PlayerItem;
+import topdownshooter.Core.Position;
 import topdownshooter.Core.SpriteAnimation;
 
 public abstract class AbstractZombie implements Zombie {
@@ -82,9 +83,9 @@ public abstract class AbstractZombie implements Zombie {
         int dx = px - this.x;
         int dy = py - this.y;
 
-        // If zombie cathes the survivor do not update rotation
-        double distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance > 2) {
+        // If zombie cathes the survivor do not update rotation 
+        double distanceSquared = dx * dx + dy * dy;  // Avoid use of Math.sqrt if it is not really necessary
+        if (distanceSquared > 2*2) {
             this.r = Math.atan2(dy, dx); // Radians (used for rotation)
         }
 
@@ -143,7 +144,12 @@ public abstract class AbstractZombie implements Zombie {
     public Map.Entry<Integer, PlayerItem> kill() {
         return new AbstractMap.SimpleEntry<>(this.points, null);
     }
-
+    
+    @Override
+    public Position getPosition() {
+        return new Position(this.x, this.y);
+    }
+    
     @Override
     abstract public String toString();
 }
