@@ -10,6 +10,7 @@ import topdownshooter.Zombie.ZombieFactory;
 import topdownshooter.Zombie.ZombieType;
 
 public class GameLevel implements Serializable {
+    private int levelBonus = 10;
     private int level = 0;
     private boolean waveOver = true;
     private boolean waveStarted = false;
@@ -243,6 +244,11 @@ public class GameLevel implements Serializable {
 
     public int getRemainingTime() {
         return Globals.GameTick2Time(this.waveTick==null? 0 : this.waveTick.getTick());
+    }
+
+    public int calculateLevelBonus() {
+        this.levelBonus += this.levelBonus;
+        return this.levelBonus;
     }
 
     @Override

@@ -59,7 +59,7 @@ public class Player extends JPanel {
 
         this.inventory = new ArrayList<>();
         // Every player starts with a pistol
-        this.inventory.add(WeaponFactory.createWeapon(config, WeaponType.ROCKETLAUNCHER));
+        this.inventory.add(WeaponFactory.createWeapon(config, WeaponType.PISTOL));
     }
 
     public void rotate(double rRad) {
