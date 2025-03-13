@@ -6,7 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 
 public class Rocket extends Projectile {
-    private static final int EFFECTIVE_RANGE = 50;
+    private static final int EFFECTIVE_RANGE = 200;
 
     public Rocket(int x, int y, double r) {
         super(x, y, r, 0);

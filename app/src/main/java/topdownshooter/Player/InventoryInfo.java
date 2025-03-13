@@ -4,8 +4,8 @@ public class InventoryInfo {
     public int selectedWeaponID;
     public int pistolAmmo;
     public int pistolMagazine;
-    public int assultRifleAmmo;
-    public int assultRifleMagazine;
+    public int assaultRifleAmmo;
+    public int assaultRifleMagazine;
     public int shotgunAmmo;
     public int shotgunMagazine;
     public int sniperRifleAmmo;

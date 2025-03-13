@@ -2,6 +2,8 @@ package topdownshooter.Core;
 
 import org.ini4j.Ini;
 
+import topdownshooter.Weapon.WeaponType;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -41,7 +43,8 @@ public final class ConfigHandler {
         int ordinaryZombieCount,
         int crawlerZombieCount,
         int tankZombieCount,
-        int acidZombieCount
+        int acidZombieCount,
+        WeaponType weaponPrize
     ) {}
 
     private static Ini ini;
@@ -59,6 +62,21 @@ public final class ConfigHandler {
 
     public <T> void setProperty(String section, String key, T value) {
         ConfigHandler.ini.put(section, key, value);
+    }
+
+    private WeaponType getWeaponType(String type) {
+        if (type == "PISTOL")
+            return WeaponType.PISTOL;
+        else if (type.equals("ASSAULT_RIFLE"))
+            return WeaponType.ASSAULTRIFLE;
+        else if (type.equals("SHOTGUN"))
+            return WeaponType.SHOTGUN;
+        else if (type.equals("SNIPER_RIFLE"))
+            return WeaponType.SNIPERRIFLE;
+        else if (type.equals("ROCKET_LAUNCHER"))
+            return WeaponType.ROCKETLAUNCHER;
+        else
+            return WeaponType.UNDEFINED;
     }
 
     public WindowProperties getWindowProperties() {
@@ -164,7 +182,8 @@ public final class ConfigHandler {
         Integer levelCrawlerZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level1").get("CrawlerZombieCount"));
         Integer levelTankZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level1").get("TankZombieCount"));
         Integer levelAcidZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level1").get("AcidZombieCount"));
-        return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount);
+        WeaponType weaponPrize = getWeaponType(ConfigHandler.ini.get("Level1").get("WeaponPrize", ""));
+        return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount, weaponPrize);
     }
 
     public LevelProperties getLevel2Properties() {
@@ -173,7 +192,8 @@ public final class ConfigHandler {
         Integer levelCrawlerZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level2").get("CrawlerZombieCount"));
         Integer levelTankZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level2").get("TankZombieCount"));
         Integer levelAcidZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level2").get("AcidZombieCount"));
-        return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount);
+        WeaponType weaponPrize = getWeaponType(ConfigHandler.ini.get("Level2").get("WeaponPrize", ""));
+        return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount, weaponPrize);
     }
 
     public LevelProperties getLevel3Properties() {
@@ -182,7 +202,8 @@ public final class ConfigHandler {
         Integer levelCrawlerZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level3").get("CrawlerZombieCount"));
         Integer levelTankZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level3").get("TankZombieCount"));
         Integer levelAcidZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level3").get("AcidZombieCount"));
-        return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount);
+        WeaponType weaponPrize = getWeaponType(ConfigHandler.ini.get("Level3").get("WeaponPrize", ""));
+        return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount, weaponPrize);
     }
 
     public LevelProperties getLevel4Properties() {
@@ -191,7 +212,8 @@ public final class ConfigHandler {
         Integer levelCrawlerZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level4").get("CrawlerZombieCount"));
         Integer levelTankZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level4").get("TankZombieCount"));
         Integer levelAcidZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level4").get("AcidZombieCount"));
-        return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount);
+        WeaponType weaponPrize = getWeaponType(ConfigHandler.ini.get("Level4").get("WeaponPrize", ""));
+        return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount, weaponPrize);
     }
 
     public LevelProperties getLevel5Properties() {
@@ -200,7 +222,8 @@ public final class ConfigHandler {
         Integer levelCrawlerZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level5").get("CrawlerZombieCount"));
         Integer levelTankZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level5").get("TankZombieCount"));
         Integer levelAcidZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level5").get("AcidZombieCount"));
-        return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount);
+        WeaponType weaponPrize = getWeaponType(ConfigHandler.ini.get("Level5").get("WeaponPrize", ""));
+        return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount, weaponPrize);
     }
 
     public LevelProperties getLevel6Properties() {
@@ -209,7 +232,8 @@ public final class ConfigHandler {
         Integer levelCrawlerZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level6").get("CrawlerZombieCount"));
         Integer levelTankZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level6").get("TankZombieCount"));
         Integer levelAcidZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level6").get("AcidZombieCount"));
-        return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount);
+        WeaponType weaponPrize = getWeaponType(ConfigHandler.ini.get("Level6").get("WeaponPrize", ""));
+        return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount, weaponPrize);
     }
 
     public LevelProperties getLevel7Properties() {
@@ -218,7 +242,8 @@ public final class ConfigHandler {
         Integer levelCrawlerZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level7").get("CrawlerZombieCount"));
         Integer levelTankZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level7").get("TankZombieCount"));
         Integer levelAcidZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level7").get("AcidZombieCount"));
-        return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount);
+        WeaponType weaponPrize = getWeaponType(ConfigHandler.ini.get("Level7").get("WeaponPrize", ""));
+        return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount, weaponPrize);
     }
 
     public LevelProperties getLevel8Properties() {
@@ -227,7 +252,8 @@ public final class ConfigHandler {
         Integer levelCrawlerZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level8").get("CrawlerZombieCount"));
         Integer levelTankZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level8").get("TankZombieCount"));
         Integer levelAcidZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level8").get("AcidZombieCount"));
-        return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount);
+        WeaponType weaponPrize = getWeaponType(ConfigHandler.ini.get("Level8").get("WeaponPrize", ""));
+        return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount, weaponPrize);
     }
 
     public LevelProperties getLevel9Properties() {
@@ -236,7 +262,8 @@ public final class ConfigHandler {
         Integer levelCrawlerZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level9").get("CrawlerZombieCount"));
         Integer levelTankZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level9").get("TankZombieCount"));
         Integer levelAcidZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level9").get("AcidZombieCount"));
-        return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount);
+        WeaponType weaponPrize = getWeaponType(ConfigHandler.ini.get("Level9").get("WeaponPrize", ""));
+        return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount, weaponPrize);
     }
 
     public LevelProperties getLevel10Properties() {
@@ -245,7 +272,8 @@ public final class ConfigHandler {
         Integer levelCrawlerZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level10").get("CrawlerZombieCount"));
         Integer levelTankZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level10").get("TankZombieCount"));
         Integer levelAcidZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level10").get("AcidZombieCount"));
-        return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount);
+        WeaponType weaponPrize = getWeaponType(ConfigHandler.ini.get("Level10").get("WeaponPrize", ""));
+        return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount, weaponPrize);
     }
 
     public LevelProperties getLevel10PlusProperties() {
@@ -254,6 +282,7 @@ public final class ConfigHandler {
         Integer levelCrawlerZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level10+").get("CrawlerZombieCount"));
         Integer levelTankZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level10+").get("TankZombieCount"));
         Integer levelAcidZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level10+").get("AcidZombieCount"));
-        return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount);
+        WeaponType weaponPrize = getWeaponType(ConfigHandler.ini.get("Level10+").get("WeaponPrize", ""));
+        return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount, weaponPrize);
     }
 }

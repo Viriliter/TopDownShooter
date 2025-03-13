@@ -22,13 +22,16 @@ public class Player extends JPanel {
     private int x, y, dx, dy;
     private double r;
     private int speed;
-    private final int WIDTH = 60;
-    private final int HEIGHT = 51;
+    private final int WIDTH = 80;
+    private final int HEIGHT = 68;
     private ArrayList<Weapon> inventory;
     private int currentWeaponIndex = 0;
 
-    private SpriteAnimation spriteAnimation = null;
-
+    private SpriteAnimation spriteAnimationPistolIdle = null;
+    private SpriteAnimation spriteAnimationRifleIdle = null;
+    private SpriteAnimation spriteAnimationShotgunIdle = null;
+    private SpriteAnimation spriteAnimationRocketLauncherIdle = null;
+    
     public Player() {}
 
     public Player(ConfigHandler config) {
@@ -42,12 +45,21 @@ public class Player extends JPanel {
         this.speed = playerProperties.speed();
         this.score = 0;
 
-        this.spriteAnimation = new SpriteAnimation(Globals.HUNTER_PISTOL_IDLE);
-        this.spriteAnimation.setTargetSize(WIDTH, HEIGHT);
+        this.spriteAnimationPistolIdle = new SpriteAnimation(Globals.HUNTER_PISTOL_IDLE);
+        this.spriteAnimationPistolIdle.setTargetSize(WIDTH, HEIGHT);
+
+        this.spriteAnimationRifleIdle = new SpriteAnimation(Globals.HUNTER_RIFLE_IDLE);
+        this.spriteAnimationRifleIdle.setTargetSize(WIDTH, HEIGHT);
+
+        this.spriteAnimationShotgunIdle = new SpriteAnimation(Globals.HUNTER_SHOTGUN_IDLE);
+        this.spriteAnimationShotgunIdle.setTargetSize(WIDTH, HEIGHT);
+
+        this.spriteAnimationRocketLauncherIdle = new SpriteAnimation(Globals.HUNTER_ROCKET_LAUNCHER_IDLE);
+        this.spriteAnimationRocketLauncherIdle.setTargetSize(WIDTH, HEIGHT);
 
         this.inventory = new ArrayList<>();
         // Every player starts with a pistol
-        this.inventory.add(WeaponFactory.createWeapon(config, WeaponType.PISTOL));
+        this.inventory.add(WeaponFactory.createWeapon(config, WeaponType.ROCKETLAUNCHER));
     }
 
     public void rotate(double rRad) {
@@ -62,12 +74,25 @@ public class Player extends JPanel {
         this.y = this.y + this.dy < 0 ? 0 : this.y + this.dy;
 
         // Update weapons
-        for (Weapon w : inventory) {
+        for (Weapon w : this.inventory) {
             w.update();
         }
 
         // Update sprite animation
-        this.spriteAnimation.update();
+        if (this.inventory.get(this.currentWeaponIndex).getType() == WeaponType.PISTOL)
+            this.spriteAnimationPistolIdle.update();
+    
+        if (this.inventory.get(this.currentWeaponIndex).getType() == WeaponType.ASSAULTRIFLE)
+            this.spriteAnimationRifleIdle.update();
+        
+        if (this.inventory.get(this.currentWeaponIndex).getType() == WeaponType.SHOTGUN)
+            this.spriteAnimationShotgunIdle.update();
+        
+        if (this.inventory.get(this.currentWeaponIndex).getType() == WeaponType.SNIPERRIFLE)
+            this.spriteAnimationRifleIdle.update();
+        
+        if (this.inventory.get(this.currentWeaponIndex).getType() == WeaponType.ROCKETLAUNCHER)
+            this.spriteAnimationRocketLauncherIdle.update();
     }
 
     public void draw(Graphics g) {
@@ -84,7 +109,20 @@ public class Player extends JPanel {
         
         g2d.setTransform(oldTransform);
         */
-        this.spriteAnimation.draw(g, this.x, this.y, this.r);
+        if (this.inventory.get(this.currentWeaponIndex).getType() == WeaponType.PISTOL)
+            this.spriteAnimationPistolIdle.draw(g, this.x, this.y, this.r);
+        
+        if (this.inventory.get(this.currentWeaponIndex).getType() == WeaponType.ASSAULTRIFLE)
+            this.spriteAnimationRifleIdle.draw(g, this.x, this.y, this.r);
+        
+        if (this.inventory.get(this.currentWeaponIndex).getType() == WeaponType.SHOTGUN)
+            this.spriteAnimationShotgunIdle.draw(g, this.x, this.y, this.r);
+        
+        if (this.inventory.get(this.currentWeaponIndex).getType() == WeaponType.SNIPERRIFLE)
+            this.spriteAnimationRifleIdle.draw(g, this.x, this.y, this.r);
+        
+        if (this.inventory.get(this.currentWeaponIndex).getType() == WeaponType.ROCKETLAUNCHER)
+            this.spriteAnimationRocketLauncherIdle.draw(g, this.x, this.y, this.r);
     }
 
     public void decrementDx() { this.dx = -this.speed; }
@@ -131,13 +169,22 @@ public class Player extends JPanel {
     public Weapon getCurrentWeapon() {return this.inventory.get(currentWeaponIndex);}
 
     public Projectile fire() {
-        double translatedX = this.x + WIDTH / 2 + this.spriteAnimation.getOffset().getX() * Math.cos(this.r) - this.spriteAnimation.getOffset().getY() * Math.sin(this.r);
-        double translatedY = this.y + HEIGHT / 2 + this.spriteAnimation.getOffset().getX() * Math.sin(this.r) + this.spriteAnimation.getOffset().getY() * Math.cos(this.r);
+        double translatedX = this.x + WIDTH / 2 + this.spriteAnimationPistolIdle.getOffset().getX() * Math.cos(this.r) - this.spriteAnimationPistolIdle.getOffset().getY() * Math.sin(this.r);
+        double translatedY = this.y + HEIGHT / 2 + this.spriteAnimationPistolIdle.getOffset().getX() * Math.sin(this.r) + this.spriteAnimationPistolIdle.getOffset().getY() * Math.cos(this.r);
         return this.getCurrentWeapon().fire((int) translatedX, (int) translatedY, this.r);
     }
 
-    public void addNewWeapon(ConfigHandler config, WeaponType type) {
-        this.inventory.add(WeaponFactory.createWeapon(config, type));
+    public boolean addNewWeapon(ConfigHandler config, WeaponType type) {
+        // Only if that type is not available in the inventory, add the weapon 
+        for (Weapon weaponItem: this.inventory) {
+            if (weaponItem.getType() == type)
+                return false;
+        }
+
+        Weapon weapon = WeaponFactory.createWeapon(config, type);
+        if (weapon!=null) this.inventory.add(weapon);
+
+        return true;
     }
 
     public InventoryInfo getInventoryInfo() {
@@ -153,8 +200,8 @@ public class Player extends JPanel {
                     inventoryInfo.pistolMagazine = weapon.getMagazineCount();
                     break;
                 case ASSAULTRIFLE:
-                    inventoryInfo.assultRifleAmmo = weapon.getAmmo();
-                    inventoryInfo.assultRifleMagazine = weapon.getMagazineCount();
+                    inventoryInfo.assaultRifleAmmo = weapon.getAmmo();
+                    inventoryInfo.assaultRifleMagazine = weapon.getMagazineCount();
                     break;
                 case SHOTGUN:
                     inventoryInfo.shotgunAmmo = weapon.getAmmo();

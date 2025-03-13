@@ -13,8 +13,8 @@ import topdownshooter.Core.SpriteAnimation;
 public abstract class AbstractZombie implements Zombie {
     protected int x = 0, y = 0;
     protected double r = 0.0; // Rotation angle in radians
-    protected int WIDTH = 60;
-    protected int HEIGHT = 50;
+    protected int WIDTH = 80;
+    protected int HEIGHT = 67;
     protected double health = 0;
     protected int speed = 0;
     protected int damage = 0;
@@ -79,13 +79,13 @@ public abstract class AbstractZombie implements Zombie {
         if (this.y < py) this.y += this.speed;
         if (this.y > py) this.y -= this.speed;
     
-        // Rotate the zombie towards player
         int dx = px - this.x;
         int dy = py - this.y;
 
         // If zombie cathes the survivor do not update rotation 
         double distanceSquared = dx * dx + dy * dy;  // Avoid use of Math.sqrt if it is not really necessary
         if (distanceSquared > 2*2) {
+            // Rotate the zombie towards player
             this.r = Math.atan2(dy, dx); // Radians (used for rotation)
         }
 
@@ -150,6 +150,16 @@ public abstract class AbstractZombie implements Zombie {
         return new Position(this.x, this.y);
     }
     
+    @Override
+    public int getX() {
+        return this.x;
+    }
+    
+    @Override
+    public int getY() {
+        return this.y;
+    }
+
     @Override
     abstract public String toString();
 }

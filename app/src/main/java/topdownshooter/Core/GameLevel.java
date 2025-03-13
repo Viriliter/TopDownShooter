@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Random;
 
 import topdownshooter.Core.ConfigHandler.LevelProperties;
+import topdownshooter.Weapon.WeaponType;
 import topdownshooter.Zombie.Zombie;
 import topdownshooter.Zombie.ZombieFactory;
 import topdownshooter.Zombie.ZombieType;
@@ -66,14 +67,14 @@ public class GameLevel implements Serializable {
         this.config = config;
     }
 
-    private void loadLevel(long level) {
+    private WeaponType loadLevel(long level) {
         if (this.config==null) {
             System.err.println("Cannot load level since no configuration is defined!");
-            return;
+            return null;
         }
         
         if (this.waveStarted) {
-            return;
+            return null;
         }
 
         LevelProperties levelProperties = null;
@@ -130,7 +131,9 @@ public class GameLevel implements Serializable {
             this.spawnTick.setRepeats(-1);  // Repeats indefinetly
             this.waveTick = new TimeTick(Globals.Time2GameTick(this.waveDuration * 1000));
             this.waveTick.setRepeats(0);  // Repeats indefinetly
+            return levelProperties.weaponPrize();
         }
+        return null;
     }
 
     public Zombie update(final int maxWidth, final int maxHeight) {
@@ -216,12 +219,13 @@ public class GameLevel implements Serializable {
         return null;
     }
 
-    public void startWave() {
-        if (this.waveStarted) return;
+    public WeaponType startWave() {
+        if (this.waveStarted) return null;
 
-        loadLevel(++this.level);
+        WeaponType weaponPrize = loadLevel(++this.level);
         this.waveStarted = true;
         this.waveOver = false;
+        return weaponPrize;
     }
 
     public void endWave() {

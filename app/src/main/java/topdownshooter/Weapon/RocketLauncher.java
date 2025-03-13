@@ -7,6 +7,8 @@ import topdownshooter.Weapon.Projectiles.Rocket;
 public class RocketLauncher extends AbstractWeapon {
     public RocketLauncher(WeaponProperties properties) {
         super(properties);
+
+        this.type = WeaponType.ROCKETLAUNCHER;
     }
 
     public RocketLauncher(int damage, int magazineCapacity, int magazineCount, 
@@ -17,6 +19,7 @@ public class RocketLauncher extends AbstractWeapon {
 
     @Override
     public Rocket fire(int x, int y, double r) {
+        System.out.println("Tick: " + this.fireTick.getTick());
         if (this.fireTick.isTimeOut() && this.ammo > 0) {
             fireTick.reset();
             this.ammo--;

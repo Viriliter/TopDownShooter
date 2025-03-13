@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.ListIterator;
 import java.util.Map;
 
 import topdownshooter.Core.Globals;
@@ -24,6 +25,7 @@ import topdownshooter.Core.ConfigHandler;
 import topdownshooter.Core.GameLevel;
 import topdownshooter.Core.TimeTick;
 import topdownshooter.Player.Player;
+import topdownshooter.Weapon.WeaponType;
 import topdownshooter.Weapon.Projectiles.AcidSpit;
 import topdownshooter.Weapon.Projectiles.Bullet;
 import topdownshooter.Weapon.Projectiles.Projectile;
@@ -72,7 +74,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
 
         this.playgroundTileGenerator = new TileGenerator(Globals.PLAYGROUND_TILE_PATH);
 
-        waveSuspendTick = new TimeTick(Globals.Time2GameTick(Globals.WAVE_SUSPEND_DURATION_MS), () -> this.gameLevel.startWave());
+        waveSuspendTick = new TimeTick(Globals.Time2GameTick(Globals.WAVE_SUSPEND_DURATION_MS), () -> startWave());
         gameTimer.start();
     }
 
@@ -104,6 +106,16 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
 
     public void setParentPanel(GamePanel panel) {
         this.parentPanel = panel;
+    }
+
+    private void startWave() {
+        if (this.zombies.size() == 0) {
+            WeaponType weaponPrize = this.gameLevel.startWave();
+
+            if (weaponPrize!=null && weaponPrize!=WeaponType.UNDEFINED) {
+                boolean isAdded = this.player.addNewWeapon(config, weaponPrize);
+            }
+        }
     }
 
     public void update() {
@@ -177,17 +189,18 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
     }
 
     private void checkProjectileCollisions() {
-        Iterator<Projectile> projectileIterator = this.projectiles.iterator();
+        ListIterator<Projectile> projectileIterator = this.projectiles.listIterator();
+        
         while (projectileIterator.hasNext()) {
             Projectile projectile = projectileIterator.next();
 
             if (projectile.getType() == ProjectileType.BULLET) {
                 Bullet bullet = (Bullet) projectile;
 
-                Iterator<Zombie> zombieIterator = zombies.iterator();
+                ListIterator<Zombie> zombieIterator = zombies.listIterator();
                 while (zombieIterator.hasNext()) {
-                    Zombie zombie = zombieIterator.next();
-                    if (bullet.getBounds().intersects(zombie.getBounds())) {
+                    Zombie zombie = zombieIterator.next();                   
+                    if (isObjectsCollided(bullet.getBounds(), zombie.getBounds())) {
                         zombie.takeDamage(bullet.getDamage());
                         projectileIterator.remove();  // After damaging zombie, remove it.
 
@@ -201,12 +214,12 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
             } else if (projectile.getType() == ProjectileType.ARMOR_PIERCING_BULLET) {
                 Bullet bullet = (Bullet) projectile;
 
-                Iterator<Zombie> zombieIterator = zombies.iterator();
+                ListIterator<Zombie> zombieIterator = zombies.listIterator();
                 while (zombieIterator.hasNext()) {
                     Zombie zombie = zombieIterator.next();
-                    if (bullet.getBounds().intersects(zombie.getBounds())) {
+                    if (isObjectsCollided(bullet.getBounds(), zombie.getBounds())) {
                         zombie.takeDamage(bullet.getDamage());
-                        projectileIterator.remove();  // Do not remove armor piercing bullets on collision with zombie.
+                        // Do not remove armor piercing bullets on collision with zombie.
 
                         // If health of zombie is non positive, it is killed 
                         if (zombie.getHealth() <= 0) {
@@ -216,64 +229,54 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
                 }
             } else if (projectile.getType() == ProjectileType.ROCKET) {
                 Rocket rocket = (Rocket) projectile;
-
-                Iterator<Zombie> zombieIterator = zombies.iterator();
+                
+                Boolean isProjectileDetonated = false;
+                ListIterator<Zombie> zombieIterator = zombies.listIterator();
                 while (zombieIterator.hasNext()) {
                     Zombie zombie = zombieIterator.next();
-                    if (rocket.getBounds().intersects(zombie.getBounds())) {
+                    if (isObjectsCollided(rocket.getBounds(), zombie.getBounds())) {
                         // Rocket damages its surrounded area
+                        System.out.println("Rocket damages its surrounded area");
+                        System.out.println("X:" + rocket.getX() + " Y:" + rocket.getY() + " D:" + rocket.getDamage() + " R:" +  rocket.getEffectiveRange());
                         damageZombies(rocket.getX(), rocket.getY(), rocket.getDamage(), rocket.getEffectiveRange());
-
-                        projectileIterator.remove();  // After detonation, remove it.
-
-                        // If health of zombie is non positive, it is killed 
-                        if (zombie.getHealth() <= 0) {
-                            killZombie(zombie, zombieIterator);
-                        }
-                        break;
+                        isProjectileDetonated = true;
+                        break;  // No need to continue since explosion applies for all zombies in range
                     }
                 }
+                if (isProjectileDetonated) projectileIterator.remove();  // After detonation, remove it.
+
             } else if (projectile.getType() == ProjectileType.SHOTGUN_PELLETS) {
                 ShotgunPellets pellets = (ShotgunPellets) projectile;
 
-                Iterator<Zombie> zombieIterator = zombies.iterator();
+                ListIterator<Zombie> zombieIterator = zombies.listIterator();
                 while (zombieIterator.hasNext()) {
                     Zombie zombie = zombieIterator.next();
 
-                    Iterator<Bullet> pelletIterator = pellets.getPellets().iterator();
+                    ListIterator<Bullet> pelletIterator = pellets.getPellets().listIterator();
                     while (pelletIterator.hasNext()) {
                         Bullet bullet = pelletIterator.next();
-                        if (bullet.getBounds().intersects(zombie.getBounds())) {
+                        if (isObjectsCollided(bullet.getBounds(), zombie.getBounds())) {
                             zombie.takeDamage(bullet.getDamage());
-                            pelletIterator.remove();  // After damaging zombie, remove it.
 
                             // If health of zombie is non positive, it is killed 
                             if (zombie.getHealth() <= 0) {
                                 killZombie(zombie, zombieIterator);
                             }
+                            pelletIterator.remove();  // After damaging zombie, remove it.
+
                         }
                     }
                 }
             } else if (projectile.getType() == ProjectileType.ACID_SPIT) {
                 AcidSpit acidSpit = (AcidSpit) projectile;
 
-                boolean isColliding = isObjectsCollided(acidSpit.getBounds(), player.getBounds());
-                if (isColliding) {
-                    // Damage zombies and player if they are witrhin the effective range of toxic explosion
+                if (isObjectsCollided(acidSpit.getBounds(), player.getBounds())) {
+                    // Damage zombies and player if they are within the effective range of toxic explosion
                     damageZombies(acidSpit.getX(), acidSpit.getY(), acidSpit.getDamage(), acidSpit.getEffectiveRange());
                     damagePlayer(acidSpit.getX(), acidSpit.getY(), acidSpit.getDamage(), acidSpit.getEffectiveRange());
-
-                    Iterator<Zombie> zombieIterator = zombies.iterator();
-                    while (zombieIterator.hasNext()) {
-                        Zombie zombie = zombieIterator.next();
-                        // If health of zombie is non positive, it is killed 
-                        if (zombie.getHealth() <= 0) {
-                            killZombie(zombie, zombieIterator);
-                        }
-                    }
-
-
+                    projectileIterator.remove();  // After detonation, remove it.
                 }
+
             }
         }
     }
@@ -297,6 +300,12 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         }
     }
 
+    private double getDistanceSquared(int x1, int y1, int x2, int y2) {
+        int dx = x1 - x2;
+        int dy = y1 - y2;
+        return dx * dx + dy * dy;
+    }
+
     private void damageZombies(int originX, int originY, int originDamage, int effectiveRange) {
         double effectiveRangeSquared = effectiveRange * effectiveRange;
 
@@ -304,14 +313,26 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         while (zombieIterator.hasNext()) {
             Zombie zombie = zombieIterator.next();
             topdownshooter.Core.Position position = zombie.getPosition();
-            int dx = position.x() - originX;
-            int dy = position.y() - originY;
-            double distanceSquared = dx * dx + dy * dy;  // Calculate distance from origin point of detonation
+            double distanceSquared = getDistanceSquared(position.x(), position.y(), originX, originY);  // Calculate distance from origin point of detonation
 
-            // If zombie is within the effective range of the detonation
-            if (distanceSquared < effectiveRangeSquared) {
-                double damage = (double) originDamage / (1 + distanceSquared*0.5);
+            // If calculate detonation damage with the function of the distance from origin
+            double damage = 0;
+            if (distanceSquared == 0) {
+                damage = originDamage;
+            } else if (distanceSquared < effectiveRangeSquared && effectiveRange > 0) {
+                damage = (double) originDamage * (1 - (Math.sqrt(distanceSquared) / (4 * effectiveRange)));
+            } else if (distanceSquared == effectiveRangeSquared) {
+                damage = (double) originDamage * 0.25;
+            } else { 
+                damage = 0;
+            }
+            System.out.println("Zombie Normalized Damage: " + damage + " Origin Damage: " + originDamage  + " Distance Squared: " + distanceSquared);
+            if (damage>0) {
                 zombie.takeDamage(damage);
+                // If health of zombie is non positive, it is killed 
+                if (zombie.getHealth() <= 0) {
+                    killZombie(zombie, zombieIterator);
+                }    
             }
         }
     }
@@ -319,13 +340,22 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
     private void damagePlayer(int originX, int originY, int originDamage, int effectiveRange) {
         double effectiveRangeSquared = effectiveRange * effectiveRange;
 
-        int dx = this.player.getX() - originX;
-        int dy = this.player.getY() - originY;
-        double distanceSquared = dx * dx + dy * dy;  // Calculate distance from origin point of detonation
+        double distanceSquared = getDistanceSquared(this.player.getX(), this.player.getY(), originX, originY);  // Calculate distance from origin point of detonation
 
-        // If zombie is within the effective range of the detonation
-        if (distanceSquared < effectiveRangeSquared) {
-            double damage = (double) originDamage / (1 + distanceSquared*0.5);
+        // If calculate detonation damage with the function of the distance from origin
+        double damage = 0;
+        if (distanceSquared == 0) {
+            damage = originDamage;
+        } else if (distanceSquared < effectiveRangeSquared && effectiveRange > 0) {
+            damage = (double) originDamage * (1 - (Math.sqrt(distanceSquared) / (4 * effectiveRange)));
+        } else if (distanceSquared == effectiveRangeSquared) {
+            damage = (double) originDamage * 0.25;
+        } else { 
+            damage = 0;
+        }
+        System.out.println("Player Normalized Damage: " + damage + " Origin Damage: " + originDamage  + " Distance Squared: " + distanceSquared);
+
+        if (damage>0) {
             this.player.takeDamage(damage);
         }
     }
@@ -341,7 +371,8 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         
         // Acid zombies damages their surrounds when they killed
         if (zombie.getType() == ZombieType.ACID) {
-            // TODO Add implementation here
+            damageZombies(zombie.getX(), zombie.getY(), zombie.giveDamage(), 200);
+            damagePlayer(zombie.getX(), zombie.getY(), zombie.giveDamage(), 200);
         }
         
         zombieIterator.remove();
@@ -515,8 +546,9 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         this.gameTimer.stop();
         if (this.fireRateTick != null) this.fireRateTick.reset();
         if (this.waveSuspendTick != null) this.waveSuspendTick.reset();
-
-        System.out.println("GAME OVER");
+        
+        this.isGamePaused = true;  // Set to true to prevent player rotation on mouse movement
+        
         showGameOverDialog();
     }
 

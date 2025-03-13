@@ -30,6 +30,7 @@ public abstract class Projectile implements Serializable{
     public Projectile() {
 
     }
+
     public int getX() {
         return this.x;
     }

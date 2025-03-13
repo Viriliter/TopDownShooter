@@ -17,10 +17,19 @@ public class Game {
         WindowProperties windowProperties = config.getWindowProperties();
 
         SwingUtilities.invokeLater(() -> {
+           
             JFrame frame = new JFrame("Zombie Shooter");
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setSize(windowProperties.windowWidth(), windowProperties.windowHeight());
             frame.setResizable(false);
+
+            // Set full-screen mode
+            //GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+            //GraphicsDevice device = env.getDefaultScreenDevice();
+            //device.setFullScreenWindow(frame);
+            //
+            //config.setProperty("Window", "Width", frame.getWidth());
+            //config.setProperty("Window", "Height", frame.getHeight());
 
             MenuPanel menuPanel = new MenuPanel(frame, config);
             frame.add(menuPanel);

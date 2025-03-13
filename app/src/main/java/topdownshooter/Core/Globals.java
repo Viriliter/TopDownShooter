@@ -10,19 +10,27 @@ import javax.swing.ImageIcon;
 public interface Globals {
     public static final String CONFIGURATION_FILE = "config.ini";
     public static final int GAME_TICK_MS = 10;
-    public static final int WINDOW_WIDTH = 800;
-    public static final int WINDOW_HEIGHT = 600;
+
+    public static final int WINDOW_WIDTH = 1600;  // Default: 1600px
+    public static final int WINDOW_HEIGHT = (int) ((double) WINDOW_WIDTH * 0.625);  // Default: 1000px
+    public static final int PLAYER_WIDTH = (int) ((WINDOW_WIDTH * 0.05));  // Default: 80px
+    public static final int PLAYER_HEIGHT = (int) ((double) PLAYER_WIDTH * 0.85);  // Default: 68px
+    public static final int ZOMBIE_WIDTH = (int) ((WINDOW_WIDTH * 0.05));  // Default: 80px
+    public static final int ZOMBIE_HEIGHT = (int) ((double) PLAYER_WIDTH * 0.85);  // Default: 68px
+
+    public static final int BULLET_SIZE = 5;  // Default: 5px
+
     public static final int WAVE_SUSPEND_DURATION_MS = 5000;
     public static final int FULL_DAMAGE_PERIOD = 500;  // Period of zombie gives full damage if attacks continue  
 
     public static int FRAME_DELAY = 5;
 
-    public static final String PLAYGROUND_TILE_PATH = "Textures/ground.jpg";
+    public static final String PLAYGROUND_TILE_PATH = "Textures/ground2.png";
 
     // Path of In-Game Icons
-    public static final String ICON_PATH_ASSULT_RIFLE_INACTIVE = "Icons/assult-rifle-inactive.png";
-    public static final String ICON_PATH_ASSULT_RIFLE_UNSELECTED = "Icons/assult-rifle-selected.png";
-    public static final String ICON_PATH_ASSULT_RIFLE_SELECTED = "Icons/assult-rifle-unselected.png";
+    public static final String ICON_PATH_ASSAULT_RIFLE_INACTIVE = "Icons/assault-rifle-inactive.png";
+    public static final String ICON_PATH_ASSAULT_RIFLE_UNSELECTED = "Icons/assault-rifle-selected.png";
+    public static final String ICON_PATH_ASSAULT_RIFLE_SELECTED = "Icons/assault-rifle-unselected.png";
     public static final String ICON_PATH_PISTOL_INACTIVE = "Icons/pistol-inactive.png";
     public static final String ICON_PATH_PISTOL_UNSELECTED = "Icons/pistol-selected.png";
     public static final String ICON_PATH_PISTOL_SELECTED = "Icons/pistol-unselected.png";
@@ -36,16 +44,18 @@ public interface Globals {
     public static final String ICON_PATH_SNIPER_RIFLE_UNSELECTED = "Icons/sniper-rifle-selected.png";
     public static final String ICON_PATH_SNIPER_RIFLE_SELECTED = "Icons/sniper-rifle-unselected.png";
 
-
     public static final SpriteAnimationStruct HUNTER_PISTOL_IDLE = new SpriteAnimationStruct("Textures/Survivor/Pistol/survivor_pistol_idle.png", 20, FRAME_DELAY, 5, 4, 30, 12);
     public static final SpriteAnimationStruct HUNTER_PISTOL_MOVE = new SpriteAnimationStruct("Textures/Survivor/Pistol/survivor_pistol_move.png", 20, FRAME_DELAY, 3, 7, 30, 12);
     public static final SpriteAnimationStruct HUNTER_PISTOL_SHOOT = new SpriteAnimationStruct("Textures/Survivor/Pistol/survivor_pistol_shoot.png", 3, FRAME_DELAY, 1, 3, 30, 12);
-    public static final SpriteAnimationStruct HUNTER_RIFLE_IDLE = new SpriteAnimationStruct("Textures/Survivor/Rifle/survivor_rifle_idle.png", 20, FRAME_DELAY, 5, 4, 30, 12);
-    public static final SpriteAnimationStruct HUNTER_RIFLE_MOVE = new SpriteAnimationStruct("Textures/Survivor/Rifle/survivor_rifle_move.png", 20, FRAME_DELAY, 3, 7, 30, 12);
+    public static final SpriteAnimationStruct HUNTER_RIFLE_IDLE = new SpriteAnimationStruct("Textures/Survivor/Rifle/survivor_rifle_idle.png", 20, FRAME_DELAY, 7, 3, 30, 12);
+    public static final SpriteAnimationStruct HUNTER_RIFLE_MOVE = new SpriteAnimationStruct("Textures/Survivor/Rifle/survivor_rifle_move.png", 20, FRAME_DELAY, 7, 3, 30, 12);
     public static final SpriteAnimationStruct HUNTER_RIFLE_SHOOT = new SpriteAnimationStruct("Textures/Survivor/Rifle/survivor_rifle_shoot.png", 3, FRAME_DELAY, 1, 3, 30, 12);
-    public static final SpriteAnimationStruct HUNTER_SHOTGUN_IDLE = new SpriteAnimationStruct("Textures/Survivor/Shotgun/survivor_shotgun_idle.png", 20, FRAME_DELAY, 5, 4, 30, 12);
-    public static final SpriteAnimationStruct HUNTER_SHOTGUN_MOVE = new SpriteAnimationStruct("Textures/Survivor/Shotgun/survivor_shotgun_move.png", 20, FRAME_DELAY, 3, 7, 30, 12);
+    public static final SpriteAnimationStruct HUNTER_SHOTGUN_IDLE = new SpriteAnimationStruct("Textures/Survivor/Shotgun/survivor_shotgun_idle.png", 20, FRAME_DELAY, 7, 3, 30, 12);
+    public static final SpriteAnimationStruct HUNTER_SHOTGUN_MOVE = new SpriteAnimationStruct("Textures/Survivor/Shotgun/survivor_shotgun_move.png", 20, FRAME_DELAY, 7, 3, 30, 12);
     public static final SpriteAnimationStruct HUNTER_SHOTGUN_SHOOT = new SpriteAnimationStruct("Textures/Survivor/Shotgun/survivor_shotgun_shoot.png", 3, FRAME_DELAY, 1, 3, 30, 12);
+    public static final SpriteAnimationStruct HUNTER_ROCKET_LAUNCHER_IDLE = new SpriteAnimationStruct("Textures/Survivor/Rocket/survivor_rocket_idle.png", 20, FRAME_DELAY, 7, 3, 30, 12);
+    public static final SpriteAnimationStruct HUNTER_ROCKET_LAUNCHER_MOVE = new SpriteAnimationStruct("Textures/Survivor/Rocket/survivor_rocket_move.png", 20, FRAME_DELAY, 7, 3, 30, 12);
+    public static final SpriteAnimationStruct HUNTER_ROCKET_LAUNCHER_SHOOT = new SpriteAnimationStruct("Textures/Survivor/Rocket/survivor_rocket_shoot.png", 3, FRAME_DELAY, 1, 3, 30, 12);
 
     public static final SpriteAnimationStruct ORDINARY_ZOMBIE_MOVE = new SpriteAnimationStruct("Textures/Zombie/ordinary_zombie_move.png", 17, FRAME_DELAY, 6, 3, 30, 12);
     public static final SpriteAnimationStruct ORDINARY_ZOMBIE_ATTACK = new SpriteAnimationStruct("Textures/Zombie/ordinary_zombie_attack.png", 9, FRAME_DELAY, 3, 3, 30, 12);

@@ -45,7 +45,7 @@ public class GameInfoPanel extends JPanel implements ActionListener, MouseListen
     
         public void updateAmmo(int ammo, int magazine) {
             ammoLabel.setText(ammo < 0 ? "-": String.valueOf(ammo));
-            magazineLabel.setText(ammo < 0 ? "-": String.valueOf(ammo));
+            magazineLabel.setText(magazine < 0 ? "-": String.valueOf(magazine));
         }
 
         public void setIcon(ImageIcon icon) {
@@ -67,7 +67,7 @@ public class GameInfoPanel extends JPanel implements ActionListener, MouseListen
             weaponSlots.add(this.slot1);
             add(this.slot1);  // Add the slot to the panel
 
-            this.slot2 = new WeaponSlot(Globals.loadPNGIcon(Globals.ICON_PATH_ASSULT_RIFLE_INACTIVE, 30, 30), -1, -1);
+            this.slot2 = new WeaponSlot(Globals.loadPNGIcon(Globals.ICON_PATH_ASSAULT_RIFLE_INACTIVE, 30, 30), -1, -1);
             weaponSlots.add(this.slot2);
             add(this.slot2);  // Add the slot to the panel
 
@@ -94,7 +94,7 @@ public class GameInfoPanel extends JPanel implements ActionListener, MouseListen
                         this.slot1.setIcon(new ImageIcon(Globals.ICON_PATH_PISTOL_SELECTED));
                         break;
                     case 1:
-                        this.slot2.setIcon(new ImageIcon(Globals.ICON_PATH_ASSULT_RIFLE_SELECTED));
+                        this.slot2.setIcon(new ImageIcon(Globals.ICON_PATH_ASSAULT_RIFLE_SELECTED));
                         break;
                     case 2:
                         this.slot3.setIcon(new ImageIcon(Globals.ICON_PATH_SHOTGUN_SELECTED));
@@ -254,7 +254,7 @@ public class GameInfoPanel extends JPanel implements ActionListener, MouseListen
     public void updatePlayerInventory(final InventoryInfo inventoryInfo) {
         this.weaponPanel.setCurrentWeapon(inventoryInfo.selectedWeaponID);
         this.weaponPanel.updateWeaponSlot(0, inventoryInfo.pistolAmmo, inventoryInfo.pistolMagazine);
-        this.weaponPanel.updateWeaponSlot(1, inventoryInfo.assultRifleAmmo, inventoryInfo.assultRifleMagazine);
+        this.weaponPanel.updateWeaponSlot(1, inventoryInfo.assaultRifleAmmo, inventoryInfo.assaultRifleMagazine);
         this.weaponPanel.updateWeaponSlot(2, inventoryInfo.shotgunAmmo, inventoryInfo.shotgunMagazine);
         this.weaponPanel.updateWeaponSlot(3, inventoryInfo.sniperRifleAmmo, inventoryInfo.sniperRifleMagazine);
         this.weaponPanel.updateWeaponSlot(4, inventoryInfo.rocketLauncherAmmo, inventoryInfo.rocketLauncherMagazine);

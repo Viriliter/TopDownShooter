@@ -7,6 +7,8 @@ import topdownshooter.Weapon.Projectiles.Bullet;
 public class Pistol extends AbstractWeapon {
     public Pistol(WeaponProperties properties) {
         super(properties);
+
+        this.type = WeaponType.PISTOL;
     }
 
     public Pistol(int damage, int magazineCapacity, int magazineCount, 

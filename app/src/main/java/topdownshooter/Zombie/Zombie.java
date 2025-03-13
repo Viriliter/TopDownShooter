@@ -27,4 +27,9 @@ public interface Zombie extends Serializable{
     public Map.Entry<Integer, PlayerItem> kill();
 
     public Position getPosition();
+
+    public int getX();
+    
+    public int getY();
+
 }
