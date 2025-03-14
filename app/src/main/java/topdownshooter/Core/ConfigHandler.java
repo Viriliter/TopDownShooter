@@ -34,7 +34,6 @@ public final class ConfigHandler {
         int health, 
         int speed,
         int damage,
-        int range,
         int points
     ) {}
 
@@ -144,36 +143,32 @@ public final class ConfigHandler {
         Integer zombieHealth = Integer.parseInt(ConfigHandler.ini.get("OrdinaryZombie").get("Health"));
         Integer zombieSpeed = Integer.parseInt(ConfigHandler.ini.get("OrdinaryZombie").get("Speed"));
         Integer zombieDamage = Integer.parseInt(ConfigHandler.ini.get("OrdinaryZombie").get("Damage"));
-        Integer zombieRange = Integer.parseInt(ConfigHandler.ini.get("OrdinaryZombie").get("Range"));
         Integer zombiePoints = Integer.parseInt(ConfigHandler.ini.get("OrdinaryZombie").get("Points"));
-        return new ZombieProperties(zombieHealth, zombieSpeed, zombieDamage, zombieRange, zombiePoints);
+        return new ZombieProperties(zombieHealth, zombieSpeed, zombieDamage, zombiePoints);
     }
 
     public ZombieProperties getCrawlerZombieProperties() {
         Integer zombieHealth = Integer.parseInt(ConfigHandler.ini.get("CrawlerZombie").get("Health"));
         Integer zombieSpeed = Integer.parseInt(ConfigHandler.ini.get("CrawlerZombie").get("Speed"));
         Integer zombieDamage = Integer.parseInt(ConfigHandler.ini.get("CrawlerZombie").get("Damage"));
-        Integer zombieRange = Integer.parseInt(ConfigHandler.ini.get("CrawlerZombie").get("Range"));
         Integer zombiePoints = Integer.parseInt(ConfigHandler.ini.get("CrawlerZombie").get("Points"));
-        return new ZombieProperties(zombieHealth, zombieSpeed, zombieDamage, zombieRange, zombiePoints);
+        return new ZombieProperties(zombieHealth, zombieSpeed, zombieDamage, zombiePoints);
     }
 
     public ZombieProperties getTankZombieProperties() {
         Integer zombieHealth = Integer.parseInt(ConfigHandler.ini.get("TankZombie").get("Health"));
         Integer zombieSpeed = Integer.parseInt(ConfigHandler.ini.get("TankZombie").get("Speed"));
         Integer zombieDamage = Integer.parseInt(ConfigHandler.ini.get("TankZombie").get("Damage"));
-        Integer zombieRange = Integer.parseInt(ConfigHandler.ini.get("TankZombie").get("Range"));
         Integer zombiePoints = Integer.parseInt(ConfigHandler.ini.get("TankZombie").get("Points"));
-        return new ZombieProperties(zombieHealth, zombieSpeed, zombieDamage, zombieRange, zombiePoints);
+        return new ZombieProperties(zombieHealth, zombieSpeed, zombieDamage, zombiePoints);
     }
 
     public ZombieProperties getAcidZombieProperties() {
         Integer zombieHealth = Integer.parseInt(ConfigHandler.ini.get("AcidZombie").get("Health"));
         Integer zombieSpeed = Integer.parseInt(ConfigHandler.ini.get("AcidZombie").get("Speed"));
         Integer zombieDamage = Integer.parseInt(ConfigHandler.ini.get("AcidZombie").get("Damage"));
-        Integer zombieRange = Integer.parseInt(ConfigHandler.ini.get("AcidZombie").get("Range"));
         Integer zombiePoints = Integer.parseInt(ConfigHandler.ini.get("AcidZombie").get("Points"));
-        return new ZombieProperties(zombieHealth, zombieSpeed, zombieDamage, zombieRange, zombiePoints);
+        return new ZombieProperties(zombieHealth, zombieSpeed, zombieDamage, zombiePoints);
     }
 
     public LevelProperties getLevel1Properties() {

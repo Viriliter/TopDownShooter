@@ -32,7 +32,6 @@ public class OrdinaryZombie extends AbstractZombie {
         sb.append("speed=" + this.speed + ", ");
         sb.append("damage=" + this.damage + ", ");
         sb.append("points=" + this.points + ", ");
-        sb.append("range=" + this.range + ", ");
         sb.append("type=" + this.type);
         sb.append("}");
 

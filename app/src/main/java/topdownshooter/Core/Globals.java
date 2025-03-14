@@ -18,6 +18,9 @@ public interface Globals {
     public static final int ZOMBIE_WIDTH = (int) ((WINDOW_WIDTH * 0.05));  // Default: 80px
     public static final int ZOMBIE_HEIGHT = (int) ((double) PLAYER_WIDTH * 0.85);  // Default: 68px
 
+    public static final int NOTIFICATION_WINDOW_WIDTH = WINDOW_WIDTH / 4;  // Default: 400px
+    public static final int NOTIFICATION_WINDOW_HEIGHT = (int) ((double) NOTIFICATION_WINDOW_WIDTH * 0.375);  // Default: 150px
+
     public static final int BULLET_SIZE = 5;  // Default: 5px
 
     public static final int WAVE_SUSPEND_DURATION_MS = 5000;

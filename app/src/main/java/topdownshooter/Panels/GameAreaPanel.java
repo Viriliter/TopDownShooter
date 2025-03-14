@@ -36,10 +36,11 @@ import topdownshooter.Zombie.AbstractZombie;
 import topdownshooter.Zombie.AcidZombie;
 import topdownshooter.Zombie.Zombie;
 import topdownshooter.Zombie.ZombieType;
-import topdownshooter.Panels.NotificationPanel;
 
 public class GameAreaPanel extends JPanel implements ActionListener, KeyListener, MouseListener, MouseMotionListener{
     private GamePanel parentPanel = null;
+    private ConfigHandler config;
+
     private Player player = null;
     private ArrayList<Zombie> zombies = null;
     private ArrayList<Projectile> projectiles = null;
@@ -47,12 +48,9 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
     private boolean isGamePaused = false;
     private Timer gameTimer;
     private TimeTick fireRateTick = null;
-    private TimeTick waveSuspendTick = null;
 
     private TileGenerator playgroundTileGenerator = null;
-    private ConfigHandler config;
 
-    private NotificationPanel nPanel = null;
     private GameLevel gameLevel = null;
 
     public GameAreaPanel(ConfigHandler config) {
@@ -76,7 +74,6 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
 
         this.playgroundTileGenerator = new TileGenerator(Globals.PLAYGROUND_TILE_PATH);
 
-        waveSuspendTick = new TimeTick(Globals.Time2GameTick(Globals.WAVE_SUSPEND_DURATION_MS), () -> startWave());
         gameTimer.start();
     }
 
@@ -111,15 +108,20 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
     }
 
     private void startWave() {
-        if (this.zombies.size() == 0) {
-            this.nPanel = new NotificationPanel(this, "New Wave comming...");
-            this.nPanel.show(3000);
+        if (this.gameLevel.getWaveStatus()== GameLevel.GameLevelStatus.UNDEFINED ||
+            this.gameLevel.getWaveStatus()== GameLevel.GameLevelStatus.ENDED)  {
 
-            WeaponType weaponPrize = this.gameLevel.startWave();
+            this.player.addScore(this.gameLevel.calculateLevelBonus());  // Add level bonus into player's score
 
+            WeaponType weaponPrize = this.gameLevel.startWave();                
+
+            boolean isNewWeaponAdded = false;
             if (weaponPrize!=null && weaponPrize!=WeaponType.UNDEFINED) {
-                boolean isAdded = this.player.addNewWeapon(config, weaponPrize);
+                isNewWeaponAdded = this.player.addNewWeapon(config, weaponPrize);
             }
+            
+            String message = "Wave " + this.gameLevel.getLevel() + " comming!";
+            this.parentPanel.getNotificationPanel().show(message, Globals.WAVE_SUSPEND_DURATION_MS);
         }
     }
 
@@ -134,7 +136,6 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
 
         checkCollisions();
 
-        if (this.waveSuspendTick!=null) this.waveSuspendTick.updateTick();
         if (this.fireRateTick!=null) this.fireRateTick.updateTick();
         
         updateGameInfo();
@@ -153,11 +154,10 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
     }
 
     private void updateGameLevel() {
-        if (this.gameLevel==null) return;
+        if (this.gameLevel==null || this.player == null || this.zombies == null) return;
 
-        if (this.gameLevel.isWaveOver() && waveSuspendTick.isTimeOut()) {
-            this.player.addScore(this.gameLevel.calculateLevelBonus());  // Add level bonus into player's score
-            waveSuspendTick.reset();
+        if (this.zombies.size() == 0) {
+            startWave();
         }
 
         Zombie zombie = this.gameLevel.update(getWidth(), getHeight());
@@ -165,12 +165,14 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
     }
 
     private void updateZombies() {
+        if (this.player==null ||this.zombies==null) return;
+
         // Move zombies towards player
         for (Zombie z : zombies) {
             z.update(player.getX(), player.getY());
 
 
-            // ACID zombies have special ranged attack
+            // Acid zombies have special ranged attack
             if (z.getType() == ZombieType.ACID) {
                 AcidZombie acidZombie = (AcidZombie) z;
                 Projectile projectile = (Projectile) acidZombie.rangedAttack();
@@ -181,6 +183,8 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
     }
 
     private void updateProjectiles() {
+        if (this.projectiles==null) return;
+
         Iterator<Projectile> iterator = this.projectiles.iterator();
         while (iterator.hasNext()) {
             Projectile projectile = iterator.next();
@@ -195,6 +199,8 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
     }
 
     private void checkProjectileCollisions() {
+        if (this.player==null ||this.zombies==null || this.projectiles==null) return;
+
         ListIterator<Projectile> projectileIterator = this.projectiles.listIterator();
         
         while (projectileIterator.hasNext()) {
@@ -203,7 +209,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
             if (projectile.getType() == ProjectileType.BULLET) {
                 Bullet bullet = (Bullet) projectile;
 
-                ListIterator<Zombie> zombieIterator = zombies.listIterator();
+                ListIterator<Zombie> zombieIterator = this.zombies.listIterator();
                 while (zombieIterator.hasNext()) {
                     Zombie zombie = zombieIterator.next();                   
                     if (isObjectsCollided(bullet.getBounds(), zombie.getBounds())) {
@@ -220,7 +226,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
             } else if (projectile.getType() == ProjectileType.ARMOR_PIERCING_BULLET) {
                 Bullet bullet = (Bullet) projectile;
 
-                ListIterator<Zombie> zombieIterator = zombies.listIterator();
+                ListIterator<Zombie> zombieIterator = this.zombies.listIterator();
                 while (zombieIterator.hasNext()) {
                     Zombie zombie = zombieIterator.next();
                     if (isObjectsCollided(bullet.getBounds(), zombie.getBounds())) {
@@ -237,7 +243,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
                 Rocket rocket = (Rocket) projectile;
                 
                 Boolean isProjectileDetonated = false;
-                ListIterator<Zombie> zombieIterator = zombies.listIterator();
+                ListIterator<Zombie> zombieIterator = this.zombies.listIterator();
                 while (zombieIterator.hasNext()) {
                     Zombie zombie = zombieIterator.next();
                     if (isObjectsCollided(rocket.getBounds(), zombie.getBounds())) {
@@ -253,8 +259,14 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
 
             } else if (projectile.getType() == ProjectileType.SHOTGUN_PELLETS) {
                 ShotgunPellets pellets = (ShotgunPellets) projectile;
+                
+                // If all pellets are destroyed remove the projectile
+                if (pellets.getPellets().size() == 0) {
+                    projectileIterator.remove();
+                    continue;
+                }
 
-                ListIterator<Zombie> zombieIterator = zombies.listIterator();
+                ListIterator<Zombie> zombieIterator = this.zombies.listIterator();
                 while (zombieIterator.hasNext()) {
                     Zombie zombie = zombieIterator.next();
 
@@ -267,32 +279,28 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
                             // If health of zombie is non positive, it is killed 
                             if (zombie.getHealth() <= 0) {
                                 killZombie(zombie, zombieIterator);
+                                break;
                             }
                             pelletIterator.remove();  // After damaging zombie, remove it.
-
                         }
                     }
                 }
             } else if (projectile.getType() == ProjectileType.ACID_SPIT) {
                 AcidSpit acidSpit = (AcidSpit) projectile;
 
-                if (isObjectsCollided(acidSpit.getBounds(), player.getBounds())) {
-                    // Damage zombies and player if they are within the effective range of toxic explosion
-                    damageZombies(acidSpit.getX(), acidSpit.getY(), acidSpit.getDamage(), acidSpit.getEffectiveRange());
-                    damagePlayer(acidSpit.getX(), acidSpit.getY(), acidSpit.getDamage(), acidSpit.getEffectiveRange());
-                    projectileIterator.remove();  // After detonation, remove it.
+                if (isObjectsCollided(acidSpit.getBounds(), this.player.getBounds())) {
+                    this.player.takeDamage(acidSpit.getDamage());
+                    projectileIterator.remove();  // After contact with player, remove it.
                 }
 
             }
         }
     }
 
-    private void checkCollisions() {
-        // Projectile collisions
-        checkProjectileCollisions();
+    private void checkZombieCollisions() {
+        if (this.player==null ||this.zombies==null) return;
 
-        // Zombie collisions to the survivor (aka zombie attack)
-        Iterator<Zombie> zombieIterator = zombies.iterator();
+        Iterator<Zombie> zombieIterator = this.zombies.iterator();
         while (zombieIterator.hasNext()) {
             Zombie zombie = zombieIterator.next();
             // If zombie collides with the player, it gives damage by attacking
@@ -304,6 +312,14 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
                 this.player.takeDamage(damagePerTick);
             }
         }
+    }
+
+    private void checkCollisions() {
+        // Projectile collisions
+        checkProjectileCollisions();
+
+        // Zombie collisions to the survivor (aka zombie attack)
+        checkZombieCollisions();
     }
 
     private double getDistanceSquared(int x1, int y1, int x2, int y2) {
@@ -367,7 +383,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
     }
 
     private void killZombie(Zombie zombie, ListIterator<Zombie> zombieIterator) {
-        // Killing zombie will give score, and possibility of dropping player items. 
+        // Retrieve loot and score when zombie killed. 
         Map.Entry<Integer, PlayerItem> tuple = zombie.kill();
         int points = tuple.getKey();
         PlayerItem playerItem = tuple.getValue();
@@ -380,7 +396,8 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         int zombieY = zombie.getY();
         int zombieDamage = zombie.giveDamage();
 
-        zombieIterator.remove();  // First kill the zombie 
+        zombieIterator.remove();  // First kill the zombie
+
         // Acid zombies damages their surrounds when they killed
         if (zombieType == ZombieType.ACID) {
             damageZombies(zombieX, zombieY, zombieDamage, 200);
@@ -555,7 +572,6 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
     public void endGame() {
         this.gameTimer.stop();
         if (this.fireRateTick != null) this.fireRateTick.reset();
-        if (this.waveSuspendTick != null) this.waveSuspendTick.reset();
         
         this.isGamePaused = true;  // Set to true to prevent player rotation on mouse movement
         

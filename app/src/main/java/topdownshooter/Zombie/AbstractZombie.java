@@ -19,7 +19,6 @@ public abstract class AbstractZombie implements Zombie {
     protected int speed = 0;
     protected int damage = 0;
     protected int points = 0;
-    protected int range = 0;
     protected ZombieType type;
 
     protected SpriteAnimation spriteAnimation = null;
@@ -34,7 +33,6 @@ public abstract class AbstractZombie implements Zombie {
         this.health = properties.health();
         this.speed = properties.speed();
         this.damage = properties.damage();
-        this.range = properties.range();
         this.points = properties.points();
         
         this.spriteAnimation = new SpriteAnimation(Globals.ORDINARY_ZOMBIE_MOVE);
@@ -49,7 +47,6 @@ public abstract class AbstractZombie implements Zombie {
         this.speed = speed;
         this.damage = damage;
         this.points = points;
-        this.range = range;
         this.type = type;
 
         this.spriteAnimation = new SpriteAnimation(Globals.ORDINARY_ZOMBIE_MOVE);
@@ -64,7 +61,6 @@ public abstract class AbstractZombie implements Zombie {
         this.speed = other.speed;
         this.damage = other.damage;
         this.points = other.points;
-        this.range = other.range;
         this.type = other.type;
 
         this.spriteAnimation = other.spriteAnimation;

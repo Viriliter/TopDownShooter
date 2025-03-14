@@ -10,10 +10,16 @@ import topdownshooter.Zombie.ZombieFactory;
 import topdownshooter.Zombie.ZombieType;
 
 public class GameLevel implements Serializable {
+    public enum GameLevelStatus {
+        UNDEFINED,
+        STARTED,
+        SUSPENDED,
+        ENDED,
+    }
+
     private int levelBonus = 10;
     private int level = 0;
-    private boolean waveOver = true;
-    private boolean waveStarted = false;
+    private GameLevelStatus gameLevelStatus;
 
     private ConfigHandler config;
     private int waveDuration;
@@ -24,6 +30,7 @@ public class GameLevel implements Serializable {
     private int spawnPeriod;
     private TimeTick spawnTick;
     private TimeTick waveTick;
+    private TimeTick newWaveSuspendTick;
 
     private Random random;
 
@@ -35,6 +42,7 @@ public class GameLevel implements Serializable {
         this.config = config;
         this.random = new Random();
 
+        this.gameLevelStatus = GameLevelStatus.UNDEFINED;
         this.waveDuration = 0;
         this.ordinaryZombieCount = 0;
         this.crawlerZombieCount = 0;
@@ -44,15 +52,15 @@ public class GameLevel implements Serializable {
 
         this.spawnTick = null;
         this.waveTick = null;
+        this.newWaveSuspendTick = new TimeTick(Globals.Time2GameTick(Globals.WAVE_SUSPEND_DURATION_MS), () -> startWaveInvokeLater());
     }
 
-    public GameLevel(int level, boolean waveOver, boolean waveStarted, int waveDuration, int ordinaryZombieCount, int crawlerZombieCount, int tankZombieCount,
-                     int acidZombieCount, int spawnPeriod, TimeTick spawnTick, TimeTick waveTick) {
+    public GameLevel(int level, GameLevelStatus gameLevelStatus, int waveDuration, int ordinaryZombieCount, int crawlerZombieCount, int tankZombieCount,
+                     int acidZombieCount, int spawnPeriod, TimeTick spawnTick, TimeTick waveTick, TimeTick newWaveSuspendTick) {
         this.random = new Random();
         
         this.level = level;
-        this.waveOver = waveOver;
-        this.waveStarted = waveStarted;
+        this.gameLevelStatus = gameLevelStatus;
         this.waveDuration = 0;
         this.ordinaryZombieCount = 0;
         this.crawlerZombieCount = 0;
@@ -62,6 +70,7 @@ public class GameLevel implements Serializable {
 
         this.spawnTick = spawnTick;
         this.waveTick = waveTick;
+        this.newWaveSuspendTick = newWaveSuspendTick;
     }
 
     public void setConfig(ConfigHandler config) {
@@ -74,7 +83,7 @@ public class GameLevel implements Serializable {
             return null;
         }
         
-        if (this.waveStarted) {
+        if (this.gameLevelStatus == GameLevelStatus.STARTED) {
             return null;
         }
 
@@ -138,9 +147,14 @@ public class GameLevel implements Serializable {
     }
 
     public Zombie update(final int maxWidth, final int maxHeight) {
+        if (this.gameLevelStatus == GameLevelStatus.SUSPENDED) {
+                this.newWaveSuspendTick.updateTick();
+                return null;
+            }
+
         if (this.spawnTick==null) return null;
 
-        if (this.waveStarted) {
+        if (this.gameLevelStatus == GameLevelStatus.STARTED) {
             this.spawnTick.updateTick();
             this.waveTick.updateTick();
 
@@ -220,22 +234,32 @@ public class GameLevel implements Serializable {
         return null;
     }
 
-    public WeaponType startWave() {
-        if (this.waveStarted) return null;
+    private void startWaveInvokeLater() {
+        this.gameLevelStatus = GameLevelStatus.STARTED;
+        this.newWaveSuspendTick.reset();
+    }
 
+    public WeaponType startWave() {
+
+        if (this.gameLevelStatus == GameLevelStatus.STARTED || 
+            this.gameLevelStatus == GameLevelStatus.SUSPENDED)
+            return null;
+
+        this.gameLevelStatus = GameLevelStatus.SUSPENDED;
         WeaponType weaponPrize = loadLevel(++this.level);
-        this.waveStarted = true;
-        this.waveOver = false;
         return weaponPrize;
     }
 
     public void endWave() {
-        this.waveStarted = false;
-        this.waveOver = true;
+        this.gameLevelStatus = GameLevelStatus.ENDED;
+    }
+
+    public boolean isWaveStarted() {
+        return this.gameLevelStatus == GameLevelStatus.STARTED;
     }
 
     public boolean isWaveOver() {
-        return this.waveOver;
+        return this.gameLevelStatus == GameLevelStatus.ENDED;
     }
 
     public int getLevel() {
@@ -246,7 +270,12 @@ public class GameLevel implements Serializable {
         return Globals.GameTick2Time(this.waveTick==null? 0 : this.waveTick.getTick());
     }
 
+    public GameLevelStatus getWaveStatus() {
+        return this.gameLevelStatus;
+    }
+
     public int calculateLevelBonus() {
+        if (this.level == 0) return 0;
         this.levelBonus += this.levelBonus;
         return this.levelBonus;
     }
@@ -256,8 +285,7 @@ public class GameLevel implements Serializable {
         StringBuilder sb = new StringBuilder();
         sb.append("GameLevel{");
         sb.append("level=" + this.level + ", ");
-        sb.append("waveOver=" + this.waveOver + ", ");
-        sb.append("waveStarted=" + this.waveStarted + ", ");       
+        sb.append("gameLevelStatus=" + this.gameLevelStatus);
         sb.append("waveDuration=" + this.waveDuration + ", ");
         sb.append("ordinaryZombieCount=" + this.ordinaryZombieCount + ", ");
         sb.append("crawlerZombieCount=" + this.crawlerZombieCount + ", ");
@@ -266,6 +294,7 @@ public class GameLevel implements Serializable {
         sb.append("spawnPeriod=" + this.spawnPeriod + ", ");
         sb.append("spawnTick=" + this.spawnTick + ", ");
         sb.append("waveTick=" + this.waveTick);
+        sb.append("newWaveSuspendTick=" + this.newWaveSuspendTick);
         sb.append("}");
 
         return sb.toString();

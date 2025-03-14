@@ -4,24 +4,29 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
+import java.awt.Frame;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.RoundRectangle2D;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 public class NotificationPanel extends JPanel {
-    private String message;
-    private JPanel parentPanel = null;
+    private String message = "";
+    private Frame frame = null;
+    private Timer timer;
 
-    public NotificationPanel(JPanel parentPanel, String message) {
-        this.parentPanel = parentPanel;
-        this.message = message;
+    public NotificationPanel(JFrame frame) {
+        super();
+        this.frame = frame;
+        setLayout(null); // Use absolute positions
 
         setOpaque(false);
-        setVisible(false);
+        //setVisible(false);
         setPreferredSize(new Dimension(300, 60));
     }
 
@@ -30,41 +35,40 @@ public class NotificationPanel extends JPanel {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g.create();
 
-        // Enable Anti-aliasing for smoother corners
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-        // Semi-transparent dark background with rounded corners
+        // Draw semi-transparent background
         g2.setColor(new Color(0, 0, 0, 180));
         g2.fill(new RoundRectangle2D.Double(0, 0, getWidth(), getHeight(), 30, 30));
 
-        // Draw Text
+        // Draw text
         g2.setColor(Color.WHITE);
         g2.setFont(new Font("Arial", Font.BOLD, 18));
         FontMetrics fm = g2.getFontMetrics();
-        int textX = (getWidth() - fm.stringWidth(message)) / 2;
+        int textX = (getWidth() - fm.stringWidth(this.message)) / 2;
         int textY = (getHeight() + fm.getAscent()) / 2 - 5;
-        g2.drawString(message, textX, textY);
+        g2.drawString(this.message, textX, textY);
 
         g2.dispose();
+
+        this.frame.repaint();
     }
 
-    public void show(int displayTimeMs) {
-        int panelX = (parentPanel.getWidth() - getWidth()) / 2; // Horizontal center
-        setBounds(panelX, 20, getWidth(), getHeight()); // Position at the top center
+    public void show(String message, int displayTimeMs) {
+        this.message = message;
+        setVisible(true);
 
-        // Add to parent panel
-        parentPanel.setLayout(null);
-        parentPanel.add(this);
-        parentPanel.revalidate();
-        parentPanel.repaint();
+        SwingUtilities.invokeLater(() -> {
+            // Ensure only one timer at a time
+            if (timer != null && timer.isRunning()) {
+                timer.stop();
+            }
 
-        // Timer to remove the panel after displayTime milliseconds
-        Timer timer = new Timer(displayTimeMs, e -> {
-            parentPanel.remove(NotificationPanel.this);
-            parentPanel.revalidate();
-            parentPanel.repaint();
+            timer = new Timer(displayTimeMs, e -> {
+                setVisible(false);
+            });
+            timer.setRepeats(false);
+            timer.start(); 
         });
-        timer.setRepeats(false);
-        timer.start();
     }
 }
