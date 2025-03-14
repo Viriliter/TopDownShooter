@@ -18,7 +18,7 @@ public class Game {
 
         SwingUtilities.invokeLater(() -> {
            
-            JFrame frame = new JFrame("Zombie Shooter");
+            JFrame frame = new JFrame(Globals.GAME_TITLE);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
             frame.setSize(windowProperties.windowWidth(), windowProperties.windowHeight());
             frame.setResizable(false);

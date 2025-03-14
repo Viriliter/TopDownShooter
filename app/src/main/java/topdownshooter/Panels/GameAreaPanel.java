@@ -20,6 +20,7 @@ import java.util.Map;
 
 import topdownshooter.Core.Globals;
 import topdownshooter.Core.PlayerItem;
+import topdownshooter.Core.SoundFX;
 import topdownshooter.Core.TileGenerator;
 import topdownshooter.Core.ConfigHandler;
 import topdownshooter.Core.GameLevel;
@@ -53,6 +54,8 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
 
     private GameLevel gameLevel = null;
 
+    private SoundFX backgroundSoundFX = null;
+
     public GameAreaPanel(ConfigHandler config) {
         setFocusable(true);
         requestFocusInWindow();
@@ -73,6 +76,8 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         gameTimer.setRepeats(true);
 
         this.playgroundTileGenerator = new TileGenerator(Globals.PLAYGROUND_TILE_PATH);
+
+        this.backgroundSoundFX = new SoundFX(Globals.BACKGROUND_SOUND_FX_PATH);
 
         gameTimer.start();
     }
@@ -111,6 +116,8 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         if (this.gameLevel.getWaveStatus()== GameLevel.GameLevelStatus.UNDEFINED ||
             this.gameLevel.getWaveStatus()== GameLevel.GameLevelStatus.ENDED)  {
 
+            this.backgroundSoundFX.stop();
+
             this.player.addScore(this.gameLevel.calculateLevelBonus());  // Add level bonus into player's score
 
             WeaponType weaponPrize = this.gameLevel.startWave();                
@@ -122,6 +129,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
             
             String message = "Wave " + this.gameLevel.getLevel() + " comming!";
             this.parentPanel.getNotificationPanel().show(message, Globals.WAVE_SUSPEND_DURATION_MS);
+            this.backgroundSoundFX.delayedPlay(true, Globals.WAVE_SUSPEND_DURATION_MS);
         }
     }
 
@@ -424,6 +432,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
     public void pauseGame() {
         this.isGamePaused = true;
         gameTimer.stop();
+        this.backgroundSoundFX.stop();
     }
 
     public void resumeGame() {
@@ -431,6 +440,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
 
         gameTimer.start();
         this.isGamePaused = false;
+        this.backgroundSoundFX.play(true);
     }
 
     private void showGameOverDialog() {
@@ -443,8 +453,8 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
     private void resetGame() {
         this.projectiles.clear();
         this.zombies.clear();
-        this.player = null;
 
+        this.player = null;
         this.gameLevel = null;
     }
 
@@ -574,7 +584,9 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         if (this.fireRateTick != null) this.fireRateTick.reset();
         
         this.isGamePaused = true;  // Set to true to prevent player rotation on mouse movement
-        
+
+        this.backgroundSoundFX.stop();
+
         showGameOverDialog();
     }
 

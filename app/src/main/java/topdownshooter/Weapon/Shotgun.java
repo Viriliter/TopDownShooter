@@ -1,6 +1,8 @@
 package topdownshooter.Weapon;
 
 import topdownshooter.Core.ConfigHandler.WeaponProperties;
+import topdownshooter.Core.Globals;
+import topdownshooter.Core.SoundFX;
 import topdownshooter.Core.TimeTick;
 import topdownshooter.Weapon.Projectiles.ShotgunPellets;
 
@@ -9,12 +11,14 @@ public class Shotgun extends AbstractWeapon {
         super(properties);
 
         this.type = WeaponType.SHOTGUN;
+        this.firingSoundFX = new SoundFX(Globals.FIRE_SHOTGUN_SOUND_FX_PATH);
     }
 
     public Shotgun(int damage, int magazineCapacity, int magazineCount, 
                        int fireRate, int reloadDuration, int ammo, TimeTick reloadTick, 
                        TimeTick fireTick, WeaponType type) {
         super(damage, magazineCapacity, magazineCount, fireRate, reloadDuration, ammo, reloadTick, fireTick, type);
+        this.firingSoundFX = new SoundFX(Globals.FIRE_SHOTGUN_SOUND_FX_PATH);
     }
 
     @Override
@@ -22,6 +26,7 @@ public class Shotgun extends AbstractWeapon {
         if (this.fireTick.isTimeOut() && this.ammo > 0) {
             fireTick.reset();
             this.ammo--;
+            applySoundFX();
             return new ShotgunPellets(x, y, r, this.damage);
         }
         return null;

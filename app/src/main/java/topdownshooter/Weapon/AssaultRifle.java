@@ -4,6 +4,7 @@ import java.util.Random;
 
 import topdownshooter.Core.ConfigHandler.WeaponProperties;
 import topdownshooter.Core.Globals;
+import topdownshooter.Core.SoundFX;
 import topdownshooter.Core.TimeTick;
 import topdownshooter.Weapon.Projectiles.Bullet;
 
@@ -17,6 +18,7 @@ public class AssaultRifle extends AbstractWeapon {
         this.type = WeaponType.ASSAULTRIFLE;
 
         this.spreadRandom = new Random();
+        this.firingSoundFX = new SoundFX(Globals.FIRE_RIFLE_SOUND_FX_PATH);
     }
 
     public AssaultRifle(int damage, int magazineCapacity, int magazineCount, 
@@ -25,6 +27,7 @@ public class AssaultRifle extends AbstractWeapon {
         super(damage, magazineCapacity, magazineCount, fireRate, reloadDuration, ammo, reloadTick, fireTick, type);
 
         this.spreadRandom = new Random();
+        this.firingSoundFX = new SoundFX(Globals.FIRE_RIFLE_SOUND_FX_PATH);
     }
 
     @Override
@@ -33,6 +36,7 @@ public class AssaultRifle extends AbstractWeapon {
             double spreadAngle = spreadRandom.nextDouble(MAX_SPREAD_ANGLE) - (MAX_SPREAD_ANGLE / 2.0);  // In degree
             fireTick.reset();
             this.ammo--;
+            applySoundFX();
             return new Bullet(x, y, r + Globals.degToRad(spreadAngle) , this.damage);
         }
         return null;

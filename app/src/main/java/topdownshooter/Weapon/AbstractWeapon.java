@@ -1,6 +1,7 @@
 package topdownshooter.Weapon;
 
 import topdownshooter.Core.Globals;
+import topdownshooter.Core.SoundFX;
 import topdownshooter.Core.TimeTick;
 import topdownshooter.Core.ConfigHandler.WeaponProperties;
 import topdownshooter.Weapon.Projectiles.Projectile;
@@ -15,6 +16,8 @@ public abstract class AbstractWeapon implements Weapon {
     protected TimeTick reloadTick;
     protected TimeTick fireTick;
     protected WeaponType type = WeaponType.UNDEFINED;
+
+    protected SoundFX firingSoundFX = null; 
 
     public AbstractWeapon() {}
 
@@ -105,6 +108,10 @@ public abstract class AbstractWeapon implements Weapon {
     @Override
     public WeaponType getType() {
         return this.type;
+    }
+
+    protected final void applySoundFX() {
+        this.firingSoundFX.play(false);
     }
 
     @Override

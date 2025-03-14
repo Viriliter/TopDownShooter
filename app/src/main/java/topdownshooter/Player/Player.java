@@ -10,6 +10,7 @@ import topdownshooter.Core.ConfigHandler;
 import topdownshooter.Core.Globals;
 import topdownshooter.Core.ConfigHandler.PlayerProperties;
 import topdownshooter.Core.PlayerItem;
+import topdownshooter.Core.SequencialSoundFX;
 import topdownshooter.Core.SpriteAnimation;
 import topdownshooter.Weapon.WeaponFactory;
 import topdownshooter.Weapon.WeaponType;
@@ -31,6 +32,8 @@ public class Player extends JPanel {
     private SpriteAnimation spriteAnimationRifleIdle = null;
     private SpriteAnimation spriteAnimationShotgunIdle = null;
     private SpriteAnimation spriteAnimationRocketLauncherIdle = null;
+
+    private SequencialSoundFX walkSoundFX = null;
     
     public Player() {}
 
@@ -60,6 +63,35 @@ public class Player extends JPanel {
         this.inventory = new ArrayList<>();
         // Every player starts with a pistol
         this.inventory.add(WeaponFactory.createWeapon(config, WeaponType.PISTOL));
+
+        this.walkSoundFX = new SequencialSoundFX(Globals.HUNTER_SOUND_FX_PATH);
+    }
+
+    public Player(int score, int health, int x, int y, int dx, int dy, double r, int speed, ArrayList<Weapon> inventory, int currentWeaponIndex) {
+        this.score = score;
+        this.health = health;
+        this.x = x;
+        this.y = y;
+        this.dx = dx;
+        this.dy = dy;
+        this.r = r;
+        this.speed = speed;
+        this.inventory = inventory;
+        this.currentWeaponIndex = currentWeaponIndex;
+
+        this.spriteAnimationPistolIdle = new SpriteAnimation(Globals.HUNTER_PISTOL_IDLE);
+        this.spriteAnimationPistolIdle.setTargetSize(WIDTH, HEIGHT);
+
+        this.spriteAnimationRifleIdle = new SpriteAnimation(Globals.HUNTER_RIFLE_IDLE);
+        this.spriteAnimationRifleIdle.setTargetSize(WIDTH, HEIGHT);
+
+        this.spriteAnimationShotgunIdle = new SpriteAnimation(Globals.HUNTER_SHOTGUN_IDLE);
+        this.spriteAnimationShotgunIdle.setTargetSize(WIDTH, HEIGHT);
+
+        this.spriteAnimationRocketLauncherIdle = new SpriteAnimation(Globals.HUNTER_ROCKET_LAUNCHER_IDLE);
+        this.spriteAnimationRocketLauncherIdle.setTargetSize(WIDTH, HEIGHT);
+
+        this.walkSoundFX = new SequencialSoundFX(Globals.HUNTER_SOUND_FX_PATH);
     }
 
     public void rotate(double rRad) {
@@ -93,6 +125,7 @@ public class Player extends JPanel {
         
         if (this.inventory.get(this.currentWeaponIndex).getType() == WeaponType.ROCKETLAUNCHER)
             this.spriteAnimationRocketLauncherIdle.update();
+
     }
 
     public void draw(Graphics g) {
@@ -125,13 +158,13 @@ public class Player extends JPanel {
             this.spriteAnimationRocketLauncherIdle.draw(g, this.x, this.y, this.r);
     }
 
-    public void decrementDx() { this.dx = -this.speed; }
+    public void decrementDx() { this.dx = -this.speed; this.walkSoundFX.update();}
     
-    public void incrementDx() { this.dx = this.speed; }
+    public void incrementDx() { this.dx = this.speed; this.walkSoundFX.update();}
     
-    public void decrementDy() { this.dy = -this.speed; }
+    public void decrementDy() { this.dy = -this.speed; this.walkSoundFX.update();}
     
-    public void incrementDy() { this.dy = +this.speed; }
+    public void incrementDy() { this.dy = +this.speed; this.walkSoundFX.update();}
 
     public void setDx(int dx) { this.dx = dx; }
 
@@ -143,9 +176,9 @@ public class Player extends JPanel {
     
     public double getR() { return this.r; }
 
-    public void moveX() { this.x += this.dx; }
+    public void moveX() { this.x += this.dx;}
 
-    public void moveY() { this.y += this.dy; }
+    public void moveY() { this.y += this.dy;}
 
     public void heal(int healPoints) {this.health = this.health+healPoints > 100 ? 100: this.health+healPoints;}
 

@@ -33,11 +33,11 @@ public class GamePanel extends JPanel {
 
         // Create Layered Pane for Game Area and GameOver Panel
         JLayeredPane layeredPane = new JLayeredPane();
-        layeredPane.setPreferredSize(new Dimension(windowProperties.windowWidth(), windowProperties.windowHeight()-this.gameInfoPanel.getHeight()));
+        layeredPane.setPreferredSize(new Dimension(windowProperties.windowWidth(), windowProperties.windowHeight()-(int)this.gameInfoPanel.getPreferredSize().getHeight()));
 
         // Create Game Area Panel which where game is played. 
         this.gameAreaPanel = new GameAreaPanel(config);
-        this.gameAreaPanel.setBounds(0, 0, windowProperties.windowWidth(), windowProperties.windowHeight());
+        this.gameAreaPanel.setBounds(0, 0, (int) layeredPane.getPreferredSize().getWidth(), (int) layeredPane.getPreferredSize().getHeight());
         this.gameAreaPanel.setParentPanel(this);
         layeredPane.add(this.gameAreaPanel, JLayeredPane.DEFAULT_LAYER);
 

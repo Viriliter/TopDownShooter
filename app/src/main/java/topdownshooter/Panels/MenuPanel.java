@@ -10,21 +10,27 @@ import java.io.InputStream;
 
 import topdownshooter.Core.ConfigHandler;
 import topdownshooter.Core.Globals;
+import topdownshooter.Core.SoundFX;
 import topdownshooter.Core.ConfigHandler.WindowProperties;
 
 public class MenuPanel extends JPanel {
     private JFrame frame;
     private ConfigHandler config = null;
     private Image bgImage;
+    private SoundFX menuMusic = null;
 
     public MenuPanel(JFrame frame, ConfigHandler config) {
         this.frame = frame;
         this.config = config;
 
+        this.menuMusic = new SoundFX(Globals.MENU_MUSIC_PATH);
+
         initPanel();
     }
 
     private void initPanel() {
+        this.menuMusic.play(true, 5000);
+
         setLayout(new BorderLayout());
 
         // Get window properties from config
@@ -143,6 +149,8 @@ public class MenuPanel extends JPanel {
     }
 
     private void startGame() {
+        this.menuMusic.stop();
+
         frame.getContentPane().removeAll();
         GamePanel gamePanel = new GamePanel(frame, config);
         gamePanel.setParentPanel(this);
@@ -169,7 +177,7 @@ public class MenuPanel extends JPanel {
             + "</ul>"
             + "<p><b>Tips:</b></p>"
             + "<ul>"
-            + "<li>Collect ammunation and medicals to get ready to next waves.</li>"
+            + "<li>Collect ammunation and medicines to get ready to next waves.</li>"
             + "</ul>"
             + "</html>";
 
