@@ -3,15 +3,22 @@ package topdownshooter.Weapon;
 import topdownshooter.Core.ConfigHandler.WeaponProperties;
 import topdownshooter.Core.Globals;
 import topdownshooter.Core.SoundFX;
+import topdownshooter.Core.SpriteAnimation;
 import topdownshooter.Core.TimeTick;
 import topdownshooter.Weapon.Projectiles.Bullet;
 
 public class Pistol extends AbstractWeapon {
+
     public Pistol(WeaponProperties properties) {
         super(properties);
 
         this.type = WeaponType.PISTOL;
         this.firingSoundFX = new SoundFX(Globals.FIRE_PISTOL_SOUND_FX_PATH);
+        
+        this.flashAnimation = new SpriteAnimation(Globals.FIRE_ANIMATION);
+        this.flashAnimation.setTargetSize(20, 20);
+        this.flashAnimation.setRotationOffset(Globals.degToRad(-90));
+        this.flashAnimation.setRepeat(0);
     }
 
     public Pistol(int damage, int magazineCapacity, int magazineCount, 
@@ -19,6 +26,11 @@ public class Pistol extends AbstractWeapon {
                        TimeTick fireTick, WeaponType type) {
         super(damage, magazineCapacity, magazineCount, fireRate, reloadDuration, ammo, reloadTick, fireTick, type);
         this.firingSoundFX = new SoundFX(Globals.FIRE_PISTOL_SOUND_FX_PATH);
+        
+        this.flashAnimation = new SpriteAnimation(Globals.FIRE_ANIMATION);
+        this.flashAnimation.setTargetSize(20, 20);
+        this.flashAnimation.setRotationOffset(Globals.degToRad(-90));
+        this.flashAnimation.setRepeat(0);
     }
 
     @Override
@@ -27,6 +39,7 @@ public class Pistol extends AbstractWeapon {
             fireTick.reset();
             this.ammo--;
             applySoundFX();
+            this.flashAnimation.setRepeat(1);  // Only repeat animation once
             return new Bullet(x, y, r, this.damage);
         }
         return null;

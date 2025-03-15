@@ -5,6 +5,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.util.List;
+import java.util.Map;
 import java.util.ArrayList;
 
 import topdownshooter.Weapon.Weapon;
@@ -19,6 +20,21 @@ import topdownshooter.Weapon.Projectiles.Projectile;
 
 
 public class Player extends JPanel {
+    private enum PlayerType {
+        PISTOL_IDLE,
+        RIFLE_IDLE,
+        SHOTGUN_IDLE,
+        ROCKETLAUNCHER_IDLE,
+        PISTOL_MOVE,
+        RIFLE_MOVE,
+        SHOTGUN_MOVE,
+        ROCKETLAUNCHER_MOVE,
+        PISTOL_SHOT,
+        RIFLE_SHOT,
+        SHOTGUN_SHOT,
+        ROCKETLAUNCHER_SHOT,
+    }
+
     private int score = 0;
     private double health = 0.0;
     private int x, y, dx, dy;
@@ -29,6 +45,7 @@ public class Player extends JPanel {
     private ArrayList<Weapon> inventory;
     private int currentWeaponIndex = 0;
 
+    private Map<PlayerType, SpriteAnimation> spriteAnimations = null;
     private SpriteAnimation spriteAnimationPistolIdle = null;
     private SpriteAnimation spriteAnimationRifleIdle = null;
     private SpriteAnimation spriteAnimationShotgunIdle = null;
@@ -64,6 +81,10 @@ public class Player extends JPanel {
         this.inventory = new ArrayList<>();
         // Every player starts with a pistol
         this.inventory.add(WeaponFactory.createWeapon(config, WeaponType.PISTOL));
+        //this.inventory.add(WeaponFactory.createWeapon(config, WeaponType.ASSAULTRIFLE));
+        //this.inventory.add(WeaponFactory.createWeapon(config, WeaponType.SHOTGUN));
+        //this.inventory.add(WeaponFactory.createWeapon(config, WeaponType.SNIPERRIFLE));
+        //this.inventory.add(WeaponFactory.createWeapon(config, WeaponType.ROCKETLAUNCHER));
 
         this.walkSoundFX = new SequencialSoundFX(Globals.HUNTER_SOUND_FX_PATH);
     }
@@ -130,7 +151,19 @@ public class Player extends JPanel {
     }
 
     public void draw(Graphics g) {
-        
+        Graphics2D g2d = (Graphics2D) g; // Enable rotation
+
+        AffineTransform oldTransform = g2d.getTransform();
+
+        g2d.setColor(Color.GREEN);
+        g2d.translate(x + WIDTH / 2, y + HEIGHT / 2);
+        g2d.rotate(r);  // Rotate to face the player
+        g2d.fillRect(-WIDTH / 2, -HEIGHT / 2, WIDTH, WIDTH);
+
+        // Reset transformation
+        g2d.setTransform(oldTransform);
+
+        // Draw sprite animations of player according to weapon type
         if (this.inventory.get(this.currentWeaponIndex).getType() == WeaponType.PISTOL)
             this.spriteAnimationPistolIdle.draw(g, this.x, this.y, this.r);
         
@@ -144,7 +177,20 @@ public class Player extends JPanel {
             this.spriteAnimationRifleIdle.draw(g, this.x, this.y, this.r);
         
         if (this.inventory.get(this.currentWeaponIndex).getType() == WeaponType.ROCKETLAUNCHER)
-            this.spriteAnimationRocketLauncherIdle.draw(g, this.x, this.y, this.r);   
+            this.spriteAnimationRocketLauncherIdle.draw(g, this.x, this.y, this.r);
+
+        // Draw weapon animation
+        this.inventory.get(this.currentWeaponIndex).draw(g, this.x + this.spriteAnimationPistolIdle.getOffset().getX(), this.y + this.spriteAnimationPistolIdle.getOffset().getY(), this.r);
+
+
+        AffineTransform oldTransform2 = g2d.getTransform();
+
+        g2d.setColor(Color.ORANGE);
+        g2d.translate(this.x + WIDTH / 2, this.y + HEIGHT / 2);
+        g2d.rotate(this.r); 
+        g2d.fillRect(0, 0, 2, 2);
+        
+        g2d.setTransform(oldTransform2);
     }
 
     public void decrementDx() { this.dx = -this.speed; this.walkSoundFX.update();}

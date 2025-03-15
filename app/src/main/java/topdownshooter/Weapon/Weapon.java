@@ -1,5 +1,6 @@
 package topdownshooter.Weapon;
 
+import java.awt.Graphics;
 import java.io.Serializable;
 
 import topdownshooter.Weapon.Projectiles.Projectile;
@@ -10,6 +11,8 @@ public interface Weapon extends Serializable{
     void reload();
 
     void update();
+
+    void draw(Graphics g, int x, int y, double r);
 
     void addMagazine(int magazineCount);
 

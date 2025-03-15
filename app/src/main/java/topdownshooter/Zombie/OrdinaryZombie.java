@@ -1,7 +1,6 @@
 package topdownshooter.Zombie;
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 
 import topdownshooter.Core.ConfigHandler.ZombieProperties;
 

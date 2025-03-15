@@ -5,23 +5,31 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 
-public class Bullet extends Projectile {
+import topdownshooter.Core.Globals;
+import topdownshooter.Core.TextureFX;
+import topdownshooter.Core.TextureFXStruct;
 
+public class Bullet extends Projectile {
     public Bullet(int x, int y, double r) {
         super(x, y, r, 0);
 
         this.type = ProjectileType.BULLET;
+        this.projectileEffect = new TextureFX(new TextureFXStruct(Globals.BULLET_TEXTURE_PATH, -25, 0));
+        this.projectileEffect.setTargetSize(50, 20);
     }
 
     public Bullet(int x, int y, double r, int damage) {
         super(x, y, r, damage);
 
         this.type = ProjectileType.BULLET;
+        this.projectileEffect = new TextureFX(new TextureFXStruct(Globals.BULLET_TEXTURE_PATH, -25, 0));
+        this.projectileEffect.setTargetSize(50, 20);
     }
 
     @Override   
     public void draw(Graphics g) {
-
+        if (this.projectileEffect!=null) this.projectileEffect.draw(g, this.x, this.y, this.r);
+        
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(Color.RED);
 
@@ -33,8 +41,8 @@ public class Bullet extends Projectile {
         g2d.rotate(this.r); // Rotate bullet
 
         // Draw bullet as a small rotated rectangle
-        g2d.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
-
+        g2d.fillRect(-size / 2, -size / 2, size, size);
+        
         // Restore previous transformation
         g2d.setTransform(oldTransform);
     }

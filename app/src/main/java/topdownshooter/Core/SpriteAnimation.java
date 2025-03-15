@@ -19,10 +19,13 @@ public class SpriteAnimation {
     private int frameCounter = 0; // Counter to control animation speed
     private int rows;  // Number of columns in sprite sheet
     private int columns;  // Number of rows in sprite sheet
-    private boolean isRepeated = true;  // Flag to repeat animation
+    private int repeatCount = -1;  // Animation repeat count
     private int targetWidth = 0, targetHeight = 0;  // Size of target frame which will be drawn
 
-    private Offset offset = null;  // It is offset of character's interest of point (e.g location of gun) from central point
+    private int offsetX;
+    private int offsetY;
+
+    private double rOffset = 0;  // Rotation offset in radians
 
     public class Offset {
         int x;
@@ -53,8 +56,9 @@ public class SpriteAnimation {
             this.frameDelay = struct.frameDelay();
             this.rows = struct.rows();
             this.columns = struct.columns();
-            this.offset = new Offset(struct.xOffset(), struct.yOffset());
-
+            this.offsetX = struct.xOffset();
+            this.offsetY = struct.yOffset();
+            
             this.frameWidth = spriteSheet.getWidth() / columns;
             this.frameHeight = spriteSheet.getHeight() / this.rows;
             this.targetWidth = this.frameWidth;
@@ -80,8 +84,8 @@ public class SpriteAnimation {
         }
     }
 
-    public void setRepeat(boolean repeat) {
-        this.isRepeated = repeat;
+    public void setRepeat(int repeatCount) {
+        this.repeatCount = repeatCount;
     }
     
     public void setTargetSize(int width, int height) {
@@ -89,28 +93,41 @@ public class SpriteAnimation {
         this.targetHeight = height;
     }
 
+    public void setRotationOffset(double rOffset) {
+        this.rOffset = rOffset;
+    }
+
     public Offset getOffset() {
-        return this.offset;
+        return new Offset(this.offsetX, this.offsetY);
     }
 
     public void update() {
-        frameCounter++;
+        this.frameCounter++;
 
-        if (frameCounter >= frameDelay) {
-            // Move to the next frame
-            if (isRepeated) {
-                currentFrame = (currentFrame + 1) % totalFrames; // Loop through frames
-            } else {
-                // If animation shouldn't repeat, stop at the last frame
-                if (currentFrame < totalFrames - 1) {
-                    currentFrame++;
+        if (this.frameCounter >= this.frameDelay) {
+            this.frameCounter = 0;  // Reset counter after update
+    
+            if (this.repeatCount < 0) {  // Infinite loop
+                this.currentFrame = (this.currentFrame + 1) % this.totalFrames;
+            } else if (this.repeatCount > 0) {
+                if (this.currentFrame < this.totalFrames - 1) {
+                    this.currentFrame++;
+                } else {
+                    this.repeatCount--;  // Decrement after last repeat
+                    if (this.repeatCount > 0) {
+                        this.currentFrame = 0; // Restart animation
+                    }
                 }
+            } else {
+                // Do nothing if no repeat left
             }
-            frameCounter = 0;
         }
     }
 
     public void draw(Graphics g, int x, int y, double rotation) {
+        System.out.println("this.repeatCount:" + this.repeatCount);
+        if (this.repeatCount == 0) return;  // If there is no repeat for the animation do not draw
+
         Graphics2D g2d = (Graphics2D) g;
         AffineTransform oldTransform = g2d.getTransform();
 
@@ -119,7 +136,7 @@ public class SpriteAnimation {
         g2d.rotate(rotation);
 
         if (this.subFrames != null) {
-            g2d.drawImage(this.subFrames[currentFrame], -targetWidth / 2, -targetHeight / 2, targetWidth, targetHeight, null);
+            g2d.drawImage(this.subFrames[this.currentFrame], -this.targetWidth / 2, -this.targetHeight / 2, this.targetWidth, this.targetHeight, null);
         }
 
         g2d.setTransform(oldTransform);

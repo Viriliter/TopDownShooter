@@ -1,7 +1,10 @@
 package topdownshooter.Weapon;
 
+import java.awt.Graphics;
+
 import topdownshooter.Core.Globals;
 import topdownshooter.Core.SoundFX;
+import topdownshooter.Core.SpriteAnimation;
 import topdownshooter.Core.TimeTick;
 import topdownshooter.Core.ConfigHandler.WeaponProperties;
 import topdownshooter.Weapon.Projectiles.Projectile;
@@ -18,6 +21,7 @@ public abstract class AbstractWeapon implements Weapon {
     protected WeaponType type = WeaponType.UNDEFINED;
 
     protected SoundFX firingSoundFX = null; 
+    protected SpriteAnimation flashAnimation = null;  // Muzzle flash animation
 
     public AbstractWeapon() {}
 
@@ -73,8 +77,19 @@ public abstract class AbstractWeapon implements Weapon {
     public void update() {
         this.fireTick.updateTick();
         this.reloadTick.updateTick();
+
+        if (this.flashAnimation!=null) this.flashAnimation.update();
     }
     
+    @Override
+    public void draw(Graphics g, int x, int y, double r) {
+        if (this.flashAnimation == null) return;
+        
+        int offsetX = this.flashAnimation.getOffset().getX();
+        int offsetY = this.flashAnimation.getOffset().getY();
+        if (this.flashAnimation!=null) this.flashAnimation.draw(g, x + offsetX, y + offsetY, r);
+    }
+
     @Override
     public void addMagazine(int magazineCount) {
         // Only if magazine count is positive, add to the magazine. Negative magazine count means that it is infinite.

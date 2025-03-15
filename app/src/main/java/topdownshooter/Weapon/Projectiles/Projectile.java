@@ -4,14 +4,17 @@ import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.io.Serializable;
 
+import topdownshooter.Core.TextureFX;
+
 public abstract class Projectile implements Serializable{
     protected int x, y;
     protected double r;  // Rotation angle in radians
     protected int damage = 0;
-    protected int size = 5;
-    protected int speed = 30;
+    public static final int size = 5;
+    protected int speed = 5;
     protected ProjectileType type = ProjectileType.UNDEFINED;
 
+    protected TextureFX projectileEffect = null; 
 
     public Projectile(int x, int y, double r) {
         this.x = x;
