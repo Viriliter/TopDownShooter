@@ -23,7 +23,11 @@ public class RocketLauncher extends AbstractWeapon {
 
     @Override
     public Rocket fire(int x, int y, double r) {
-        System.out.println("Tick: " + this.fireTick.getTick());
+        if (this.ammo == 0) {
+            this.emptyClickSoundFX.play(false);
+            return null;
+        }
+
         if (this.fireTick.isTimeOut() && this.ammo > 0) {
             fireTick.reset();
             this.ammo--;

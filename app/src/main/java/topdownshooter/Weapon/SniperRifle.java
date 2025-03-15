@@ -23,6 +23,11 @@ public class SniperRifle extends AbstractWeapon {
 
     @Override
     public ArmorPiercingBullet fire(int x, int y, double r) {
+        if (this.ammo == 0) {
+            this.emptyClickSoundFX.play(false);
+            return null;
+        }
+
         if (this.fireTick.isTimeOut() && this.ammo > 0) {
             fireTick.reset();
             this.ammo--;

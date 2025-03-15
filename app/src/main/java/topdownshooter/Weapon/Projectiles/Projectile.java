@@ -11,7 +11,7 @@ public abstract class Projectile implements Serializable{
     protected double r;  // Rotation angle in radians
     protected int damage = 0;
     public static final int size = 5;
-    protected int speed = 5;
+    protected int speed = 30;
     protected ProjectileType type = ProjectileType.UNDEFINED;
 
     protected TextureFX projectileEffect = null; 
@@ -45,6 +45,8 @@ public abstract class Projectile implements Serializable{
     public void move() {
         x += (int) (this.speed * Math.cos(this.r));
         y += (int) (this.speed * Math.sin(this.r));
+
+        this.projectileEffect.update();
     }
 
     abstract public void draw(Graphics g);

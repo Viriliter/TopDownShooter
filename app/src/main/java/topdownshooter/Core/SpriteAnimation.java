@@ -24,6 +24,8 @@ public class SpriteAnimation {
 
     private int offsetX;
     private int offsetY;
+    private int defaultDelay = 0;
+    private int delay = 0;
 
     private double rOffset = 0;  // Rotation offset in radians
 
@@ -58,6 +60,8 @@ public class SpriteAnimation {
             this.columns = struct.columns();
             this.offsetX = struct.xOffset();
             this.offsetY = struct.yOffset();
+            this.defaultDelay = struct.defaultDelay();
+            this.delay = struct.defaultDelay();
             
             this.frameWidth = spriteSheet.getWidth() / columns;
             this.frameHeight = spriteSheet.getHeight() / this.rows;
@@ -102,6 +106,8 @@ public class SpriteAnimation {
     }
 
     public void update() {
+        if (this.delay>0) this.delay--;
+
         this.frameCounter++;
 
         if (this.frameCounter >= this.frameDelay) {
@@ -116,6 +122,7 @@ public class SpriteAnimation {
                     this.repeatCount--;  // Decrement after last repeat
                     if (this.repeatCount > 0) {
                         this.currentFrame = 0; // Restart animation
+                        this.delay = this.defaultDelay;
                     }
                 }
             } else {
@@ -125,7 +132,6 @@ public class SpriteAnimation {
     }
 
     public void draw(Graphics g, int x, int y, double rotation) {
-        System.out.println("this.repeatCount:" + this.repeatCount);
         if (this.repeatCount == 0) return;  // If there is no repeat for the animation do not draw
 
         Graphics2D g2d = (Graphics2D) g;

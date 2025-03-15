@@ -15,8 +15,11 @@ public class TextureFX {
     private BufferedImage texture = null;
     private int targetWidth; 
     private int targetHeight;
-    private int offsetX; 
+    private int offsetX;
     private int offsetY;
+
+    private int defaultDelay = 0;
+    private int delay = 0;
 
     public TextureFX (TextureFXStruct struct) {
         try {
@@ -26,6 +29,9 @@ public class TextureFX {
                 this.targetHeight = this.texture.getHeight();
                 this.offsetX = struct.offsetX();
                 this.offsetY = struct.offsetY();
+                this.defaultDelay = struct.defaultDelay();
+                this.delay = this.defaultDelay;
+                System.out.print(this.delay);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -37,7 +43,14 @@ public class TextureFX {
         this.targetHeight = height;
     }
 
+    public void update() {
+        this.delay = this.delay> 0 ? this.delay-1 : 0; 
+    }
+
     public void draw(Graphics g, int x, int y, double rotation) {
+        //if (this.delay>0) System.out.println(this.delay);
+        if (this.delay>0) return;
+
         Graphics2D g2d = (Graphics2D) g;
         AffineTransform oldTransform = g2d.getTransform();
 

@@ -15,7 +15,7 @@ public class Pistol extends AbstractWeapon {
         this.type = WeaponType.PISTOL;
         this.firingSoundFX = new SoundFX(Globals.FIRE_PISTOL_SOUND_FX_PATH);
         
-        this.flashAnimation = new SpriteAnimation(Globals.FIRE_ANIMATION);
+        this.flashAnimation = new SpriteAnimation(Globals.MUZZLE_ANIMATION);
         this.flashAnimation.setTargetSize(20, 20);
         this.flashAnimation.setRotationOffset(Globals.degToRad(-90));
         this.flashAnimation.setRepeat(0);
@@ -27,7 +27,7 @@ public class Pistol extends AbstractWeapon {
         super(damage, magazineCapacity, magazineCount, fireRate, reloadDuration, ammo, reloadTick, fireTick, type);
         this.firingSoundFX = new SoundFX(Globals.FIRE_PISTOL_SOUND_FX_PATH);
         
-        this.flashAnimation = new SpriteAnimation(Globals.FIRE_ANIMATION);
+        this.flashAnimation = new SpriteAnimation(Globals.MUZZLE_ANIMATION);
         this.flashAnimation.setTargetSize(20, 20);
         this.flashAnimation.setRotationOffset(Globals.degToRad(-90));
         this.flashAnimation.setRepeat(0);
@@ -35,6 +35,11 @@ public class Pistol extends AbstractWeapon {
 
     @Override
     public Bullet fire(int x, int y, double r) {
+        if (this.ammo == 0) {
+            this.emptyClickSoundFX.play(false);
+            return null;
+        }
+
         if (this.fireTick.isTimeOut() && this.ammo > 0) {
             fireTick.reset();
             this.ammo--;

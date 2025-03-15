@@ -14,7 +14,7 @@ public class Bullet extends Projectile {
         super(x, y, r, 0);
 
         this.type = ProjectileType.BULLET;
-        this.projectileEffect = new TextureFX(new TextureFXStruct(Globals.BULLET_TEXTURE_PATH, -25, 0));
+        this.projectileEffect = new TextureFX(new TextureFXStruct(Globals.BULLET_TEXTURE_PATH, -25, 0, 3));
         this.projectileEffect.setTargetSize(50, 20);
     }
 
@@ -22,7 +22,7 @@ public class Bullet extends Projectile {
         super(x, y, r, damage);
 
         this.type = ProjectileType.BULLET;
-        this.projectileEffect = new TextureFX(new TextureFXStruct(Globals.BULLET_TEXTURE_PATH, -25, 0));
+        this.projectileEffect = new TextureFX(new TextureFXStruct(Globals.BULLET_TEXTURE_PATH, -25, 0, 3));
         this.projectileEffect.setTargetSize(50, 20);
     }
 

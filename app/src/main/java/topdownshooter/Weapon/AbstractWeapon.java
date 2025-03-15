@@ -21,6 +21,7 @@ public abstract class AbstractWeapon implements Weapon {
     protected WeaponType type = WeaponType.UNDEFINED;
 
     protected SoundFX firingSoundFX = null; 
+    protected SoundFX emptyClickSoundFX = null; 
     protected SpriteAnimation flashAnimation = null;  // Muzzle flash animation
 
     public AbstractWeapon() {}
@@ -37,6 +38,8 @@ public abstract class AbstractWeapon implements Weapon {
         this.fireTick.setRepeats(-1);  // Repeates indefinetly
         this.reloadTick = new TimeTick(0/*Globals.Time2Tick(1000/this.reloadDuration)*/);
         this.reloadTick.setRepeats(-1);  // Repeates indefinetly
+
+        this.emptyClickSoundFX = new SoundFX(Globals.EMPTY_GUN_CLICK_SOUND_FX_PATH); 
     }
 
     public AbstractWeapon(int damage, int magazineCapacity, int magazineCount, 

@@ -89,7 +89,7 @@ public interface Globals {
     public static final SpriteAnimationStruct LARGE_MEDIC_ANIMATION = new SpriteAnimationStruct("Textures/Miscs/large_medic_pack.png", 35, 1, 7, 5, 0, 0);
     public static final SpriteAnimationStruct SMALL_MEDIC_ANIMATION = new SpriteAnimationStruct("Textures/Miscs/small_medic_pack.png", 42, 1, 9, 5, 0, 0);
 
-    public static final SpriteAnimationStruct FIRE_ANIMATION = new SpriteAnimationStruct("Textures/Miscs/fire.png", 16, FRAME_DELAY, 4, 4, 70, 40);
+    public static final SpriteAnimationStruct MUZZLE_ANIMATION = new SpriteAnimationStruct("Textures/Miscs/fire.png", 16, FRAME_DELAY, 4, 4, 70, 40);
 
     //public static final String ROCKET_TEXTURE_PATH = "Textures/Miscs/bullet_fx.png";
     public static final String BULLET_TEXTURE_PATH = "Textures/Miscs/bullet_fx.png";
@@ -110,7 +110,8 @@ public interface Globals {
     public static final String FIRE_RIFLE_SOUND_FX_PATH = "Sounds/Weapons/fire-rifle.wav";
     public static final String FIRE_SHOTGUN_SOUND_FX_PATH = "Sounds/Weapons/fire-shotgun.wav";
     public static final String FIRE_ROCKET_LAUNCHER_SOUND_FX_PATH = "Sounds/Weapons/fire-shotgun.wav";
-
+    public static final String EMPTY_GUN_CLICK_SOUND_FX_PATH = "Sounds/Weapons/empty-gun-click.wav";
+    
     public static final String BACKGROUND_SOUND_FX_PATH = "Sounds/Background/wind.wav";
 
     /**
