@@ -1,6 +1,7 @@
 package topdownshooter.Core;
 
 import java.awt.Image;
+import java.awt.Rectangle;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -22,7 +23,7 @@ public interface Globals {
     public static final int PLAYER_WIDTH = (int) ((WINDOW_WIDTH * 0.05));  // Default: 80px
     public static final int PLAYER_HEIGHT = (int) ((double) PLAYER_WIDTH * 0.85);  // Default: 68px
     public static final int ZOMBIE_WIDTH = (int) ((WINDOW_WIDTH * 0.05));  // Default: 80px
-    public static final int ZOMBIE_HEIGHT = (int) ((double) PLAYER_WIDTH * 0.85);  // Default: 68px
+    public static final int ZOMBIE_HEIGHT = (int) ((double) ZOMBIE_WIDTH * 0.85);  // Default: 68px
 
     public static final int NOTIFICATION_WINDOW_WIDTH = WINDOW_WIDTH / 4;  // Default: 400px
     public static final int NOTIFICATION_WINDOW_HEIGHT = (int) ((double) NOTIFICATION_WINDOW_WIDTH * 0.375);  // Default: 150px
@@ -78,6 +79,14 @@ public interface Globals {
     public static final SpriteAnimationStruct ORDINARY_ZOMBIE_ATTACK = new SpriteAnimationStruct("Textures/Zombie/ordinary_zombie_attack.png", 9, FRAME_DELAY, 3, 3, 30, 12);
     public static final SpriteAnimationStruct ACID_ZOMBIE_MOVE = new SpriteAnimationStruct("Textures/Zombie/acid_zombie_move.png", 17, FRAME_DELAY, 6, 3, 30, 12);
     public static final SpriteAnimationStruct ACID_ZOMBIE_ATTACK = new SpriteAnimationStruct("Textures/Zombie/acid_zombie_attack.png", 9, FRAME_DELAY, 3, 3, 30, 12);
+
+    /**
+     * MISCS TEXTURES
+     */
+    public static final SpriteAnimationStruct AMMO_ANIMATION = new SpriteAnimationStruct("Textures/Miscs/ammo.png", 1, FRAME_DELAY, 1, 1, 0, 0);
+    public static final SpriteAnimationStruct LARGE_MEDIC_ANIMATION = new SpriteAnimationStruct("Textures/Miscs/large_medic_pack.png", 35, FRAME_DELAY, 7, 5, 0, 0);
+    public static final SpriteAnimationStruct SMALL_MEDIC_ANIMATION = new SpriteAnimationStruct("Textures/Miscs/small_medic_pack.png", 42, FRAME_DELAY, 9, 5, 0, 0);
+
 
     /**
      * SOUND EFFECTS
@@ -146,5 +155,11 @@ public interface Globals {
     // Convert degrees to radians
     public static double degToRad(double degrees) {
         return Math.toRadians(degrees);
+    }
+
+    public static boolean isObjectsCollided(Rectangle rect1, Rectangle rect2) {
+        return rect1.getBounds().intersects(rect2.getBounds()) || 
+               rect2.getBounds().contains(rect1.getBounds()) || 
+               rect1.getBounds().contains(rect2.getBounds());
     }
 }

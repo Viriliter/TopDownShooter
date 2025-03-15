@@ -1,12 +1,13 @@
 package topdownshooter.Zombie;
 
 import java.awt.*;
-import java.util.AbstractMap;
-import java.util.Map;
+import java.util.List;
 
 import topdownshooter.Core.ConfigHandler.ZombieProperties;
+import topdownshooter.Player.Loot;
+import topdownshooter.Player.PlayerItem;
+import topdownshooter.Weapon.WeaponType;
 import topdownshooter.Core.Globals;
-import topdownshooter.Core.PlayerItem;
 import topdownshooter.Core.Position;
 import topdownshooter.Core.SpriteAnimation;
 
@@ -68,30 +69,32 @@ public abstract class AbstractZombie implements Zombie {
     }
 
     @Override
-    public void update(int px, int py) {
+    public void update(Rectangle playerBounds) {
         // Try to catch the player
-        if (this.x < px) this.x += this.speed;
-        if (this.x > px) this.x -= this.speed;
-        if (this.y < py) this.y += this.speed;
-        if (this.y > py) this.y -= this.speed;
-    
-        int dx = px - this.x;
-        int dy = py - this.y;
-
-        // If zombie cathes the survivor do not update rotation 
-        double distanceSquared = dx * dx + dy * dy;  // Avoid use of Math.sqrt if it is not really necessary
-        if (distanceSquared > 2*2) {
-            // Rotate the zombie towards player
-            this.r = Math.atan2(dy, dx); // Radians (used for rotation)
-        }
-
-        /*
-            double length = Math.sqrt(dx * dx + dy * dy);
-            if (length != 0) {
-                this.x += (int) (speed * (dx / length));
-                this.y += (int) (speed * (dy / length));
+        int playerX = (int) playerBounds.getX();
+        int playerY = (int) playerBounds.getY();
+        
+        // If objects collided, which means zombie catched the player, do not update position of the zombie
+        if (!Globals.isObjectsCollided(this.getBounds(), playerBounds)) {
+            int dx = playerX - this.x;
+            int dy = playerY - this.y;
+            
+            // Need to normalize speed according to the speed vector
+            double distance = Math.sqrt(dx * dx + dy * dy);
+            int normalizedSpeedX = 0, normalizedSpeedY = 0;
+            if (distance != 0) {
+                normalizedSpeedX = (int) (this.speed * Math.abs((double) dx / distance));
+                normalizedSpeedY = (int) (this.speed * Math.abs((double) dy / distance));
             }
-        */
+
+            if (this.x < playerX) this.x += normalizedSpeedX;
+            if (this.x > playerX) this.x -= normalizedSpeedX;
+            if (this.y < playerY) this.y += normalizedSpeedY;
+            if (this.y > playerY) this.y -= normalizedSpeedY;    
+
+            // Rotate the zombie towards player
+            this.r = Math.atan2(dy, dx);
+        }
         
         // Update sprite animation
         this.spriteAnimation.update();
@@ -102,7 +105,7 @@ public abstract class AbstractZombie implements Zombie {
 
     @Override
     public Rectangle getBounds() {
-        return new Rectangle(x-WIDTH/2, y-HEIGHT/2, WIDTH, HEIGHT);
+        return new Rectangle(x, y, WIDTH, HEIGHT);
     }
 
     @Override
@@ -137,23 +140,24 @@ public abstract class AbstractZombie implements Zombie {
     }
 
     @Override
-    public Map.Entry<Integer, PlayerItem> kill() {
-        return new AbstractMap.SimpleEntry<>(this.points, null);
+    public Loot kill(List<WeaponType> weaponList) {
+        PlayerItem item = PlayerItem.generatePlayerItem(this.points, weaponList);
+        return new Loot(this.x, this.y, this.points, item);
     }
     
     @Override
     public Position getPosition() {
-        return new Position(this.x, this.y);
+        return new Position(this.x + WIDTH / 2, this.y + HEIGHT / 2);
     }
     
     @Override
     public int getX() {
-        return this.x;
+        return this.x + WIDTH / 2;
     }
     
     @Override
     public int getY() {
-        return this.y;
+        return this.y + HEIGHT / 2;
     }
 
     @Override

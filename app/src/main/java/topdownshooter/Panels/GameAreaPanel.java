@@ -13,18 +13,18 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.ListIterator;
-import java.util.Map;
 
 import topdownshooter.Core.Globals;
-import topdownshooter.Core.PlayerItem;
 import topdownshooter.Core.SoundFX;
 import topdownshooter.Core.TileGenerator;
 import topdownshooter.Core.ConfigHandler;
 import topdownshooter.Core.GameLevel;
 import topdownshooter.Core.TimeTick;
+import topdownshooter.Player.Loot;
 import topdownshooter.Player.Player;
 import topdownshooter.Weapon.WeaponType;
 import topdownshooter.Weapon.Projectiles.AcidSpit;
@@ -45,6 +45,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
     private Player player = null;
     private ArrayList<Zombie> zombies = null;
     private ArrayList<Projectile> projectiles = null;
+    private ArrayList<Loot> loots = null;
 
     private boolean isGamePaused = false;
     private Timer gameTimer;
@@ -71,6 +72,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         player = new Player(this.config);
         zombies = new ArrayList<>();
         projectiles = new ArrayList<>();
+        loots = new ArrayList<>();
 
         gameTimer = new Timer(Globals.GAME_TICK_MS, e -> this.update());
         gameTimer.setRepeats(true);
@@ -93,15 +95,20 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         super.paintComponent(g);
      
         this.playgroundTileGenerator.draw(g, getWidth(), getHeight());
-        player.draw(g);
+        this.player.draw(g);
 
-        for (Zombie z : zombies) {
+        for (Zombie z : this.zombies) {
             z.draw(g);
         }
 
-        for (Projectile projectile : projectiles) {
+        for (Projectile projectile : this.projectiles) {
             if (projectile == null) continue;
             projectile.draw(g);
+        }
+
+        for (Loot loot : this.loots) {
+            if (loot == null) continue;
+            loot.draw(g);
         }
     }
 
@@ -142,6 +149,8 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
 
         updateProjectiles();
 
+        updateLoots();
+
         checkCollisions();
 
         if (this.fireRateTick!=null) this.fireRateTick.updateTick();
@@ -177,7 +186,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
 
         // Move zombies towards player
         for (Zombie z : zombies) {
-            z.update(player.getX(), player.getY());
+            z.update(player.getBounds());
 
 
             // Acid zombies have special ranged attack
@@ -206,6 +215,14 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         }
     }
 
+    private void updateLoots() {
+        if (this.player==null || this.loots==null) return;
+
+        for (Loot loot : this.loots) {
+            loot.update();
+        }
+    }
+
     private void checkProjectileCollisions() {
         if (this.player==null ||this.zombies==null || this.projectiles==null) return;
 
@@ -220,14 +237,9 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
                 ListIterator<Zombie> zombieIterator = this.zombies.listIterator();
                 while (zombieIterator.hasNext()) {
                     Zombie zombie = zombieIterator.next();                   
-                    if (isObjectsCollided(bullet.getBounds(), zombie.getBounds())) {
+                    if (Globals.isObjectsCollided(bullet.getBounds(), zombie.getBounds())) {
                         zombie.takeDamage(bullet.getDamage());
                         projectileIterator.remove();  // After damaging zombie, remove it.
-
-                        // If health of zombie is non positive, it is killed 
-                        if (zombie.getHealth() <= 0) {
-                            killZombie(zombie, zombieIterator);
-                        }
                         break;
                     }
                 }
@@ -237,14 +249,9 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
                 ListIterator<Zombie> zombieIterator = this.zombies.listIterator();
                 while (zombieIterator.hasNext()) {
                     Zombie zombie = zombieIterator.next();
-                    if (isObjectsCollided(bullet.getBounds(), zombie.getBounds())) {
+                    if (Globals.isObjectsCollided(bullet.getBounds(), zombie.getBounds())) {
                         zombie.takeDamage(bullet.getDamage());
                         // Do not remove armor piercing bullets on collision with zombie.
-
-                        // If health of zombie is non positive, it is killed 
-                        if (zombie.getHealth() <= 0) {
-                            killZombie(zombie, zombieIterator);
-                        }
                     }
                 }
             } else if (projectile.getType() == ProjectileType.ROCKET) {
@@ -254,7 +261,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
                 ListIterator<Zombie> zombieIterator = this.zombies.listIterator();
                 while (zombieIterator.hasNext()) {
                     Zombie zombie = zombieIterator.next();
-                    if (isObjectsCollided(rocket.getBounds(), zombie.getBounds())) {
+                    if (Globals.isObjectsCollided(rocket.getBounds(), zombie.getBounds())) {
                         // Rocket damages its surrounded area
                         System.out.println("Rocket damages its surrounded area");
                         System.out.println("X:" + rocket.getX() + " Y:" + rocket.getY() + " D:" + rocket.getDamage() + " R:" +  rocket.getEffectiveRange());
@@ -281,26 +288,51 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
                     ListIterator<Bullet> pelletIterator = pellets.getPellets().listIterator();
                     while (pelletIterator.hasNext()) {
                         Bullet bullet = pelletIterator.next();
-                        if (isObjectsCollided(bullet.getBounds(), zombie.getBounds())) {
+                        if (Globals.isObjectsCollided(bullet.getBounds(), zombie.getBounds())) {
                             zombie.takeDamage(bullet.getDamage());
-
-                            // If health of zombie is non positive, it is killed 
-                            if (zombie.getHealth() <= 0) {
-                                killZombie(zombie, zombieIterator);
-                                break;
-                            }
                             pelletIterator.remove();  // After damaging zombie, remove it.
+                            break;
                         }
                     }
                 }
             } else if (projectile.getType() == ProjectileType.ACID_SPIT) {
                 AcidSpit acidSpit = (AcidSpit) projectile;
 
-                if (isObjectsCollided(acidSpit.getBounds(), this.player.getBounds())) {
+                if (Globals.isObjectsCollided(acidSpit.getBounds(), this.player.getBounds())) {
                     this.player.takeDamage(acidSpit.getDamage());
                     projectileIterator.remove();  // After contact with player, remove it.
                 }
 
+            }
+        }
+    
+        ListIterator<Zombie> zombieIterator = this.zombies.listIterator();
+        while (zombieIterator.hasNext()) {
+            Zombie zombie = zombieIterator.next();
+
+            // If health of zombie is non positive, it is killed
+            if (zombie.getHealth() < 0) {              
+                ZombieType zombieType = zombie.getType();
+                int zombieX = zombie.getX();
+                int zombieY = zombie.getY();
+                int zombieDamage = zombie.giveDamage();
+
+                // Retrieve loot and score when zombie killed.
+                Loot loot = zombie.kill(this.player.getAvailableWeapons());  // To generate loot, available weapon types are needed.
+                
+                if (loot != null) {
+                    this.player.addScore(loot.getScore());
+                    // If loot does not have an item, then do not add to the list
+                    if (loot.getItem() != null) this.loots.add(loot);
+                }
+
+                zombieIterator.remove();
+
+                // Acid zombies damages their surrounds when they killed
+                if (zombieType == ZombieType.ACID) {
+                    damageZombies(zombieX, zombieY, zombieDamage, 200);
+                    damagePlayer(zombieX, zombieY, zombieDamage, 200);
+                }
             }
         }
     }
@@ -312,12 +344,24 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         while (zombieIterator.hasNext()) {
             Zombie zombie = zombieIterator.next();
             // If zombie collides with the player, it gives damage by attacking
-            boolean isColliding = isObjectsCollided(zombie.getBounds(), player.getBounds());
+            boolean isColliding = Globals.isObjectsCollided(zombie.getBounds(), player.getBounds());
 
             if (isColliding) {
                 // Normalize damage according to game tick (Full damage is taken by player in 500ms)
                 double damagePerTick = (double) zombie.giveDamage() * ((double) Globals.GAME_TICK_MS / Globals.FULL_DAMAGE_PERIOD);
                 this.player.takeDamage(damagePerTick);
+            }
+        }
+    }
+
+    private void checkLootCollisions() {
+        ListIterator<Loot> lootIterator = this.loots.listIterator();
+
+        while (lootIterator.hasNext()) {
+            Loot loot = lootIterator.next();
+            if (Globals.isObjectsCollided(loot.getBounds(), this.player.getBounds())) {
+                this.player.addLoot(loot);
+                lootIterator.remove();  // Remove the loot after player takes it
             }
         }
     }
@@ -328,12 +372,26 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
 
         // Zombie collisions to the survivor (aka zombie attack)
         checkZombieCollisions();
+
+        // Player collision to loot objects
+        checkLootCollisions();
     }
 
     private double getDistanceSquared(int x1, int y1, int x2, int y2) {
         int dx = x1 - x2;
         int dy = y1 - y2;
         return dx * dx + dy * dy;
+    }
+    
+    private double calculateDamage(int originDamage, double distanceSquared, double effectiveRangeSquared, int effectiveRange) {
+        if (distanceSquared == 0) {
+            return originDamage;
+        } else if (distanceSquared < effectiveRangeSquared && effectiveRange > 0) {
+            return (double) originDamage * (1 - (Math.sqrt(distanceSquared) / (4 * effectiveRange)));
+        } else if (distanceSquared == effectiveRangeSquared) {
+            return (double) originDamage * 0.25;
+        }
+        return 0;
     }
 
     private void damageZombies(int originX, int originY, int originDamage, int effectiveRange) {
@@ -345,24 +403,12 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
             topdownshooter.Core.Position position = zombie.getPosition();
             double distanceSquared = getDistanceSquared(position.x(), position.y(), originX, originY);  // Calculate distance from origin point of detonation
 
-            // If calculate detonation damage with the function of the distance from origin
-            double damage = 0;
-            if (distanceSquared == 0) {
-                damage = originDamage;
-            } else if (distanceSquared < effectiveRangeSquared && effectiveRange > 0) {
-                damage = (double) originDamage * (1 - (Math.sqrt(distanceSquared) / (4 * effectiveRange)));
-            } else if (distanceSquared == effectiveRangeSquared) {
-                damage = (double) originDamage * 0.25;
-            } else { 
-                damage = 0;
-            }
+            // Calculate detonation damage with the function of the distance from origin
+            double damage = calculateDamage(originDamage, distanceSquared, effectiveRangeSquared, effectiveRange);
+
             System.out.println("Zombie Normalized Damage: " + damage + " Origin Damage: " + originDamage  + " Distance Squared: " + distanceSquared);
             if (damage>0) {
                 zombie.takeDamage(damage);
-                // If health of zombie is non positive, it is killed 
-                if (zombie.getHealth() <= 0) {
-                    killZombie(zombie, zombieIterator);
-                }    
             }
         }
     }
@@ -372,17 +418,9 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
 
         double distanceSquared = getDistanceSquared(this.player.getX(), this.player.getY(), originX, originY);  // Calculate distance from origin point of detonation
 
-        // If calculate detonation damage with the function of the distance from origin
-        double damage = 0;
-        if (distanceSquared == 0) {
-            damage = originDamage;
-        } else if (distanceSquared < effectiveRangeSquared && effectiveRange > 0) {
-            damage = (double) originDamage * (1 - (Math.sqrt(distanceSquared) / (4 * effectiveRange)));
-        } else if (distanceSquared == effectiveRangeSquared) {
-            damage = (double) originDamage * 0.25;
-        } else { 
-            damage = 0;
-        }
+        // Calculate detonation damage with the function of the distance from origin
+        double damage = calculateDamage(originDamage, distanceSquared, effectiveRangeSquared, effectiveRange);
+
         System.out.println("Player Normalized Damage: " + damage + " Origin Damage: " + originDamage  + " Distance Squared: " + distanceSquared);
 
         if (damage>0) {
@@ -390,33 +428,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         }
     }
 
-    private void killZombie(Zombie zombie, ListIterator<Zombie> zombieIterator) {
-        // Retrieve loot and score when zombie killed. 
-        Map.Entry<Integer, PlayerItem> tuple = zombie.kill();
-        int points = tuple.getKey();
-        PlayerItem playerItem = tuple.getValue();
-
-        this.player.addScore(points);
-        this.player.addPlayerItem(playerItem);
-        
-        ZombieType zombieType = zombie.getType();
-        int zombieX = zombie.getX();
-        int zombieY = zombie.getY();
-        int zombieDamage = zombie.giveDamage();
-
-        zombieIterator.remove();  // First kill the zombie
-
-        // Acid zombies damages their surrounds when they killed
-        if (zombieType == ZombieType.ACID) {
-            damageZombies(zombieX, zombieY, zombieDamage, 200);
-            damagePlayer(zombieX, zombieY, zombieDamage, 200);
-        }        
-    }
-    
-    private boolean isObjectsCollided(Rectangle rect1, Rectangle rect2) {
-        return rect1.getBounds().intersects(rect2.getBounds()) || 
-               rect2.getBounds().contains(rect1.getBounds()) || 
-               rect1.getBounds().contains(rect2.getBounds());
+    private void killZombie(Zombie zombie) {        
     }
 
     private void updateGameInfo() {

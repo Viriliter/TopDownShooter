@@ -1,6 +1,7 @@
 package topdownshooter.Zombie;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 
 import topdownshooter.Core.ConfigHandler.ZombieProperties;
 
@@ -18,7 +19,30 @@ public class OrdinaryZombie extends AbstractZombie {
 
     @Override
     public void draw(Graphics g) {
+        /*
+        Graphics2D g2d = (Graphics2D) g; // Enable rotation
+
+        AffineTransform oldTransform = g2d.getTransform();
+
+        g2d.setColor(Color.GREEN);
+        g2d.translate(x + WIDTH / 2, y + HEIGHT / 2);
+        g2d.rotate(r);  // Rotate to face the player
+        g2d.fillRect(-WIDTH / 2, -HEIGHT / 2, WIDTH, WIDTH);
+
+        // Reset transformation
+        g2d.setTransform(oldTransform);
+        */
         this.spriteAnimation.draw(g, this.x, this.y, this.r);
+        /*
+        AffineTransform oldTransform2 = g2d.getTransform();
+
+        g2d.setColor(Color.ORANGE);
+        g2d.translate(this.x + WIDTH / 2, this.y + HEIGHT / 2);
+        g2d.rotate(this.r); 
+        g2d.fillRect(0, 0, 2, 2);
+        
+        g2d.setTransform(oldTransform2);
+        */
     }
 
     @Override

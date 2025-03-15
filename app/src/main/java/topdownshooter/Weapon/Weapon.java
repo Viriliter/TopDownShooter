@@ -11,6 +11,8 @@ public interface Weapon extends Serializable{
 
     void update();
 
+    void addMagazine(int magazineCount);
+
     int getAmmo();
 
     int getMagazineCapacity();

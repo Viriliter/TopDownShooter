@@ -52,24 +52,37 @@ public class AcidZombie extends AbstractZombie {
     }
 
     @Override
-    public void update(int px, int py) {
-        // Take distance between zombie and survivor
-        int dx = px - this.x;
-        int dy = py - this.y;
-        double distanceSquared = dx * dx + dy * dy;  // Avoid use of Math.sqrt if it is not really necessary
+    public void update(Rectangle playerBounds) {
+        // Try to catch the player
+        int playerX = (int) playerBounds.getX();
+        int playerY = (int) playerBounds.getY();
+        
+        // If objects collided, which means zombie catched the player, do not update position of the zombie
+        if (!Globals.isObjectsCollided(this.getBounds(), playerBounds)) {
+            int dx = playerX - this.x;
+            int dy = playerY - this.y;
+            
+            // Need to normalize speed according to the speed vector
+            double distance = Math.sqrt(dx * dx + dy * dy);
 
-        // If distance is bigger than spit range, try to catch the player
-        if (distanceSquared > SPIT_RANGE*SPIT_RANGE) {
-            if (this.x < px) this.x += this.speed;
-            if (this.x > px) this.x -= this.speed;
-            if (this.y < py) this.y += this.speed;
-            if (this.y > py) this.y -= this.speed;
-        } else {
+            // If distance is bigger than spit range, try to catch the player
+            if (distance > SPIT_RANGE) {
+                int normalizedSpeedX = 0, normalizedSpeedY = 0;
+                if (distance != 0) {
+                    normalizedSpeedX = (int) (this.speed * Math.abs((double) dx / distance));
+                    normalizedSpeedY = (int) (this.speed * Math.abs((double) dy / distance));
+                }
+    
+                if (this.x < playerX) this.x += normalizedSpeedX;
+                if (this.x > playerX) this.x -= normalizedSpeedX;
+                if (this.y < playerY) this.y += normalizedSpeedY;
+                if (this.y > playerY) this.y -= normalizedSpeedY;    
+            } else { }
+            
+            // Rotate the zombie towards player
+            if (distance > 0) this.r = Math.atan2(dy, dx);
 
         }
-        
-        // Rotate the zombie towards player
-        if (distanceSquared > 0) this.r = Math.atan2(dy, dx);
     }
 
     @Override

@@ -3,13 +3,14 @@ package topdownshooter.Player;
 import javax.swing.*;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.util.List;
 import java.util.ArrayList;
 
 import topdownshooter.Weapon.Weapon;
 import topdownshooter.Core.ConfigHandler;
 import topdownshooter.Core.Globals;
 import topdownshooter.Core.ConfigHandler.PlayerProperties;
-import topdownshooter.Core.PlayerItem;
 import topdownshooter.Core.SequencialSoundFX;
 import topdownshooter.Core.SpriteAnimation;
 import topdownshooter.Weapon.WeaponFactory;
@@ -67,7 +68,7 @@ public class Player extends JPanel {
         this.walkSoundFX = new SequencialSoundFX(Globals.HUNTER_SOUND_FX_PATH);
     }
 
-    public Player(int score, int health, int x, int y, int dx, int dy, double r, int speed, ArrayList<Weapon> inventory, int currentWeaponIndex) {
+    public Player(int score, double health, int x, int y, int dx, int dy, double r, int speed, ArrayList<Weapon> inventory, int currentWeaponIndex) {
         this.score = score;
         this.health = health;
         this.x = x;
@@ -129,19 +130,7 @@ public class Player extends JPanel {
     }
 
     public void draw(Graphics g) {
-        /*
-        Graphics2D g2d = (Graphics2D) g;
-
-        // Save the current transformation matrix
-        AffineTransform oldTransform = g2d.getTransform();
-
-        g2d.setColor(Color.BLUE);
-        g2d.translate(this.x + WIDTH / 2, this.y + HEIGHT / 2);
-        g2d.rotate(this.r); 
-        g2d.fillRect(-WIDTH / 2, -HEIGHT / 2, WIDTH, HEIGHT);
         
-        g2d.setTransform(oldTransform);
-        */
         if (this.inventory.get(this.currentWeaponIndex).getType() == WeaponType.PISTOL)
             this.spriteAnimationPistolIdle.draw(g, this.x, this.y, this.r);
         
@@ -155,7 +144,7 @@ public class Player extends JPanel {
             this.spriteAnimationRifleIdle.draw(g, this.x, this.y, this.r);
         
         if (this.inventory.get(this.currentWeaponIndex).getType() == WeaponType.ROCKETLAUNCHER)
-            this.spriteAnimationRocketLauncherIdle.draw(g, this.x, this.y, this.r);
+            this.spriteAnimationRocketLauncherIdle.draw(g, this.x, this.y, this.r);   
     }
 
     public void decrementDx() { this.dx = -this.speed; this.walkSoundFX.update();}
@@ -170,9 +159,9 @@ public class Player extends JPanel {
 
     public void setDy(int dy) { this.dy = dy; }
     
-    public int getX() { return this.x + WIDTH / 2 ; }
+    public int getX() { return this.x + WIDTH / 2; }
     
-    public int getY() { return this.y + HEIGHT / 2 ; }
+    public int getY() { return this.y + HEIGHT / 2; }
     
     public double getR() { return this.r; }
 
@@ -188,8 +177,37 @@ public class Player extends JPanel {
         this.score += points<0 ? 0 : points;
     }
 
-    public void addPlayerItem(PlayerItem item) {
+    public void addAmmo(WeaponType type, int magazineCount) {
+        for (Weapon w: this.inventory) {
+            if (w.getType() == type) {
+                w.addMagazine(magazineCount);
+            }
+        }
+    }
+
+    public void addLoot(Loot loot) {
+        if (loot == null) return;
+
+        PlayerItem item = loot.getItem();
+
         if (item == null) return;
+
+        switch(item.getItemType()) {
+            case AMMUNITION:
+                AmmunitionItem ammo = (AmmunitionItem) item;
+                addAmmo(ammo.type, ammo.magazineCount);
+                break;
+            case SMALL_MEDIC_PACK:
+                SmallMedicPackItem smallMedicPack = (SmallMedicPackItem) item;
+                heal(smallMedicPack.headlingPoints);
+                break;
+            case LARGE_MEDIC_PACK:
+                LargeMedicPackItem largeMedicPack = (LargeMedicPackItem) item;
+                heal(largeMedicPack.headlingPoints);
+                break;
+            default:
+                return;
+        }
 
     }
 
@@ -256,6 +274,14 @@ public class Player extends JPanel {
         return inventoryInfo;
     }
 
+    public List<WeaponType> getAvailableWeapons() {
+        List<WeaponType> weaponTypes = new ArrayList<>();
+
+        for(Weapon weapon: this.inventory) {
+            weaponTypes.add(weapon.getType());
+        }
+        return weaponTypes;
+    }
 
     public Rectangle getBounds() {
         return new Rectangle(this.x, this.y, this.WIDTH, this.HEIGHT);

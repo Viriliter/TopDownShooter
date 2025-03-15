@@ -74,6 +74,12 @@ public abstract class AbstractWeapon implements Weapon {
         this.fireTick.updateTick();
         this.reloadTick.updateTick();
     }
+    
+    @Override
+    public void addMagazine(int magazineCount) {
+        // Only if magazine count is positive, add to the magazine. Negative magazine count means that it is infinite.
+        if (this.magazineCount>=0) this.magazineCount += magazineCount;
+    }
 
     @Override
     public int getAmmo() {

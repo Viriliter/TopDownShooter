@@ -3,9 +3,10 @@ package topdownshooter.Zombie;
 import java.awt.*;
 
 import topdownshooter.Core.ConfigHandler.ZombieProperties;
+import topdownshooter.Core.Globals;
 
 public class CrawlerZombie extends AbstractZombie {
-    static final int JUMP_DISTANCE = 30;
+    static final int JUMP_DISTANCE = 100;
     private boolean isJumped = false;
 
     public CrawlerZombie(ZombieProperties properties, int x, int y) {
@@ -41,30 +42,41 @@ public class CrawlerZombie extends AbstractZombie {
     }
 
     @Override
-    public void update(int px, int py) {
+    public void update(Rectangle playerBounds) {
         // Try to catch the player
-        if (this.x < px) this.x += this.speed;
-        if (this.x > px) this.x -= this.speed;
-        if (this.y < py) this.y += this.speed;
-        if (this.y > py) this.y -= this.speed;
-    
-        // Rotate the zombie towards player
-        int dx = px - this.x;
-        int dy = py - this.y;
+        int playerX = (int) playerBounds.getX();
+        int playerY = (int) playerBounds.getY();
+        
+        // If objects collided, which means zombie catched the player, do not update position of the zombie
+        if (!Globals.isObjectsCollided(this.getBounds(), playerBounds)) {
+            int dx = playerX - this.x;
+            int dy = playerY - this.y;
+            
+            // Need to normalize speed according to the speed vector
+            double distance = Math.sqrt(dx * dx + dy * dy);
+            int normalizedSpeedX = 0, normalizedSpeedY = 0;
+            if (distance != 0) {
+                normalizedSpeedX = (int) (this.speed * Math.abs((double) dx / distance));
+                normalizedSpeedY = (int) (this.speed * Math.abs((double) dy / distance));
+            }
 
-        this.r = Math.atan2(dy, dx); // Radians (used for rotation)
+            if (this.x < playerX) this.x += normalizedSpeedX;
+            if (this.x > playerX) this.x -= normalizedSpeedX;
+            if (this.y < playerY) this.y += normalizedSpeedY;
+            if (this.y > playerY) this.y -= normalizedSpeedY;    
 
-        // Calculate distance between the zombie and the player
-        double distanceSquared = dx * dx + dy * dy;  // Avoid use of Math.sqrt if it is not really necessary
+            // Rotate the zombie towards player
+            this.r = Math.atan2(dy, dx);
 
-        // Check zombie is at the jump range to the player
-        // If it has already jumped, do not jump again.
-        if (distanceSquared <= JUMP_DISTANCE*JUMP_DISTANCE && !isJumped) {
-            this.x = px - WIDTH / 2;
-            this.y = py - WIDTH / 2;
-            isJumped = true;
-        } else {
-            isJumped = false;
+            // Check zombie is at the jump range to the player
+            // If it has already jumped, do not jump again.
+            if (distance <= JUMP_DISTANCE && !this.isJumped) {
+                this.x = playerX + WIDTH / 2;
+                this.y = playerY + WIDTH / 2;
+                this.isJumped = true;
+            } else {
+                this.isJumped = false;
+            }
         }
     }
 

@@ -1,14 +1,16 @@
 package topdownshooter.Zombie;
 
+import java.util.List;
+
 import java.awt.*;
 import java.io.Serializable;
-import java.util.Map;
 
-import topdownshooter.Core.PlayerItem;
 import topdownshooter.Core.Position;
+import topdownshooter.Player.Loot;
+import topdownshooter.Weapon.WeaponType;
 
 public interface Zombie extends Serializable{
-    public void update(int px, int py);
+    public void update(Rectangle playerBound);
 
     public void draw(Graphics g);
 
@@ -24,7 +26,7 @@ public interface Zombie extends Serializable{
 
     public ZombieType getType();
 
-    public Map.Entry<Integer, PlayerItem> kill();
+    public Loot kill(List<WeaponType> weaponList);
 
     public Position getPosition();
 
