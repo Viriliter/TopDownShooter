@@ -1,10 +1,7 @@
 package topdownshooter.Player;
 
-import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.Rectangle;
-import java.awt.geom.AffineTransform;
 
 import javax.swing.JPanel;
 
@@ -19,6 +16,7 @@ public class Loot extends JPanel {
 
     private int score;
     private PlayerItem item = null;
+    private int lootAge = 0;
 
     private SpriteAnimation spriteAnimationAmmo = null;
     private SpriteAnimation spriteAnimationSmallMedic = null;
@@ -69,6 +67,7 @@ public class Loot extends JPanel {
         } else if (this.item.lootType == ItemType.LARGE_MEDIC_PACK) {
             this.spriteAnimationLargeMedic.update();
         }
+        lootAge++;
     } 
 
     public int getScore() {
@@ -77,6 +76,10 @@ public class Loot extends JPanel {
 
     public PlayerItem getItem() {
         return this.item;
+    }
+
+    public int getLootAge() {
+        return this.lootAge;
     }
 
     public int getX() {

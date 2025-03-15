@@ -13,7 +13,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.ListIterator;
@@ -28,6 +27,7 @@ import topdownshooter.Player.Loot;
 import topdownshooter.Player.Player;
 import topdownshooter.Weapon.WeaponType;
 import topdownshooter.Weapon.Projectiles.AcidSpit;
+import topdownshooter.Weapon.Projectiles.ArmorPiercingBullet;
 import topdownshooter.Weapon.Projectiles.Bullet;
 import topdownshooter.Weapon.Projectiles.Projectile;
 import topdownshooter.Weapon.Projectiles.ProjectileType;
@@ -221,6 +221,15 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         for (Loot loot : this.loots) {
             loot.update();
         }
+
+        // Remove old loots
+        ListIterator<Loot> lootIterator = this.loots.listIterator();
+        while (lootIterator.hasNext()) {
+            Loot loot = lootIterator.next();
+            if (Globals.GameTick2Time(loot.getLootAge()) > Globals.MAX_LOOT_DURATION) {
+                lootIterator.remove();
+            }
+        }
     }
 
     private void checkProjectileCollisions() {
@@ -244,7 +253,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
                     }
                 }
             } else if (projectile.getType() == ProjectileType.ARMOR_PIERCING_BULLET) {
-                Bullet bullet = (Bullet) projectile;
+                ArmorPiercingBullet bullet = (ArmorPiercingBullet) projectile;
 
                 ListIterator<Zombie> zombieIterator = this.zombies.listIterator();
                 while (zombieIterator.hasNext()) {
@@ -428,9 +437,6 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         }
     }
 
-    private void killZombie(Zombie zombie) {        
-    }
-
     private void updateGameInfo() {
         GameInfoPanel gameInfoPanel = this.parentPanel.getGameInfoPanel();
         gameInfoPanel.updatePlayerHealth(this.player==null ? 0 : this.player.getHealth());
@@ -480,6 +486,16 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         // Serialize zombie objects
         for (Zombie z : this.zombies) {
             os.writeObject(z);
+        }
+
+        // Serialize projectiles
+        for (Projectile p : this.projectiles) {
+            os.writeObject(p);
+        }
+
+        // Serialize loots
+        for (Loot l : this.loots) {
+            os.writeObject(l);
         }
     }
 
