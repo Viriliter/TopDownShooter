@@ -46,7 +46,7 @@ public abstract class Projectile implements Serializable{
         x += (int) (this.speed * Math.cos(this.r));
         y += (int) (this.speed * Math.sin(this.r));
 
-        this.projectileEffect.update();
+        if (this.projectileEffect != null) this.projectileEffect.update();
     }
 
     abstract public void draw(Graphics g);

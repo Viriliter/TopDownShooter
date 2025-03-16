@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 
 import topdownshooter.Weapon.Weapon;
 import topdownshooter.Core.ConfigHandler;
@@ -35,8 +36,8 @@ public class Player extends JPanel {
     private int speed;
     private final int WIDTH = 80;
     private final int HEIGHT = 68;
-    private ArrayList<Weapon> inventory;
-    private int currentWeaponIndex = 0;
+    private LinkedHashMap<WeaponType, Weapon> inventory;
+    private WeaponType currentWeaponType = WeaponType.UNDEFINED;
 
     private Map<WeaponType, Map<PlayerState, SpriteAnimation>> spriteAnimations = null;
 
@@ -93,9 +94,9 @@ public class Player extends JPanel {
             }
         }
 
-        this.inventory = new ArrayList<>();
+        this.inventory = new LinkedHashMap<WeaponType, Weapon>();
         // Every player starts with a pistol
-        this.inventory.add(WeaponFactory.createWeapon(config, WeaponType.PISTOL));
+        addNewWeapon(config, WeaponType.PISTOL);
         //this.inventory.add(WeaponFactory.createWeapon(config, WeaponType.ASSAULTRIFLE));
         //this.inventory.add(WeaponFactory.createWeapon(config, WeaponType.SHOTGUN));
         //this.inventory.add(WeaponFactory.createWeapon(config, WeaponType.SNIPERRIFLE));
@@ -104,7 +105,7 @@ public class Player extends JPanel {
         this.walkSoundFX = new SequencialSoundFX(Globals.HUNTER_SOUND_FX_PATH);
     }
 
-    public Player(int score, double health, int x, int y, int dx, int dy, double r, int speed, ArrayList<Weapon> inventory, int currentWeaponIndex) {
+    public Player(int score, double health, int x, int y, int dx, int dy, double r, int speed, LinkedHashMap<WeaponType, Weapon> inventory, WeaponType currentWeaponIndex) {
         this.score = score;
         this.health = health;
         this.x = x;
@@ -114,7 +115,7 @@ public class Player extends JPanel {
         this.r = r;
         this.speed = speed;
         this.inventory = inventory;
-        this.currentWeaponIndex = currentWeaponIndex;
+        this.currentWeaponType = currentWeaponIndex;
 
         this.spriteAnimations = new HashMap<>();
 
@@ -169,12 +170,12 @@ public class Player extends JPanel {
         this.y = this.y + this.dy < 0 ? 0 : this.y + this.dy;
 
         // Update weapons
-        for (Weapon w : this.inventory) {
+        for (Weapon w : this.inventory.values()) {
             w.update();
         }
 
         // Update sprite animation
-        WeaponType currentWeaponType = this.inventory.get(this.currentWeaponIndex).getType();
+        WeaponType currentWeaponType = this.inventory.get(this.currentWeaponType).getType();
         if (currentWeaponType != WeaponType.UNDEFINED) this.spriteAnimations.get(currentWeaponType).get(PlayerState.IDLE).update();
     }
 
@@ -193,7 +194,7 @@ public class Player extends JPanel {
 
         // Draw sprite animations of player according to weapon type
         PlayerState playerState = PlayerState.IDLE;
-        WeaponType currentWeaponType = this.inventory.get(this.currentWeaponIndex).getType();
+        WeaponType currentWeaponType = this.inventory.get(this.currentWeaponType).getType();
 
         if (currentWeaponType == WeaponType.UNDEFINED) return;
 
@@ -201,7 +202,7 @@ public class Player extends JPanel {
 
         // Draw weapon animation
         Offset offset = this.spriteAnimations.get(currentWeaponType).get(playerState).getOffset();
-        this.inventory.get(this.currentWeaponIndex).draw(g, this.x + offset.getX(), this.y + offset.getY(), this.r);
+        this.inventory.get(this.currentWeaponType).draw(g, this.x + offset.getX(), this.y + offset.getY(), this.r);
 
 
         AffineTransform oldTransform2 = g2d.getTransform();
@@ -245,7 +246,7 @@ public class Player extends JPanel {
     }
 
     public void addAmmo(WeaponType type, int magazineCount) {
-        for (Weapon w: this.inventory) {
+        for (Weapon w: this.inventory.values()) {
             if (w.getType() == type) {
                 w.addMagazine(magazineCount);
             }
@@ -282,13 +283,19 @@ public class Player extends JPanel {
     
     public void takeDamage(double damage) {this.health = this.health-damage <= 0 ? 0.0: this.health-damage;}
     
-    public void switchWeapon() {this.currentWeaponIndex = (this.currentWeaponIndex + 1) % this.inventory.size();}
+    public void switchWeapon() {
+        List<WeaponType> availableWeapons = new ArrayList<>(this.inventory.keySet());
+        int currentWeaponIndex = availableWeapons.indexOf(this.currentWeaponType);
+        int nextWeaponIndex = (currentWeaponIndex + 1) % availableWeapons.size();
+
+        this.currentWeaponType = availableWeapons.get(nextWeaponIndex);
+    }
     
-    public Weapon getCurrentWeapon() {return this.inventory.get(currentWeaponIndex);}
+    public Weapon getCurrentWeapon() {return this.inventory.get(currentWeaponType);}
 
     public Projectile fire() {
         PlayerState playerState = PlayerState.IDLE;
-        WeaponType currentWeaponType = this.inventory.get(this.currentWeaponIndex).getType();
+        WeaponType currentWeaponType = this.inventory.get(this.currentWeaponType).getType();
         Offset offset = this.spriteAnimations.get(currentWeaponType).get(playerState).getOffset();
 
         double translatedX = this.x + WIDTH / 2 + offset.getX() * Math.cos(this.r) - offset.getY() * Math.sin(this.r);
@@ -298,13 +305,14 @@ public class Player extends JPanel {
 
     public boolean addNewWeapon(ConfigHandler config, WeaponType type) {
         // Only if that type is not available in the inventory, add the weapon 
-        for (Weapon weaponItem: this.inventory) {
+        for (Weapon weaponItem: this.inventory.values()) {
             if (weaponItem.getType() == type)
                 return false;
         }
 
         Weapon weapon = WeaponFactory.createWeapon(config, type);
-        if (weapon!=null) this.inventory.add(weapon);
+        if (this.inventory.isEmpty() && weapon!=null) this.currentWeaponType = weapon.getType();
+        if (weapon!=null) this.inventory.put(weapon.getType(), weapon);
 
         return true;
     }
@@ -312,8 +320,10 @@ public class Player extends JPanel {
     public InventoryInfo getInventoryInfo() {
         InventoryInfo inventoryInfo = new InventoryInfo();
         
-        inventoryInfo.selectedWeaponID = this.currentWeaponIndex;
-        for (Weapon weapon: this.inventory) {
+        inventoryInfo.selectedWeaponType = this.currentWeaponType;
+
+
+        for (Weapon weapon: this.inventory.values()) {
             switch (weapon.getType()) {
                 case UNDEFINED:
                     break;
@@ -348,7 +358,7 @@ public class Player extends JPanel {
     public List<WeaponType> getAvailableWeapons() {
         List<WeaponType> weaponTypes = new ArrayList<>();
 
-        for(Weapon weapon: this.inventory) {
+        for(Weapon weapon: this.inventory.values()) {
             weaponTypes.add(weapon.getType());
         }
         return weaponTypes;
@@ -371,7 +381,7 @@ public class Player extends JPanel {
         sb.append("r=" + this.r + ", ");
         sb.append("speed=" + this.speed + ", ");
         sb.append("inventory=" + this.inventory + ", ");
-        sb.append("currentWeaponIndex=" + this.currentWeaponIndex);
+        sb.append("currentWeaponType=" + this.currentWeaponType);
         sb.append("}");
 
         return sb.toString();

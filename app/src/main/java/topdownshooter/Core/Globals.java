@@ -45,21 +45,24 @@ public interface Globals {
     /**
      * ICONS
      */
-    public static final String ICON_PATH_ASSAULT_RIFLE_INACTIVE = "Icons/assault-rifle-inactive.png";
-    public static final String ICON_PATH_ASSAULT_RIFLE_UNSELECTED = "Icons/assault-rifle-selected.png";
-    public static final String ICON_PATH_ASSAULT_RIFLE_SELECTED = "Icons/assault-rifle-unselected.png";
-    public static final String ICON_PATH_PISTOL_INACTIVE = "Icons/pistol-inactive.png";
-    public static final String ICON_PATH_PISTOL_UNSELECTED = "Icons/pistol-selected.png";
-    public static final String ICON_PATH_PISTOL_SELECTED = "Icons/pistol-unselected.png";
-    public static final String ICON_PATH_ROCKET_LAUNCHER_INACTIVE = "Icons/rocket-launcher-inactive.png";
-    public static final String ICON_PATH_ROCKET_LAUNCHER_UNSELECTED = "Icons/rocket-launcher-selected.png";
-    public static final String ICON_PATH_ROCKET_LAUNCHER_SELECTED = "Icons/rocket-launcher-unselected.png";
-    public static final String ICON_PATH_SHOTGUN_INACTIVE = "Icons/shotgun-inactive.png";
-    public static final String ICON_PATH_SHOTGUN_UNSELECTED = "Icons/shotgun-selected.png";
-    public static final String ICON_PATH_SHOTGUN_SELECTED = "Icons/shotgun-unselected.png";
-    public static final String ICON_PATH_SNIPER_RIFLE_INACTIVE = "Icons/sniper-rifle-inactive.png";
-    public static final String ICON_PATH_SNIPER_RIFLE_UNSELECTED = "Icons/sniper-rifle-selected.png";
-    public static final String ICON_PATH_SNIPER_RIFLE_SELECTED = "Icons/sniper-rifle-unselected.png";
+    public static final String ICON_PATH_BULLET = "Icons/bullet.png";
+    public static final String ICON_PATH_MAGAZINE = "Icons/magazine.png";
+
+    public static final String ICON_PATH_PISTOL_EMPTY = "Icons/pistol-empty.png";
+    public static final String ICON_PATH_PISTOL_UNSELECTED = "Icons/pistol-unselected.png";
+    public static final String ICON_PATH_PISTOL_SELECTED = "Icons/pistol-selected.png";
+    public static final String ICON_PATH_ASSAULT_RIFLE_EMPTY = "Icons/assaultrifle-empty.png";
+    public static final String ICON_PATH_ASSAULT_RIFLE_UNSELECTED = "Icons/assaultrifle-unselected.png";
+    public static final String ICON_PATH_ASSAULT_RIFLE_SELECTED = "Icons/assaultrifle-selected.png";
+    public static final String ICON_PATH_SHOTGUN_EMPTY = "Icons/shotgun-empty.png";
+    public static final String ICON_PATH_SHOTGUN_UNSELECTED = "Icons/shotgun-unselected.png";
+    public static final String ICON_PATH_SHOTGUN_SELECTED = "Icons/shotgun-selected.png";
+    public static final String ICON_PATH_SNIPER_RIFLE_EMPTY = "Icons/sniperrifle-empty.png";
+    public static final String ICON_PATH_SNIPER_RIFLE_UNSELECTED = "Icons/sniperrifle-unselected.png";
+    public static final String ICON_PATH_SNIPER_RIFLE_SELECTED = "Icons/sniperrifle-selected.png";
+    public static final String ICON_PATH_ROCKET_LAUNCHER_EMPTY = "Icons/rocketlauncher-empty.png";
+    public static final String ICON_PATH_ROCKET_LAUNCHER_UNSELECTED = "Icons/rocketlauncher-unselected.png";
+    public static final String ICON_PATH_ROCKET_LAUNCHER_SELECTED = "Icons/rocketlauncher-selected.png";
 
     /**
      * CHARACTER TEXTURES

@@ -1,9 +1,6 @@
 package topdownshooter.Weapon.Projectiles;
 
-import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
 
 import topdownshooter.Core.Globals;
 import topdownshooter.Core.TextureFX;

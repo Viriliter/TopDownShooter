@@ -27,7 +27,7 @@ public class GamePanel extends JPanel {
         // Create Game Info Panel which shows player health inventory, level info, etc. 
         this.gameInfoPanel = new GameInfoPanel(config);
         this.gameInfoPanel.setParentPanel(this);
-        this.gameInfoPanel.setPreferredSize(new Dimension(windowProperties.windowWidth(), 100));
+        //this.gameInfoPanel.setPreferredSize(new Dimension(windowProperties.windowWidth(), 100));
 
         add(this.gameInfoPanel, BorderLayout.NORTH);
 
