@@ -7,12 +7,15 @@ import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Objects;
 
-public class SpriteAnimation {
-    private BufferedImage spriteSheet;
-    private BufferedImage[] subFrames;  // Preloaded animation frames
-    private int frameWidth, frameHeight;  // Size of each frame in sprite sheet
+public class SpriteAnimation implements Serializable{
+    private SpriteAnimationStruct struct = null;
+    private transient BufferedImage spriteSheet = null;
+    private transient BufferedImage[] subFrames = null;  // Preloaded animation frames
+    private int frameWidth = 0, frameHeight = 0;  // Size of each frame in sprite sheet
     private int totalFrames; // Total number of frames in the sprite sheet
     private int currentFrame = 0; // Current animation frame
     private int frameDelay; // Delay before switching frames
@@ -48,43 +51,40 @@ public class SpriteAnimation {
     }
 
     public SpriteAnimation(SpriteAnimationStruct struct) {
-            setSprite(struct);
-    }
-
-    public void setSprite(SpriteAnimationStruct struct) {
         try {
-            this.spriteSheet = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(struct.imagePath())));
-            this.totalFrames = struct.totalFrames();
-            this.frameDelay = struct.frameDelay();
-            this.rows = struct.rows();
-            this.columns = struct.columns();
-            this.offsetX = struct.xOffset();
-            this.offsetY = struct.yOffset();
-            this.defaultDelay = struct.defaultDelay();
-            this.delay = struct.defaultDelay();
-            
-            this.frameWidth = spriteSheet.getWidth() / columns;
-            this.frameHeight = spriteSheet.getHeight() / this.rows;
-            this.targetWidth = this.frameWidth;
-            this.targetHeight = this.frameHeight;
-            
-            // Preload all frames
-            this.subFrames = new BufferedImage[totalFrames];
-            for (int i = 0; i < totalFrames; i++) {
-                int row = i / columns;
-                int col = i % columns;
-                int frameX = col * frameWidth;
-                int frameY = row * frameHeight;
+            this.struct = struct;
+            this.spriteSheet = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(this.struct.imagePath)));
+            this.totalFrames = this.struct.totalFrames;
+            this.frameDelay = this.struct.frameDelay;
+            this.rows = this.struct.rows;
+            this.columns = this.struct.columns;
+            this.offsetX = this.struct.xOffset;
+            this.offsetY = this.struct.yOffset;
+            this.defaultDelay = this.struct.defaultDelay;
+            this.delay = this.struct.defaultDelay;
 
-                // Extract and store frame
-                this.subFrames[i] = spriteSheet.getSubimage(frameX, frameY, frameWidth, frameHeight);
-
-                //Graphics g = this.subFrames[i].createGraphics();
-                //g.drawImage(spriteSheet, 0, 0, frameWidth, frameHeight, frameX, frameY, frameX + frameWidth, frameY + frameHeight, null);
-                //g.dispose();
-            }
+            setSubFrames();
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void setSubFrames() {
+        this.frameWidth = this.spriteSheet.getWidth() / this.columns;
+        this.frameHeight = this.spriteSheet.getHeight() / this.rows;
+        this.targetWidth = this.frameWidth;
+        this.targetHeight = this.frameHeight;
+        
+        // Preload all frames
+        this.subFrames = new BufferedImage[totalFrames];
+        for (int i = 0; i < totalFrames; i++) {
+            int row = i / columns;
+            int col = i % columns;
+            int frameX = col * frameWidth;
+            int frameY = row * frameHeight;
+
+            // Extract and store frame
+            this.subFrames[i] = spriteSheet.getSubimage(frameX, frameY, frameWidth, frameHeight);
         }
     }
 
@@ -146,5 +146,13 @@ public class SpriteAnimation {
         }
 
         g2d.setTransform(oldTransform);
+    }
+
+    void writeObject(ObjectOutputStream oos) throws IOException {
+        oos.defaultWriteObject();
+        System.out.println("000000000000000000000000000000000000000000");
+        System.out.println(this.spriteSheet);
+        this.spriteSheet = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(this.struct.imagePath)));
+        setSubFrames();
     }
 }

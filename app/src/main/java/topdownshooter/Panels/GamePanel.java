@@ -2,6 +2,8 @@ package topdownshooter.Panels;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 import topdownshooter.Core.ConfigHandler.WindowProperties;
 import topdownshooter.Core.ConfigHandler;
@@ -94,4 +96,7 @@ public class GamePanel extends JPanel {
         this.parentPanel.showMenu();
     }
 
+    public void loadGame(FileInputStream inputStream) throws IOException, ClassNotFoundException {
+        this.gameAreaPanel.loadGame(inputStream);
+    }
 }

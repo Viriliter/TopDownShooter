@@ -4,6 +4,7 @@ import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -476,7 +477,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         this.gameLevel = null;
     }
 
-    private void serializeGame(ObjectOutputStream os) throws IOException{
+    private void serializeGameObjects(ObjectOutputStream os) throws IOException{
         // Serialize player object
         os.writeObject(this.player);
         
@@ -484,23 +485,29 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         os.writeObject(this.gameLevel);
 
         // Serialize zombie objects
-        for (Zombie z : this.zombies) {
-            os.writeObject(z);
-        }
+        os.writeObject(this.zombies);
 
         // Serialize projectiles
-        for (Projectile p : this.projectiles) {
-            os.writeObject(p);
-        }
+        os.writeObject(this.projectiles);
 
         // Serialize loots
-        for (Loot l : this.loots) {
-            os.writeObject(l);
-        }
+        os.writeObject(this.loots);
     }
 
-    private void createGameObjects(ObjectInputStream os) throws IOException{
+    private void createGameObjects(ObjectInputStream os) throws IOException, ClassNotFoundException{
         try {
+            this.player = (Player) os.readObject();
+        
+            this.gameLevel = (GameLevel) os.readObject();
+            this.gameLevel.setConfig(this.config);
+        
+            this.zombies = (ArrayList<Zombie>) os.readObject();
+            
+            this.projectiles = (ArrayList<Projectile>) os.readObject();
+            
+            this.loots = (ArrayList<Loot>) os.readObject();
+            
+            /*
             do {
                 Object object = os.readObject();
                 if (object instanceof GameLevel) {
@@ -508,49 +515,44 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
                     this.gameLevel.setConfig(this.config);
                 } else if (object instanceof Player) {
                     this.player = (Player) object;
-                } else if (object instanceof AbstractZombie) {
-                    Zombie zombie = (Zombie) object;
-                    this.zombies.add(zombie);                   
+                } else if (object instanceof ArrayList<?>) {
+                    ArrayList<?> list = (ArrayList<?>) object;
+                    // Get first element of the list to deduce its type 
+                    if (!list.isEmpty()) {
+                        Object firstElement = list.get(0);
+                        
+                        if (firstElement instanceof Zombie) {
+                            this.zombies = (ArrayList<Zombie>) list;
+                        } else if (firstElement instanceof Projectile) {
+                            this.projectiles = (ArrayList<Projectile>) list;
+                        } else if (firstElement instanceof Loot) {
+                            this.loots = (ArrayList<Loot>) list;
+                        } else {
+                            System.err.println("Array list is illegal to be serialized:" + firstElement.getClass().getName());
+                        }
+                    } else {
+                        System.err.println("Trying to serialize empty array list");
+                    }
                 } else {
-                    System.err.println("Illegal class to be serialized!");
+                    System.err.println("Illegal class to be serialized:" + object.getClass().getName());
                 }
             } while(true);
-            
-
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            */
+        } catch (EOFException e) {
+            // Reached to end of file
         }
     }
 
-    public void loadGame() {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Open File");
+    public void loadGame(FileInputStream inputStream) throws IOException, ClassNotFoundException{
+        if (inputStream==null) return;
 
-        int userSelection = fileChooser.showOpenDialog(null); // Open "Open File" dialog
+        ObjectInputStream os = new ObjectInputStream(inputStream);
+        
+        resetGame();
 
-        if (userSelection == JFileChooser.APPROVE_OPTION) {
-            File fileToOpen = fileChooser.getSelectedFile();
-
-            // Read content from the selected file
-            try {
-                FileInputStream loadedFile = new FileInputStream(fileToOpen);
-                try {
-                    ObjectInputStream os = new ObjectInputStream(loadedFile);
-                    
-                    resetGame();
-
-                    createGameObjects(os);
-                
-                    os.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
+        createGameObjects(os);
     
-                }
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
+        os.close();
     }
 
     public void saveGame() {
@@ -575,7 +577,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
                     try {
                         ObjectOutputStream os = new ObjectOutputStream(savedFile);
 
-                        serializeGame(os);
+                        serializeGameObjects(os);
                     
                         os.close();
                     } catch (IOException e) {
@@ -616,6 +618,14 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         this.backgroundSoundFX.stop();
 
         showGameOverDialog();
+    }
+
+    public void exit() {
+        this.gameTimer.stop();
+        if (this.fireRateTick != null) this.fireRateTick.reset();
+        
+        this.isGamePaused = true;  // Set to true to prevent player rotation on mouse movement
+        this.backgroundSoundFX.stop();
     }
 
     private void openInGameMenu() {

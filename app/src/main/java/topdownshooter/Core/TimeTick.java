@@ -6,14 +6,14 @@ public class TimeTick implements Serializable {
     private int tick = 0;
     private int defaultTick = 0;
     private int repeatCount = -1;
-    private Runnable action = null;
+    private SerializableRunnable action = null;
 
     public TimeTick(int defaultTick) {
         this.defaultTick = defaultTick;
         this.reset();
     }
 
-    public TimeTick(int defaultTick, Runnable action) {
+    public TimeTick(int defaultTick, SerializableRunnable action) {
         this.defaultTick = defaultTick;
         this.action = action;
         this.reset();
@@ -33,7 +33,7 @@ public class TimeTick implements Serializable {
         return this.tick;
     }
 
-    public void setAction(Runnable action) {
+    public void setAction(SerializableRunnable action) {
         this.action = action;
     }
 
@@ -62,15 +62,4 @@ public class TimeTick implements Serializable {
         return this.tick == 0; 
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("GameTick{");
-        sb.append("tick=" + this.tick + ", ");
-        sb.append("defaultTick=" + this.defaultTick + ", ");
-        sb.append("repeatCount=" + this.repeatCount + ", ");
-        sb.append("}");
-
-        return sb.toString();
-    }
 }

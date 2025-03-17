@@ -6,8 +6,9 @@ import topdownshooter.Weapon.WeaponType;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 
-public final class ConfigHandler {
+public final class ConfigHandler implements Serializable{
     public record WindowProperties (
         int windowWidth,
         int windowHeight,

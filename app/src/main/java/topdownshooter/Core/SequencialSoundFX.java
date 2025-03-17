@@ -1,5 +1,8 @@
 package topdownshooter.Core;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -9,18 +12,19 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineEvent;
 
-public class SequencialSoundFX {
-    private List<Clip> clips;
-    private int currentSoundIndex;
+public class SequencialSoundFX implements Serializable{
+    private List<String> paths = null;
+    private transient List<Clip> clips = null;
+    private int currentSoundIndex = 0;
     private AtomicBoolean isPlaying;
 
     public SequencialSoundFX(List<String> paths) {
-        this.currentSoundIndex = 0;
+        this.paths = paths;
         this.isPlaying = new AtomicBoolean(false);
 
         // Preload all the sound files
         this.clips = new ArrayList<>();
-        for (String path : paths) {
+        for (String path : this.paths) {
             clips.add(loadSound(path));
         }
     }
@@ -67,5 +71,18 @@ public class SequencialSoundFX {
         });
 
         this.currentSoundIndex = (this.currentSoundIndex + 1) % this.clips.size();
+    }
+
+    void writeObject(ObjectOutputStream oos) throws IOException {
+        oos.defaultWriteObject();
+        // FIXME Fix the bug after loading game: 
+        // Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException: Cannot invoke "java.util.List.isEmpty()" because "this.clips" is null
+        //at topdownshooter.Core.SequencialSoundFX.update(SequencialSoundFX.java:47)
+        System.out.println("-------------------------------------------");
+        // Preload all the sound files
+        this.clips = new ArrayList<>();
+        for (String path : this.paths) {
+            this.clips.add(loadSound(path));
+        }
     }
 }

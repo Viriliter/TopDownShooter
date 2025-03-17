@@ -109,7 +109,6 @@ public class GameInfoPanel extends JPanel implements ActionListener, MouseListen
             weaponSlots.put(WeaponType.ROCKETLAUNCHER, new WeaponSlot(iconRocketLauncherEmpty));
 
             for (WeaponType wt : weaponSlots.keySet()) {
-                System.out.println(wt);
                 add(this.weaponSlots.get(wt));  // Add the slot to the panel
             }
 

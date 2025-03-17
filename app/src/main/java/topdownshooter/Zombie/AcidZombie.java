@@ -11,7 +11,7 @@ import topdownshooter.Core.SpriteAnimation;
 public class AcidZombie extends AbstractZombie {
     private final int SPIT_RANGE = 500;
 
-    private Random random;
+    private static Random random = new Random(); // Reuse random instance
 
     public AcidZombie(ZombieProperties properties, int x, int y) {
         super(properties);
@@ -19,16 +19,12 @@ public class AcidZombie extends AbstractZombie {
         this.y = y;
         this.type = ZombieType.ACID;
 
-        this.random = new Random();
-
         this.spriteAnimation = new SpriteAnimation(Globals.ACID_ZOMBIE_MOVE);
         this.spriteAnimation.setTargetSize(WIDTH, HEIGHT);
     }
     
     public AcidZombie(int x, int y, double r, double health, int speed, int damage, int points, int range, ZombieType type) {
         super(x, y, r, health, speed, damage, points, range, type);
-
-        this.random = new Random();
 
         this.spriteAnimation = new SpriteAnimation(Globals.ACID_ZOMBIE_MOVE);
         this.spriteAnimation.setTargetSize(WIDTH, HEIGHT);

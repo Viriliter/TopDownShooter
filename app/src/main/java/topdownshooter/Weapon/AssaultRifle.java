@@ -9,7 +9,7 @@ import topdownshooter.Core.TimeTick;
 import topdownshooter.Weapon.Projectiles.Bullet;
 
 public class AssaultRifle extends AbstractWeapon {
-    private Random spreadRandom;   
+    private static Random spreadRandom = new Random(); // Reuse random instance   
     private final double MAX_SPREAD_ANGLE = 30;  // In degree
 
     public AssaultRifle(WeaponProperties properties) {
@@ -17,7 +17,6 @@ public class AssaultRifle extends AbstractWeapon {
 
         this.type = WeaponType.ASSAULTRIFLE;
 
-        this.spreadRandom = new Random();
         this.firingSoundFX = new SoundFX(Globals.FIRE_RIFLE_SOUND_FX_PATH);
     }
 
@@ -26,7 +25,6 @@ public class AssaultRifle extends AbstractWeapon {
                        TimeTick fireTick, WeaponType type) {
         super(damage, magazineCapacity, magazineCount, fireRate, reloadDuration, ammo, reloadTick, fireTick, type);
 
-        this.spreadRandom = new Random();
         this.firingSoundFX = new SoundFX(Globals.FIRE_RIFLE_SOUND_FX_PATH);
     }
 

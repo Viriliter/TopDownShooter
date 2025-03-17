@@ -8,7 +8,6 @@ import topdownshooter.Core.TimeTick;
 import topdownshooter.Weapon.Projectiles.Bullet;
 
 public class Pistol extends AbstractWeapon {
-
     public Pistol(WeaponProperties properties) {
         super(properties);
 

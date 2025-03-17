@@ -1,6 +1,8 @@
 package topdownshooter.Core;
 
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -9,13 +11,15 @@ import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
-public class SoundFX {
-    private Clip clip;
-    private FloatControl volumeControl;
+public class SoundFX implements Serializable{
+    private String path;
+    private transient Clip clip;
+    private transient FloatControl volumeControl;
 
     public SoundFX(String path) {
         try {
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(getClass().getClassLoader().getResourceAsStream(path));
+            this.path = path;
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(getClass().getClassLoader().getResourceAsStream(this.path));
             this.clip = AudioSystem.getClip();
             this.clip.open(audioStream);
 
@@ -107,5 +111,20 @@ public class SoundFX {
         }
     }
 
+    public void pause() {
+        // TODO add implementation
+    }
 
+    void writeObject(ObjectOutputStream oos) throws IOException {
+        oos.defaultWriteObject();
+        try {
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(getClass().getClassLoader().getResourceAsStream(this.path));
+            this.clip = AudioSystem.getClip();
+            this.clip.open(audioStream);
+
+            this.volumeControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+            e.printStackTrace();
+        }
+    }
 }

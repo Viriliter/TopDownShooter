@@ -32,7 +32,7 @@ public class GameLevel implements Serializable {
     private TimeTick waveTick;
     private TimeTick newWaveSuspendTick;
 
-    private Random random;
+    private static Random random = new Random(); // Reuse random instance
 
     public GameLevel(ConfigHandler config) {
         if (config == null) {
@@ -40,7 +40,6 @@ public class GameLevel implements Serializable {
         }
 
         this.config = config;
-        this.random = new Random();
 
         this.gameLevelStatus = GameLevelStatus.UNDEFINED;
         this.waveDuration = 0;
@@ -57,8 +56,6 @@ public class GameLevel implements Serializable {
 
     public GameLevel(int level, GameLevelStatus gameLevelStatus, int waveDuration, int ordinaryZombieCount, int crawlerZombieCount, int tankZombieCount,
                      int acidZombieCount, int spawnPeriod, TimeTick spawnTick, TimeTick waveTick, TimeTick newWaveSuspendTick) {
-        this.random = new Random();
-        
         this.level = level;
         this.gameLevelStatus = gameLevelStatus;
         this.waveDuration = 0;

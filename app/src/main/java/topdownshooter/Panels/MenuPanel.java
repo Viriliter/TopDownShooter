@@ -5,6 +5,9 @@ import javax.swing.*;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -141,6 +144,7 @@ public class MenuPanel extends JPanel {
     }
 
     public void showMenu() {
+        this.menuMusic.play(true, 5000);
         this.frame.getContentPane().removeAll();  // It will clear out if there is any GamePanel
 
         MenuPanel menuPanel = new MenuPanel(this.frame, config);
@@ -160,7 +164,73 @@ public class MenuPanel extends JPanel {
     }
 
     private void loadGame() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Open File");
+
+        int userSelection = fileChooser.showOpenDialog(null); // Open "Open File" dialog
+
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToOpen = fileChooser.getSelectedFile();
+
+            // Read content from the selected file
+            boolean isExceptionOccured = true;
+            try {
+                FileInputStream inputStream = new FileInputStream(fileToOpen);
+
+                GamePanel gamePanel = new GamePanel(frame, config);
+                gamePanel.setParentPanel(this);
+                gamePanel.loadGame(inputStream);
+
+                this.menuMusic.stop();
+                frame.getContentPane().removeAll();
+                
+                frame.add(gamePanel);
+                frame.revalidate();
+                frame.repaint();
+                isExceptionOccured = false;                    
+            } catch (FileNotFoundException e) {
+                JOptionPane.showMessageDialog(
+                    null,
+                    "No file given!",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+                );
     
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                JOptionPane.showMessageDialog(
+                    null,
+                    "Corrupted File!",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+                );
+    
+                e.printStackTrace();
+            } catch (IOException e) {
+                JOptionPane.showMessageDialog(
+                    null,
+                    "Cannot read file!",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+                );
+    
+                e.printStackTrace();
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(
+                    null,
+                    "Undefined error occured reading the file!",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+                );
+    
+                e.printStackTrace();
+            } finally {
+                // In case of exception, return to menu window
+                if (isExceptionOccured) {
+                    showMenu();
+                }
+            }
+        }   
     }
 
     private void help() {

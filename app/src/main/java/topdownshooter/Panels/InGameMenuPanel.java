@@ -1,21 +1,15 @@
 package topdownshooter.Panels;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.GridBagLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
-import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class InGameMenuPanel extends AbstractActionPanel{
@@ -78,12 +72,23 @@ public class InGameMenuPanel extends AbstractActionPanel{
     }
 
     private void saveGame() {
-        System.out.println("Saving game...");
-        this.parentPanel.getGameAreaPanel().saveGame();
+        try {
+            System.out.println("Saving game...");
+            this.parentPanel.getGameAreaPanel().saveGame();
+            System.out.println("Game Saved...");    
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(
+                null,
+                "Game cannot be saved!",
+                "Error",
+                JOptionPane.ERROR_MESSAGE
+            );
+        }
     }
 
     private void returnToMenu() {
         System.out.println("Returning to menu...");
+        this.parentPanel.getGameAreaPanel().exit();
         this.parentPanel.switchToMenu();
         this.close();
     }

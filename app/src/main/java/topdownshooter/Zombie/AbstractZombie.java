@@ -24,7 +24,6 @@ public abstract class AbstractZombie implements Zombie {
 
     protected SpriteAnimation spriteAnimation = null;
 
-
     public AbstractZombie() {}
 
     public AbstractZombie(ZombieProperties properties) {

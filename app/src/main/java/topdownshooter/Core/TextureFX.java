@@ -2,17 +2,18 @@ package topdownshooter.Core;
 
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.Objects;
 
 import javax.imageio.ImageIO;
 
-public class TextureFX {
-    private BufferedImage texture = null;
+public class TextureFX implements Serializable{
+    private transient BufferedImage texture = null;
+    private TextureFXStruct struct = null;
     private int targetWidth; 
     private int targetHeight;
     private int offsetX;
@@ -23,15 +24,15 @@ public class TextureFX {
 
     public TextureFX (TextureFXStruct struct) {
         try {
-            this.texture = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(struct.path())));
+            this.struct = struct;
+            this.texture = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(struct.path)));
             if (this.texture != null) {
                 this.targetWidth = this.texture.getWidth();
                 this.targetHeight = this.texture.getHeight();
-                this.offsetX = struct.offsetX();
-                this.offsetY = struct.offsetY();
-                this.defaultDelay = struct.defaultDelay();
+                this.offsetX = struct.offsetX;
+                this.offsetY = struct.offsetY;
+                this.defaultDelay = struct.defaultDelay;
                 this.delay = this.defaultDelay;
-                System.out.print(this.delay);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -63,5 +64,10 @@ public class TextureFX {
 
         g2d.setTransform(oldTransform);
 
+    }
+
+    void writeObject(ObjectOutputStream oos) throws IOException {
+        oos.defaultWriteObject();
+        this.texture = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(this.struct.path)));
     }
 }

@@ -7,7 +7,7 @@ import java.util.Random;
 import topdownshooter.Weapon.WeaponType;
 
 public abstract class PlayerItem implements Serializable{
-    private static final Random random = new Random(); // Reuse random instance
+    private static Random random = new Random(); // Reuse random instance
 
     public enum ItemType {
         UNDEFINED,
