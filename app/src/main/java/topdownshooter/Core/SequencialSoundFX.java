@@ -1,7 +1,7 @@
 package topdownshooter.Core;
 
 import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,8 +73,8 @@ public class SequencialSoundFX implements Serializable{
         this.currentSoundIndex = (this.currentSoundIndex + 1) % this.clips.size();
     }
 
-    void writeObject(ObjectOutputStream oos) throws IOException {
-        oos.defaultWriteObject();
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
         // FIXME Fix the bug after loading game: 
         // Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException: Cannot invoke "java.util.List.isEmpty()" because "this.clips" is null
         //at topdownshooter.Core.SequencialSoundFX.update(SequencialSoundFX.java:47)

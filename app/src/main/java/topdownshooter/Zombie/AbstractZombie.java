@@ -1,6 +1,8 @@
 package topdownshooter.Zombie;
 
 import java.awt.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.util.List;
 
 import topdownshooter.Core.ConfigHandler.ZombieProperties;
@@ -161,4 +163,9 @@ public abstract class AbstractZombie implements Zombie {
 
     @Override
     abstract public String toString();
+
+    @Override
+    public void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+    }
 }

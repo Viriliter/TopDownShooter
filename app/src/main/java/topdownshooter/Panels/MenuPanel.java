@@ -179,7 +179,6 @@ public class MenuPanel extends JPanel {
 
                 GamePanel gamePanel = new GamePanel(frame, config);
                 gamePanel.setParentPanel(this);
-                gamePanel.loadGame(inputStream);
 
                 this.menuMusic.stop();
                 frame.getContentPane().removeAll();
@@ -187,6 +186,9 @@ public class MenuPanel extends JPanel {
                 frame.add(gamePanel);
                 frame.revalidate();
                 frame.repaint();
+
+                gamePanel.loadGame(inputStream);
+
                 isExceptionOccured = false;                    
             } catch (FileNotFoundException e) {
                 JOptionPane.showMessageDialog(

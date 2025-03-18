@@ -3,7 +3,6 @@ package topdownshooter.Weapon;
 import topdownshooter.Core.ConfigHandler.WeaponProperties;
 import topdownshooter.Core.Globals;
 import topdownshooter.Core.SoundFX;
-import topdownshooter.Core.TimeTick;
 import topdownshooter.Weapon.Projectiles.ArmorPiercingBullet;
 
 public class SniperRifle extends AbstractWeapon {
@@ -11,13 +10,6 @@ public class SniperRifle extends AbstractWeapon {
         super(properties);
 
         this.type = WeaponType.SNIPERRIFLE;
-        this.firingSoundFX = new SoundFX(Globals.FIRE_RIFLE_SOUND_FX_PATH);
-    }
-
-    public SniperRifle(int damage, int magazineCapacity, int magazineCount, 
-                       int fireRate, int reloadDuration, int ammo, TimeTick reloadTick, 
-                       TimeTick fireTick, WeaponType type) {
-        super(damage, magazineCapacity, magazineCount, fireRate, reloadDuration, ammo, reloadTick, fireTick, type);
         this.firingSoundFX = new SoundFX(Globals.FIRE_RIFLE_SOUND_FX_PATH);
     }
 

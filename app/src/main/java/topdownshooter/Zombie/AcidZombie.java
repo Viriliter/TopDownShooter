@@ -10,6 +10,8 @@ import topdownshooter.Core.SpriteAnimation;
 
 public class AcidZombie extends AbstractZombie {
     private final int SPIT_RANGE = 500;
+    private static Random spreadRandom = new Random(); // Reuse random instance   
+    private final double MAX_SPREAD_ANGLE_DEG = 15;  // In degree
 
     private static Random random = new Random(); // Reuse random instance
 
@@ -42,7 +44,9 @@ public class AcidZombie extends AbstractZombie {
             double translatedX = this.x + WIDTH / 2 + this.spriteAnimation.getOffset().getX() * Math.cos(this.r) - this.spriteAnimation.getOffset().getY() * Math.sin(this.r);
             double translatedY = this.y + HEIGHT / 2 + this.spriteAnimation.getOffset().getX() * Math.sin(this.r) + this.spriteAnimation.getOffset().getY() * Math.cos(this.r);
 
-            return new AcidSpit((int) translatedX, (int) translatedY, this.r, (int) (this.damage*0.5));  // Ranged attacks only gives half damage
+            // Give some randomness for ranged attack of the acid zombie
+            double spreadAngle = spreadRandom.nextDouble(MAX_SPREAD_ANGLE_DEG) - (MAX_SPREAD_ANGLE_DEG / 2.0);  // In degree
+            return new AcidSpit((int) translatedX, (int) translatedY, this.r + Globals.degToRad(spreadAngle), (int) (this.damage*0.5));  // Ranged attacks only gives half damage
         }
         return null;
     }

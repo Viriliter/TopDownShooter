@@ -7,7 +7,7 @@ import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -72,8 +72,6 @@ public class SpriteAnimation implements Serializable{
     public void setSubFrames() {
         this.frameWidth = this.spriteSheet.getWidth() / this.columns;
         this.frameHeight = this.spriteSheet.getHeight() / this.rows;
-        this.targetWidth = this.frameWidth;
-        this.targetHeight = this.frameHeight;
         
         // Preload all frames
         this.subFrames = new BufferedImage[totalFrames];
@@ -148,9 +146,8 @@ public class SpriteAnimation implements Serializable{
         g2d.setTransform(oldTransform);
     }
 
-    void writeObject(ObjectOutputStream oos) throws IOException {
-        oos.defaultWriteObject();
-        System.out.println("000000000000000000000000000000000000000000");
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
         System.out.println(this.spriteSheet);
         this.spriteSheet = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(this.struct.imagePath)));
         setSubFrames();

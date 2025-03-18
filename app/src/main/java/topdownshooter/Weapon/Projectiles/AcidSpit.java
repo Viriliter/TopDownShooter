@@ -7,14 +7,8 @@ import java.awt.geom.AffineTransform;
 
 public class AcidSpit extends Projectile {
     private static final int EFFECTIVE_RANGE = 50;
-    protected int speed = 8;
+    protected int speed = 5;
     protected int size = 15;
-
-    public AcidSpit (int x, int y, double r) {
-        super(x, y, r);
-
-        this.type = ProjectileType.ACID_SPIT;
-    }
 
     public AcidSpit (int x, int y, double r, int damage) {
         super(x, y, r, damage);

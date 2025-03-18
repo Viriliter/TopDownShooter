@@ -5,12 +5,11 @@ import java.util.Random;
 import topdownshooter.Core.ConfigHandler.WeaponProperties;
 import topdownshooter.Core.Globals;
 import topdownshooter.Core.SoundFX;
-import topdownshooter.Core.TimeTick;
 import topdownshooter.Weapon.Projectiles.Bullet;
 
 public class AssaultRifle extends AbstractWeapon {
     private static Random spreadRandom = new Random(); // Reuse random instance   
-    private final double MAX_SPREAD_ANGLE = 30;  // In degree
+    private final double MAX_SPREAD_ANGLE_DEG = 30;  // In degree
 
     public AssaultRifle(WeaponProperties properties) {
         super(properties);
@@ -20,22 +19,14 @@ public class AssaultRifle extends AbstractWeapon {
         this.firingSoundFX = new SoundFX(Globals.FIRE_RIFLE_SOUND_FX_PATH);
     }
 
-    public AssaultRifle(int damage, int magazineCapacity, int magazineCount, 
-                       int fireRate, int reloadDuration, int ammo, TimeTick reloadTick, 
-                       TimeTick fireTick, WeaponType type) {
-        super(damage, magazineCapacity, magazineCount, fireRate, reloadDuration, ammo, reloadTick, fireTick, type);
-
-        this.firingSoundFX = new SoundFX(Globals.FIRE_RIFLE_SOUND_FX_PATH);
-    }
-
     @Override
     public Bullet fire(int x, int y, double r) {
         if (this.fireTick.isTimeOut() && this.ammo > 0) {
-            double spreadAngle = spreadRandom.nextDouble(MAX_SPREAD_ANGLE) - (MAX_SPREAD_ANGLE / 2.0);  // In degree
+            double spreadAngle = spreadRandom.nextDouble(MAX_SPREAD_ANGLE_DEG) - (MAX_SPREAD_ANGLE_DEG / 2.0);  // In degree
             fireTick.reset();
             this.ammo--;
             applySoundFX();
-            return new Bullet(x, y, r + Globals.degToRad(spreadAngle) , this.damage);
+            return new Bullet(x, y, r + Globals.degToRad(spreadAngle), this.damage);
         }
         return null;
     }

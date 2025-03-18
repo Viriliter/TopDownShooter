@@ -7,14 +7,6 @@ import topdownshooter.Core.TextureFX;
 import topdownshooter.Core.TextureFXStruct;
 
 public class ArmorPiercingBullet extends Projectile {
-    public ArmorPiercingBullet(int x, int y, double r) {
-        super(x, y, r, 0);
-
-        this.type = ProjectileType.ARMOR_PIERCING_BULLET;
-        this.projectileEffect = new TextureFX(new TextureFXStruct(Globals.BULLET_TEXTURE_PATH, -25, 0, 3));
-        this.projectileEffect.setTargetSize(50, 20);
-    }
-
     public ArmorPiercingBullet(int x, int y, double r, int damage) {
         super(x, y, r, damage);
 

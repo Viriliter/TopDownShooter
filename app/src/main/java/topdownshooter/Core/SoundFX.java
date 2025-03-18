@@ -1,7 +1,7 @@
 package topdownshooter.Core;
 
 import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 import javax.sound.sampled.AudioInputStream;
@@ -115,8 +115,8 @@ public class SoundFX implements Serializable{
         // TODO add implementation
     }
 
-    void writeObject(ObjectOutputStream oos) throws IOException {
-        oos.defaultWriteObject();
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
         try {
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(getClass().getClassLoader().getResourceAsStream(this.path));
             this.clip = AudioSystem.getClip();

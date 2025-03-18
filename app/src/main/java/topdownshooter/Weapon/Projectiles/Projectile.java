@@ -2,6 +2,8 @@ package topdownshooter.Weapon.Projectiles;
 
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 import topdownshooter.Core.TextureFX;
@@ -14,7 +16,7 @@ public abstract class Projectile implements Serializable{
     protected int speed = 30;
     protected ProjectileType type = ProjectileType.UNDEFINED;
 
-    protected TextureFX projectileEffect = null; 
+    protected transient TextureFX projectileEffect = null; 
 
     public Projectile(int x, int y, double r) {
         this.x = x;
@@ -69,4 +71,8 @@ public abstract class Projectile implements Serializable{
 
     @Override
     abstract public String toString();
+   
+    public void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+    }
 }

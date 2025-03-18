@@ -43,18 +43,19 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
     private GamePanel parentPanel = null;
     private ConfigHandler config;
 
+    private GameLevel gameLevel = null;
     private Player player = null;
     private ArrayList<Zombie> zombies = null;
     private ArrayList<Projectile> projectiles = null;
     private ArrayList<Loot> loots = null;
+
+    private int lootUpdateIndex = 0;
 
     private boolean isGamePaused = false;
     private Timer gameTimer;
     private TimeTick fireRateTick = null;
 
     private TileGenerator playgroundTileGenerator = null;
-
-    private GameLevel gameLevel = null;
 
     private SoundFX backgroundSoundFX = null;
 
@@ -68,6 +69,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
 
         this.config = config;
 
+        // Create game objects
         gameLevel = new GameLevel(this.config);
 
         player = new Player(this.config);
@@ -81,8 +83,6 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         this.playgroundTileGenerator = new TileGenerator(Globals.PLAYGROUND_TILE_PATH);
 
         this.backgroundSoundFX = new SoundFX(Globals.BACKGROUND_SOUND_FX_PATH);
-
-        gameTimer.start();
     }
 
     @Override
@@ -219,8 +219,9 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
     private void updateLoots() {
         if (this.player==null || this.loots==null) return;
 
+        lootUpdateIndex = lootUpdateIndex % 100;
         for (Loot loot : this.loots) {
-            loot.update();
+            loot.update(lootUpdateIndex);
         }
 
         // Remove old loots
@@ -446,6 +447,10 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         gameInfoPanel.updateGameRemainingTime(this.gameLevel==null ? 0 : this.gameLevel.getRemainingTime());
         gameInfoPanel.updateRemainingZombieCount(this.gameLevel==null ? 0 : this.gameLevel.getRemainingZombies());
         gameInfoPanel.updatePlayerInventory(this.player.getInventoryInfo());
+    }
+
+    public void startGame() {
+        gameTimer.start();
     }
 
     public void pauseGame() {

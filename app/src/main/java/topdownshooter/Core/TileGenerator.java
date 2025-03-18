@@ -3,7 +3,7 @@ package topdownshooter.Core;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -38,8 +38,8 @@ public class TileGenerator implements Serializable{
         }
     }
     
-    void writeObject(ObjectOutputStream oos) throws IOException {
-        oos.defaultWriteObject();
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
         this.tileImage = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(this.tilePath)));
         if (tileImage == null) {
             throw new IOException("Failed to load background tile image.");

@@ -66,6 +66,8 @@ public class GamePanel extends JPanel {
         add(layeredPane, BorderLayout.CENTER);
 
         setVisible(true);
+
+        this.gameAreaPanel.startGame();
     }
 
     public GameAreaPanel getGameAreaPanel() {
@@ -98,5 +100,6 @@ public class GamePanel extends JPanel {
 
     public void loadGame(FileInputStream inputStream) throws IOException, ClassNotFoundException {
         this.gameAreaPanel.loadGame(inputStream);
+        this.gameAreaPanel.startGame();
     }
 }

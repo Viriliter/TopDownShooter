@@ -3,6 +3,8 @@ package topdownshooter.Zombie;
 import java.util.List;
 
 import java.awt.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 import topdownshooter.Core.Position;
@@ -34,4 +36,5 @@ public interface Zombie extends Serializable{
     
     public int getY();
 
+    public void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException;
 }
