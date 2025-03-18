@@ -21,6 +21,7 @@ public class MenuPanel extends JPanel {
     private ConfigHandler config = null;
     private Image bgImage;
     private SoundFX menuMusic = null;
+    private GamePanel gamePanel = null;
 
     public MenuPanel(JFrame frame, ConfigHandler config) {
         this.frame = frame;
@@ -74,7 +75,7 @@ public class MenuPanel extends JPanel {
         
         // Exit button
         JButton exitButton = createStyledButton("Exit");
-        exitButton.addActionListener(e -> exitGame());
+        exitButton.addActionListener(e -> exit());
         
         // Add buttons to the panel
         buttonPanel.add(Box.createVerticalGlue()); // Push buttons to center
@@ -144,6 +145,8 @@ public class MenuPanel extends JPanel {
     }
 
     public void showMenu() {
+        this.gamePanel = null;
+
         this.menuMusic.play(true, 5000);
         this.frame.getContentPane().removeAll();  // It will clear out if there is any GamePanel
 
@@ -156,11 +159,14 @@ public class MenuPanel extends JPanel {
         this.menuMusic.stop();
 
         frame.getContentPane().removeAll();
-        GamePanel gamePanel = new GamePanel(frame, config);
-        gamePanel.setParentPanel(this);
-        frame.add(gamePanel);
+        this.gamePanel = new GamePanel(frame, config);
+        this.gamePanel.setParentPanel(this);
+
+        frame.add(this.gamePanel);
         frame.revalidate();
         frame.repaint();
+
+        this.gamePanel.startGame();
     }
 
     private void loadGame() {
@@ -177,17 +183,18 @@ public class MenuPanel extends JPanel {
             try {
                 FileInputStream inputStream = new FileInputStream(fileToOpen);
 
-                GamePanel gamePanel = new GamePanel(frame, config);
-                gamePanel.setParentPanel(this);
+                this.menuMusic.pause();
+                this.gamePanel = new GamePanel(frame, config);
+                this.gamePanel.setParentPanel(this);
+                this.gamePanel.loadGame(inputStream);
 
-                this.menuMusic.stop();
                 frame.getContentPane().removeAll();
-                
-                frame.add(gamePanel);
+                frame.add(this.gamePanel);
                 frame.revalidate();
                 frame.repaint();
 
-                gamePanel.loadGame(inputStream);
+                this.menuMusic.stop();
+                this.gamePanel.startGame();
 
                 isExceptionOccured = false;                    
             } catch (FileNotFoundException e) {
@@ -202,7 +209,7 @@ public class MenuPanel extends JPanel {
             } catch (ClassNotFoundException e) {
                 JOptionPane.showMessageDialog(
                     null,
-                    "Corrupted File!",
+                    "Corrupted file!",
                     "Error",
                     JOptionPane.ERROR_MESSAGE
                 );
@@ -229,6 +236,8 @@ public class MenuPanel extends JPanel {
             } finally {
                 // In case of exception, return to menu window
                 if (isExceptionOccured) {
+                    this.gamePanel.exitGame();
+
                     showMenu();
                 }
             }
@@ -286,6 +295,7 @@ public class MenuPanel extends JPanel {
         // Create and display a dialog with instructions on how to play the game
         String helpText = "<html><h2>Credits</h2>"
             + "<p> This top down view zombie shooter game created for BIL015 course project.</p>"
+            + "<p> AI generated game wallpaper and soundtrack used. For more informationi visit the websites: https://deepai.org/ and  https://www.mureka.ai .</p>"
             + "<p><b>Author:</b></p>"
             + "<ul>"
             + "<li><b>Mert LİMONCUOĞLU</b></li>"
@@ -321,7 +331,7 @@ public class MenuPanel extends JPanel {
         helpDialog.setVisible(true);  // Show the dialog
     }
 
-    private void exitGame() {
+    private void exit() {
         // Confirm the exit with the user
         int response = JOptionPane.showConfirmDialog(frame, 
             "Are you sure you want to exit the game?", "Exit Game", 

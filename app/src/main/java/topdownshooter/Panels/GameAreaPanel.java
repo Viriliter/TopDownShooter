@@ -34,12 +34,11 @@ import topdownshooter.Weapon.Projectiles.Projectile;
 import topdownshooter.Weapon.Projectiles.ProjectileType;
 import topdownshooter.Weapon.Projectiles.Rocket;
 import topdownshooter.Weapon.Projectiles.ShotgunPellets;
-import topdownshooter.Zombie.AbstractZombie;
 import topdownshooter.Zombie.AcidZombie;
 import topdownshooter.Zombie.Zombie;
 import topdownshooter.Zombie.ZombieType;
 
-public class GameAreaPanel extends JPanel implements ActionListener, KeyListener, MouseListener, MouseMotionListener{
+public class GameAreaPanel extends JPanel implements ActionListener, KeyListener{
     private GamePanel parentPanel = null;
     private ConfigHandler config;
 
@@ -49,9 +48,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
     private ArrayList<Projectile> projectiles = null;
     private ArrayList<Loot> loots = null;
 
-    private int lootUpdateIndex = 0;
-
-    private boolean isGamePaused = false;
+    private static boolean isGamePaused = false;
     private Timer gameTimer;
     private TimeTick fireRateTick = null;
 
@@ -64,9 +61,38 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         requestFocusInWindow();
         setBackground(Color.BLACK);
         addKeyListener(this);
-        addMouseListener(this);
-        addMouseMotionListener(this);
 
+        // Mouse Movement Detection
+        this.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                if (GameAreaPanel.isGamePaused) return;  // Do not move player when game is paused
+
+                double rRad = Math.atan2(e.getY() - player.getY(), e.getX() - player.getX());
+                player.rotate(rRad);
+            }
+
+            @Override
+            public void mouseDragged(MouseEvent e) {
+                if (GameAreaPanel.isGamePaused) return;  // Do not move player when game is paused
+
+                double rRad = Math.atan2(e.getY() - player.getY(), e.getX() - player.getX());
+                player.rotate(rRad);
+            }
+        });
+
+        // Mouse Click Detection
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                startFireTimer();
+            }
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                stopFire();
+            }
+        });
+        
         this.config = config;
 
         // Create game objects
@@ -130,9 +156,8 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
 
             WeaponType weaponPrize = this.gameLevel.startWave();                
 
-            boolean isNewWeaponAdded = false;
             if (weaponPrize!=null && weaponPrize!=WeaponType.UNDEFINED) {
-                isNewWeaponAdded = this.player.addNewWeapon(config, weaponPrize);
+                this.player.addNewWeapon(config, weaponPrize);
             }
             
             String message = "Wave " + this.gameLevel.getLevel() + " comming!";
@@ -219,9 +244,8 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
     private void updateLoots() {
         if (this.player==null || this.loots==null) return;
 
-        lootUpdateIndex = lootUpdateIndex % 100;
         for (Loot loot : this.loots) {
-            loot.update(lootUpdateIndex);
+            loot.update();
         }
 
         // Remove old loots
@@ -450,11 +474,12 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
     }
 
     public void startGame() {
+        GameAreaPanel.isGamePaused = false;
         gameTimer.start();
     }
 
     public void pauseGame() {
-        this.isGamePaused = true;
+        GameAreaPanel.isGamePaused = true;
         gameTimer.stop();
         this.backgroundSoundFX.stop();
     }
@@ -463,7 +488,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         requestFocus();
 
         gameTimer.start();
-        this.isGamePaused = false;
+        GameAreaPanel.isGamePaused = false;
         this.backgroundSoundFX.play(true);
     }
 
@@ -475,6 +500,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
     }
 
     private void resetGame() {
+        this.loots.clear();
         this.projectiles.clear();
         this.zombies.clear();
 
@@ -499,6 +525,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         os.writeObject(this.loots);
     }
 
+    @SuppressWarnings("unchecked")
     private void createGameObjects(ObjectInputStream os) throws IOException, ClassNotFoundException{
         try {
             this.player = (Player) os.readObject();
@@ -615,22 +642,22 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
     }
 
     public void endGame() {
-        this.gameTimer.stop();
+        if (this.gameTimer!=null) this.gameTimer.stop();
         if (this.fireRateTick != null) this.fireRateTick.reset();
         
-        this.isGamePaused = true;  // Set to true to prevent player rotation on mouse movement
+        GameAreaPanel.isGamePaused = true;  // Set to true to prevent player rotation on mouse movement
 
-        this.backgroundSoundFX.stop();
+        if (this.backgroundSoundFX!=null) this.backgroundSoundFX.stop();
 
         showGameOverDialog();
     }
 
     public void exit() {
-        this.gameTimer.stop();
+        if (this.gameTimer!=null) this.gameTimer.stop();
         if (this.fireRateTick != null) this.fireRateTick.reset();
         
-        this.isGamePaused = true;  // Set to true to prevent player rotation on mouse movement
-        this.backgroundSoundFX.stop();
+        GameAreaPanel.isGamePaused = true;  // Set to true to prevent player rotation on mouse movement
+        if (this.backgroundSoundFX!=null) this.backgroundSoundFX.stop();
     }
 
     private void openInGameMenu() {
@@ -661,34 +688,4 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
 
     @Override
     public void keyTyped(KeyEvent e) { }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {}
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-        startFireTimer();
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-        stopFire();
-    }
-    
-    @Override
-    public void mouseExited(MouseEvent e) {}
-
-    @Override
-    public void mouseClicked(MouseEvent e) {}
-
-    @Override
-    public void mouseDragged(MouseEvent e) {}
-
-    @Override
-    public void mouseMoved(MouseEvent e) {
-        if (this.isGamePaused) return;  // Do not move player when game is paused
-
-        double rRad = Math.atan2(e.getY() - player.getY(), e.getX() - player.getX());
-        player.rotate(rRad);
-    }
 }

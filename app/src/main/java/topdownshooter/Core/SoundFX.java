@@ -15,16 +15,19 @@ public class SoundFX implements Serializable{
     private String path;
     private transient Clip clip;
     private transient FloatControl volumeControl;
+    private long lastClipPosition = 0;  // Stores paused position of the clip
 
     public SoundFX(String path) {
+        this.path = path;
+        initializeClip();
+    }
+
+    private void initializeClip() {
         try {
-            this.path = path;
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(getClass().getClassLoader().getResourceAsStream(this.path));
             this.clip = AudioSystem.getClip();
             this.clip.open(audioStream);
-
             this.volumeControl = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
-
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
         }
@@ -33,23 +36,27 @@ public class SoundFX implements Serializable{
     private void fadeOutStop(int fadeOutDurationMs) {
         if (this.clip != null && this.clip.isRunning()) {
             new Thread(() -> {
-                float minVolume = volumeControl.getMinimum(); // Lowest volume (-80 dB)
+                float minVolume = volumeControl.getMinimum();
                 float currentVolume = volumeControl.getValue();
                 int steps = 30; // Number of steps in fade-out
                 int stepDelay = fadeOutDurationMs / steps;
 
                 for (int i = 0; i < steps; i++) {
                     currentVolume -= (currentVolume - minVolume) / (steps - i);
+                    currentVolume = Math.max(currentVolume, minVolume); // Prevent volume going below min
                     volumeControl.setValue(currentVolume);
+
                     try {
                         Thread.sleep(stepDelay);
                     } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
                         e.printStackTrace();
                     }
                 }
                 
                 this.clip.stop(); // Stop music after fade-out
                 this.clip.setFramePosition(0); // Reset for next play
+                this.lastClipPosition = 0;
             }).start();
         }
     }
@@ -59,18 +66,23 @@ public class SoundFX implements Serializable{
             this.clip.stop(); // Stop the music immediately
             this.clip.setFramePosition(0); // Reset to the beginning for next play
         }
+        this.lastClipPosition = 0;
     }
 
     public void play(boolean loop) {
         if (this.clip != null && !this.clip.isRunning()) {
             new Thread(() -> {
-                this.clip.setFramePosition(0); // Start from beginning
+                if (this.lastClipPosition > 0) {
+                    clip.setMicrosecondPosition(this.lastClipPosition); // Resume from paused position                
+                } else {
+                    this.clip.setFramePosition(0); // Start from beginning
+                }
+
                 if (loop) {
                     this.clip.loop(Clip.LOOP_CONTINUOUSLY);
                 } else {
                     this.clip.start();
                 }
-
             }).start();
         }
     }
@@ -93,10 +105,15 @@ public class SoundFX implements Serializable{
     }
 
     public void delayedPlay(boolean loop, int delayDurationMS) {
-        if (this.clip != null) {
+        if (this.clip != null && !this.clip.isRunning()) {
             new Thread(() -> {
                 try {
-                    this.clip.setFramePosition(0); // Start from beginning
+                    if (this.lastClipPosition > 0) {
+                        clip.setMicrosecondPosition(this.lastClipPosition); // Resume from paused position                
+                    } else {
+                        this.clip.setFramePosition(0); // Start from beginning
+                    }
+
                     Thread.sleep(delayDurationMS); // Delay of 1 second before playing the next sound
 
                     if (loop) {
@@ -112,7 +129,10 @@ public class SoundFX implements Serializable{
     }
 
     public void pause() {
-        // TODO add implementation
+        if (this.clip != null && this.clip.isRunning()) {
+            this.lastClipPosition = this.clip.getMicrosecondPosition(); // Save current position
+            this.clip.stop();
+        }
     }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {

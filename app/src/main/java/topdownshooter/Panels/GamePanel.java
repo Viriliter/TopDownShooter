@@ -95,11 +95,20 @@ public class GamePanel extends JPanel {
     }
 
     public void switchToMenu() {
+        exitGame();
         this.parentPanel.showMenu();
+    }
+
+    public void startGame() {
+        this.gameAreaPanel.startGame();
     }
 
     public void loadGame(FileInputStream inputStream) throws IOException, ClassNotFoundException {
         this.gameAreaPanel.loadGame(inputStream);
         this.gameAreaPanel.startGame();
+    }
+
+    public void exitGame() {
+        this.gameAreaPanel.exit();
     }
 }
