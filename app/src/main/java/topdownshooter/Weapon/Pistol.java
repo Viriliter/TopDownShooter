@@ -15,7 +15,7 @@ public class Pistol extends AbstractWeapon {
         
         this.flashAnimation = new SpriteAnimation(Globals.MUZZLE_ANIMATION);
         this.flashAnimation.setTargetSize(20, 20);
-        this.flashAnimation.setRotationOffset(Globals.degToRad(-90));
+        this.flashAnimation.setRotationOffset(Globals.degToRad(90));
         this.flashAnimation.setRepeat(0);
     }
 

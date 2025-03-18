@@ -70,7 +70,7 @@ public class SoundFX implements Serializable{
     }
 
     public void play(boolean loop) {
-        if (this.clip != null && !this.clip.isRunning()) {
+        if (this.clip != null) {
             new Thread(() -> {
                 if (this.lastClipPosition > 0) {
                     clip.setMicrosecondPosition(this.lastClipPosition); // Resume from paused position                

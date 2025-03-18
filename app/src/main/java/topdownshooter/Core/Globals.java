@@ -70,9 +70,9 @@ public interface Globals {
     public static final SpriteAnimationStruct HUNTER_PISTOL_IDLE = new SpriteAnimationStruct("Textures/Survivor/Pistol/survivor_pistol_idle.png", 20, FRAME_DELAY, 5, 4, 36, 15);
     public static final SpriteAnimationStruct HUNTER_PISTOL_MOVE = new SpriteAnimationStruct("Textures/Survivor/Pistol/survivor_pistol_move.png", 20, FRAME_DELAY, 3, 7, 36, 15);
     public static final SpriteAnimationStruct HUNTER_PISTOL_SHOOT = new SpriteAnimationStruct("Textures/Survivor/Pistol/survivor_pistol_shoot.png", 3, FRAME_DELAY, 1, 3, 36, 15);
-    public static final SpriteAnimationStruct HUNTER_RIFLE_IDLE = new SpriteAnimationStruct("Textures/Survivor/Rifle/survivor_rifle_idle.png", 20, FRAME_DELAY, 7, 3, 30, 12);
-    public static final SpriteAnimationStruct HUNTER_RIFLE_MOVE = new SpriteAnimationStruct("Textures/Survivor/Rifle/survivor_rifle_move.png", 20, FRAME_DELAY, 7, 3, 30, 12);
-    public static final SpriteAnimationStruct HUNTER_RIFLE_SHOOT = new SpriteAnimationStruct("Textures/Survivor/Rifle/survivor_rifle_shoot.png", 3, FRAME_DELAY, 1, 3, 30, 12);
+    public static final SpriteAnimationStruct HUNTER_RIFLE_IDLE = new SpriteAnimationStruct("Textures/Survivor/Rifle/survivor_rifle_idle.png", 20, FRAME_DELAY, 7, 3, 36, 15);
+    public static final SpriteAnimationStruct HUNTER_RIFLE_MOVE = new SpriteAnimationStruct("Textures/Survivor/Rifle/survivor_rifle_move.png", 20, FRAME_DELAY, 7, 3, 36, 15);
+    public static final SpriteAnimationStruct HUNTER_RIFLE_SHOOT = new SpriteAnimationStruct("Textures/Survivor/Rifle/survivor_rifle_shoot.png", 3, FRAME_DELAY, 1, 3, 36, 15);
     public static final SpriteAnimationStruct HUNTER_SHOTGUN_IDLE = new SpriteAnimationStruct("Textures/Survivor/Shotgun/survivor_shotgun_idle.png", 20, FRAME_DELAY, 7, 3, 30, 12);
     public static final SpriteAnimationStruct HUNTER_SHOTGUN_MOVE = new SpriteAnimationStruct("Textures/Survivor/Shotgun/survivor_shotgun_move.png", 20, FRAME_DELAY, 7, 3, 30, 12);
     public static final SpriteAnimationStruct HUNTER_SHOTGUN_SHOOT = new SpriteAnimationStruct("Textures/Survivor/Shotgun/survivor_shotgun_shoot.png", 3, FRAME_DELAY, 1, 3, 30, 12);
@@ -82,12 +82,12 @@ public interface Globals {
 
     public static final SpriteAnimationStruct ORDINARY_ZOMBIE_MOVE = new SpriteAnimationStruct("Textures/Zombie/ordinary_zombie_move.png", 17, FRAME_DELAY, 6, 3, 30, 12);
     public static final SpriteAnimationStruct ORDINARY_ZOMBIE_ATTACK = new SpriteAnimationStruct("Textures/Zombie/ordinary_zombie_attack.png", 9, FRAME_DELAY, 3, 3, 30, 12);
-    public static final SpriteAnimationStruct CRAWLER_ZOMBIE_MOVE = new SpriteAnimationStruct("Textures/Zombie/ordinary_zombie_move.png", 17, FRAME_DELAY, 6, 3, 30, 12);
-    public static final SpriteAnimationStruct CRAWLER_ZOMBIE_ATTACK = new SpriteAnimationStruct("Textures/Zombie/ordinary_zombie_attack.png", 9, FRAME_DELAY, 3, 3, 30, 12);
+    public static final SpriteAnimationStruct CRAWLER_ZOMBIE_MOVE = new SpriteAnimationStruct("Textures/Zombie/crawler_zombie_move.png", 23, FRAME_DELAY, 5, 5, 30, 12);
+    public static final SpriteAnimationStruct CRAWLER_ZOMBIE_ATTACK = new SpriteAnimationStruct("Textures/Zombie/crawler_zombie_attack.png", 23, FRAME_DELAY, 5, 5, 30, 12);
     public static final SpriteAnimationStruct ACID_ZOMBIE_MOVE = new SpriteAnimationStruct("Textures/Zombie/acid_zombie_move.png", 17, FRAME_DELAY, 6, 3, 30, 12);
     public static final SpriteAnimationStruct ACID_ZOMBIE_ATTACK = new SpriteAnimationStruct("Textures/Zombie/acid_zombie_attack.png", 9, FRAME_DELAY, 3, 3, 30, 12);
-    public static final SpriteAnimationStruct TANK_ZOMBIE_MOVE = new SpriteAnimationStruct("Textures/Zombie/acid_zombie_move.png", 17, FRAME_DELAY, 6, 3, 30, 12);
-    public static final SpriteAnimationStruct TANK_ZOMBIE_ATTACK = new SpriteAnimationStruct("Textures/Zombie/acid_zombie_attack.png", 9, FRAME_DELAY, 3, 3, 30, 12);
+    public static final SpriteAnimationStruct TANK_ZOMBIE_MOVE = new SpriteAnimationStruct("Textures/Zombie/tank_zombie_move.png", 42, FRAME_DELAY, 9, 5, 30, 12);
+    public static final SpriteAnimationStruct TANK_ZOMBIE_ATTACK = new SpriteAnimationStruct("Textures/Zombie/tank_zombie_attack.png", 42, FRAME_DELAY, 9, 5, 30, 12);
 
     /**
      * MISCS TEXTURES
@@ -96,7 +96,7 @@ public interface Globals {
     public static final SpriteAnimationStruct LARGE_MEDIC_ANIMATION = new SpriteAnimationStruct("Textures/Miscs/large_medic_pack.png", 35, 1, 7, 5, 0, 0);
     public static final SpriteAnimationStruct SMALL_MEDIC_ANIMATION = new SpriteAnimationStruct("Textures/Miscs/small_medic_pack.png", 42, 1, 9, 5, 0, 0);
 
-    public static final SpriteAnimationStruct MUZZLE_ANIMATION = new SpriteAnimationStruct("Textures/Miscs/fire.png", 16, FRAME_DELAY, 4, 4, 70, 40);
+    public static final SpriteAnimationStruct MUZZLE_ANIMATION = new SpriteAnimationStruct("Textures/Miscs/fire.png", 16, FRAME_DELAY, 4, 4, 40, 12);
 
     //public static final String ROCKET_TEXTURE_PATH = "Textures/Miscs/bullet_fx.png";
     public static final String BULLET_TEXTURE_PATH = "Textures/Miscs/bullet_fx.png";
@@ -116,7 +116,8 @@ public interface Globals {
     public static final String FIRE_PISTOL_SOUND_FX_PATH = "Sounds/Weapons/fire-pistol.wav";
     public static final String FIRE_RIFLE_SOUND_FX_PATH = "Sounds/Weapons/fire-rifle.wav";
     public static final String FIRE_SHOTGUN_SOUND_FX_PATH = "Sounds/Weapons/fire-shotgun.wav";
-    public static final String FIRE_ROCKET_LAUNCHER_SOUND_FX_PATH = "Sounds/Weapons/fire-shotgun.wav";
+    public static final String FIRE_SNIPER_RIFLE_SOUND_FX_PATH = "Sounds/Weapons/fire-sniper-rifle.wav";
+    public static final String FIRE_ROCKET_LAUNCHER_SOUND_FX_PATH = "Sounds/Weapons/fire-rocket-launcher.wav";
     public static final String EMPTY_GUN_CLICK_SOUND_FX_PATH = "Sounds/Weapons/empty-gun-click.wav";
     
     public static final String BACKGROUND_SOUND_FX_PATH = "Sounds/Background/wind.wav";

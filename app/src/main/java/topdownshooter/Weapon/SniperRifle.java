@@ -10,7 +10,7 @@ public class SniperRifle extends AbstractWeapon {
         super(properties);
 
         this.type = WeaponType.SNIPERRIFLE;
-        this.firingSoundFX = new SoundFX(Globals.FIRE_RIFLE_SOUND_FX_PATH);
+        this.firingSoundFX = new SoundFX(Globals.FIRE_SNIPER_RIFLE_SOUND_FX_PATH);
     }
 
     @Override

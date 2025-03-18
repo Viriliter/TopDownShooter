@@ -62,7 +62,6 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         setBackground(Color.BLACK);
         addKeyListener(this);
 
-        // Mouse Movement Detection
         this.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {
@@ -81,7 +80,6 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
             }
         });
 
-        // Mouse Click Detection
         this.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent e) {

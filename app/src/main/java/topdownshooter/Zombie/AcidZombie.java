@@ -24,13 +24,6 @@ public class AcidZombie extends AbstractZombie {
         this.spriteAnimation = new SpriteAnimation(Globals.ACID_ZOMBIE_MOVE);
         this.spriteAnimation.setTargetSize(WIDTH, HEIGHT);
     }
-    
-    public AcidZombie(int x, int y, double r, double health, int speed, int damage, int points, int range, ZombieType type) {
-        super(x, y, r, health, speed, damage, points, range, type);
-
-        this.spriteAnimation = new SpriteAnimation(Globals.ACID_ZOMBIE_MOVE);
-        this.spriteAnimation.setTargetSize(WIDTH, HEIGHT);
-    }
 
     @Override
     public void draw(Graphics g) {

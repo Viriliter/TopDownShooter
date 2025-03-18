@@ -62,63 +62,10 @@ public class Player extends JPanel {
         this.inventory = new LinkedHashMap<WeaponType, Weapon>();
         // Every player starts with a pistol
         addNewWeapon(config, WeaponType.PISTOL);
-        //this.inventory.add(WeaponFactory.createWeapon(config, WeaponType.ASSAULTRIFLE));
-        //this.inventory.add(WeaponFactory.createWeapon(config, WeaponType.SHOTGUN));
-        //this.inventory.add(WeaponFactory.createWeapon(config, WeaponType.SNIPERRIFLE));
-        //this.inventory.add(WeaponFactory.createWeapon(config, WeaponType.ROCKETLAUNCHER));
-
-        this.walkSoundFX = new SequencialSoundFX(Globals.HUNTER_SOUND_FX_PATH);
-    }
-
-    public Player(int score, double health, int x, int y, int dx, int dy, double r, int speed, LinkedHashMap<WeaponType, Weapon> inventory, WeaponType currentWeaponIndex) {
-        this.score = score;
-        this.health = health;
-        this.x = x;
-        this.y = y;
-        this.dx = dx;
-        this.dy = dy;
-        this.r = r;
-        this.speed = speed;
-        this.inventory = inventory;
-        this.currentWeaponType = currentWeaponIndex;
-
-        this.spriteAnimations = new HashMap<>();
-
-        Map<PlayerState, SpriteAnimation> pistolAnimations = new HashMap<>();
-        pistolAnimations.put(PlayerState.IDLE, new SpriteAnimation(Globals.HUNTER_PISTOL_IDLE));
-        pistolAnimations.put(PlayerState.MOVE, new SpriteAnimation(Globals.HUNTER_PISTOL_MOVE));
-        pistolAnimations.put(PlayerState.SHOOT, new SpriteAnimation(Globals.HUNTER_PISTOL_SHOOT));
-        this.spriteAnimations.put(WeaponType.PISTOL, pistolAnimations);
-
-        Map<PlayerState, SpriteAnimation> assultRifleAnimations = new HashMap<>();
-        assultRifleAnimations.put(PlayerState.IDLE, new SpriteAnimation(Globals.HUNTER_RIFLE_IDLE));
-        assultRifleAnimations.put(PlayerState.MOVE, new SpriteAnimation(Globals.HUNTER_RIFLE_MOVE));
-        assultRifleAnimations.put(PlayerState.SHOOT, new SpriteAnimation(Globals.HUNTER_RIFLE_SHOOT));
-        this.spriteAnimations.put(WeaponType.ASSAULTRIFLE, assultRifleAnimations);
-
-        Map<PlayerState, SpriteAnimation> shotgunAnimations = new HashMap<>();
-        shotgunAnimations.put(PlayerState.IDLE, new SpriteAnimation(Globals.HUNTER_SHOTGUN_IDLE));
-        shotgunAnimations.put(PlayerState.MOVE, new SpriteAnimation(Globals.HUNTER_SHOTGUN_MOVE));
-        shotgunAnimations.put(PlayerState.SHOOT, new SpriteAnimation(Globals.HUNTER_SHOTGUN_SHOOT));
-        this.spriteAnimations.put(WeaponType.SHOTGUN, shotgunAnimations);
-
-        Map<PlayerState, SpriteAnimation> sniperRifleAnimations = new HashMap<>();
-        sniperRifleAnimations.put(PlayerState.IDLE, new SpriteAnimation(Globals.HUNTER_RIFLE_IDLE));
-        sniperRifleAnimations.put(PlayerState.MOVE, new SpriteAnimation(Globals.HUNTER_RIFLE_MOVE));
-        sniperRifleAnimations.put(PlayerState.SHOOT, new SpriteAnimation(Globals.HUNTER_RIFLE_SHOOT));
-        this.spriteAnimations.put(WeaponType.SNIPERRIFLE, sniperRifleAnimations);
-        
-        Map<PlayerState, SpriteAnimation> rocketLauncherAnimations = new HashMap<>();
-        rocketLauncherAnimations.put(PlayerState.IDLE, new SpriteAnimation(Globals.HUNTER_ROCKET_LAUNCHER_MOVE));
-        rocketLauncherAnimations.put(PlayerState.MOVE, new SpriteAnimation(Globals.HUNTER_ROCKET_LAUNCHER_IDLE));
-        rocketLauncherAnimations.put(PlayerState.SHOOT, new SpriteAnimation(Globals.HUNTER_ROCKET_LAUNCHER_SHOOT));
-        this.spriteAnimations.put(WeaponType.ROCKETLAUNCHER, rocketLauncherAnimations);
-
-        for (Map<PlayerState, SpriteAnimation> weaponAnimation : spriteAnimations.values()) {
-            for (SpriteAnimation stateAnimation : weaponAnimation.values()) {
-                stateAnimation.setTargetSize(WIDTH, HEIGHT);
-            }
-        }
+        //addNewWeapon(config, WeaponType.ASSAULTRIFLE);
+        //addNewWeapon(config, WeaponType.SHOTGUN);
+        //addNewWeapon(config, WeaponType.SNIPERRIFLE);
+        //addNewWeapon(config, WeaponType.ROCKETLAUNCHER);
 
         this.walkSoundFX = new SequencialSoundFX(Globals.HUNTER_SOUND_FX_PATH);
     }
@@ -206,9 +153,7 @@ public class Player extends JPanel {
         this.spriteAnimations.get(currentWeaponType).get(playerState).draw(g, this.x, this.y, this.r);
 
         // Draw weapon animation
-        Offset offset = this.spriteAnimations.get(currentWeaponType).get(playerState).getOffset();
-        this.inventory.get(this.currentWeaponType).draw(g, this.x + offset.getX(), this.y + offset.getY(), this.r);
-
+        this.inventory.get(this.currentWeaponType).draw(g, this.x + WIDTH / 2, this.y + HEIGHT / 2, this.r);
 
         AffineTransform oldTransform2 = g2d.getTransform();
 
@@ -326,7 +271,6 @@ public class Player extends JPanel {
         InventoryInfo inventoryInfo = new InventoryInfo();
         
         inventoryInfo.selectedWeaponType = this.currentWeaponType;
-
 
         for (Weapon weapon: this.inventory.values()) {
             switch (weapon.getType()) {

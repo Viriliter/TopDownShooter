@@ -3,6 +3,8 @@ package topdownshooter.Zombie;
 import java.awt.*;
 
 import topdownshooter.Core.ConfigHandler.ZombieProperties;
+import topdownshooter.Core.Globals;
+import topdownshooter.Core.SpriteAnimation;
 
 public class TankZombie extends AbstractZombie {
     public TankZombie(ZombieProperties properties, int x, int y) {
@@ -10,31 +12,14 @@ public class TankZombie extends AbstractZombie {
         this.x = x;
         this.y = y;
         this.type = ZombieType.TANK;
-    }
 
-    public TankZombie(int x, int y, double r, double health, int speed, int damage, int points, int range, ZombieType type) {
-        super(x, y, r, health, speed, damage, points, range, type);
+        this.spriteAnimation = new SpriteAnimation(Globals.TANK_ZOMBIE_MOVE);
+        this.spriteAnimation.setTargetSize(WIDTH, HEIGHT);
     }
 
     @Override
     public void draw(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g; // Enable rotation
-        g2d.setColor(Color.GREEN);
-
-        // Apply rotation around the zombie's center
-        g2d.translate(x, y);
-        g2d.rotate(r);  // Rotate to face the player
-
-        // Draw rotated rectangle as zombie
-        g2d.fillRect(-WIDTH / 2, -WIDTH / 2, WIDTH, WIDTH);
-
-        // Reset transformation
-        g2d.rotate(-r);
-        g2d.translate(-x, -y);
-
-        // Outline for better visibility
-        //g2d.setColor(Color.BLACK);
-        //g2d.drawRect(x - SIZE / 2, y - SIZE / 2, SIZE, SIZE);
+        this.spriteAnimation.draw(g, this.x, this.y, this.r);
     }
 
     @Override

@@ -11,10 +11,6 @@ public class OrdinaryZombie extends AbstractZombie {
         this.y = y;
         this.type = ZombieType.ORDINARY;
     }
-    
-    public OrdinaryZombie(int x, int y, double r, double health, int speed, int damage, int points, int range, ZombieType type) {
-        super(x, y, r, health, speed, damage, points, range, type);
-    }
 
     @Override
     public void draw(Graphics g) {

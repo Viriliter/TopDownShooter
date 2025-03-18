@@ -40,20 +40,6 @@ public abstract class AbstractZombie implements Zombie {
         this.spriteAnimation = new SpriteAnimation(Globals.ORDINARY_ZOMBIE_MOVE);
         this.spriteAnimation.setTargetSize(WIDTH, HEIGHT);
     }
-    
-    public AbstractZombie(int x, int y, double r, double health, int speed, int damage, int points, int range, ZombieType type) {
-        this.x = x;
-        this.y = y;
-        this.r = r;
-        this.health = health;
-        this.speed = speed;
-        this.damage = damage;
-        this.points = points;
-        this.type = type;
-
-        this.spriteAnimation = new SpriteAnimation(Globals.ORDINARY_ZOMBIE_MOVE);
-        this.spriteAnimation.setTargetSize(WIDTH, HEIGHT);
-    }
 
     public AbstractZombie(AbstractZombie other) {
         this.x = other.x;

@@ -1,10 +1,14 @@
 package topdownshooter.Weapon;
 
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
 
 import topdownshooter.Core.Globals;
 import topdownshooter.Core.SoundFX;
 import topdownshooter.Core.SpriteAnimation;
+import topdownshooter.Core.SpriteAnimation.Offset;
 import topdownshooter.Core.TimeTick;
 import topdownshooter.Core.ConfigHandler.WeaponProperties;
 import topdownshooter.Weapon.Projectiles.Projectile;
@@ -88,9 +92,23 @@ public abstract class AbstractWeapon implements Weapon {
     public void draw(Graphics g, int x, int y, double r) {
         if (this.flashAnimation == null) return;
         
-        int offsetX = this.flashAnimation.getOffset().getX();
-        int offsetY = this.flashAnimation.getOffset().getY();
-        if (this.flashAnimation!=null) this.flashAnimation.draw(g, x + offsetX, y + offsetY, r);
+        Offset offset = this.flashAnimation.getOffset();
+        double translatedX = x + offset.getX() * Math.cos(r) - offset.getY() * Math.sin(r);
+        double translatedY = y + offset.getX() * Math.sin(r) + offset.getY() * Math.cos(r);
+
+        Graphics2D g2d = (Graphics2D) g; // Enable rotation
+
+        AffineTransform oldTransform = g2d.getTransform();
+
+        g2d.setColor(Color.WHITE);
+        g2d.translate(translatedX, translatedY);
+        g2d.rotate(r);  // Rotate to face the player
+        g2d.fillRect(-20 / 2, -20 / 2, 20, 20);
+
+        // Reset transformation
+        g2d.setTransform(oldTransform);
+
+        if (this.flashAnimation!=null) this.flashAnimation.draw(g, (int) translatedX, (int) translatedY, r);
     }
 
     @Override

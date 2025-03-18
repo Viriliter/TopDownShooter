@@ -118,7 +118,7 @@ public class SpriteAnimation implements Serializable{
                     this.currentFrame++;
                 } else {
                     this.repeatCount--;  // Decrement after last repeat
-                    if (this.repeatCount > 0) {
+                    if (this.repeatCount >= 0) {
                         this.currentFrame = 0; // Restart animation
                         this.delay = this.defaultDelay;
                     }
@@ -137,7 +137,7 @@ public class SpriteAnimation implements Serializable{
 
         // Apply transformations (rotation + centering)
         g2d.translate(x + targetWidth / 2, y + targetHeight / 2);
-        g2d.rotate(rotation);
+        g2d.rotate(rotation+rOffset);
 
         if (this.subFrames != null) {
             g2d.drawImage(this.subFrames[this.currentFrame], -this.targetWidth / 2, -this.targetHeight / 2, this.targetWidth, this.targetHeight, null);
