@@ -1,3 +1,36 @@
+/*
+ * @file CrawlerZombie.java
+ * @brief This file defines the `CrawlerZombie` class.
+ * 
+ * The `CrawlerZombie` class extends `AbstractZombie`.
+ * It implements the required behavior for drawing and representing itself
+ * in the game world.
+ * 
+ * Created on Wed Mar 19 2025
+ *
+ * @copyright MIT License
+ *
+ * Copyright (c) 2025 Mert LIMONCUOGLU
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package topdownshooter.Zombie;
 
 import java.awt.*;
@@ -6,9 +39,17 @@ import topdownshooter.Core.ConfigHandler.ZombieProperties;
 import topdownshooter.Core.Globals;
 import topdownshooter.Core.SpriteAnimation;
 
+/**
+ * @class CrawlerZombie
+ * @brief Represents a Crawler Zombie in the game.
+ *
+ * The `CrawlerZombie` class is a type of zombie that moves fast but it has lower health. 
+ * It can jump the player if it is within the certain distance from the player. This class
+ * handles drawing the zombie and providing information about its state.
+ */
 public class CrawlerZombie extends AbstractZombie {
-    static final int JUMP_DISTANCE = 100;
-    private boolean isJumped = false;
+    static final int JUMP_DISTANCE = 100;  // Jump distance of the zombie
+    private boolean isJumped = false;   // Indicates the zombie has jumped
 
     public CrawlerZombie(ZombieProperties properties, int x, int y) {
         super(properties);
@@ -62,7 +103,7 @@ public class CrawlerZombie extends AbstractZombie {
                 this.isJumped = false;
             }
         }
-        
+
         // Update sprite animation
         this.spriteAnimation.update();
     }

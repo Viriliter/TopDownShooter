@@ -1,3 +1,32 @@
+/*
+ * @file AbstractWeapon.java
+ * @brief This file defines the ${fileNameNoExt} class.
+ *
+ * Created on Wed Mar 19 2025
+ *
+ * @copyright MIT License
+ *
+ * Copyright (c) 2025 Mert LIMONCUOGLU
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package topdownshooter.Weapon;
 
 import java.awt.Color;
@@ -13,23 +42,44 @@ import topdownshooter.Core.TimeTick;
 import topdownshooter.Core.ConfigHandler.WeaponProperties;
 import topdownshooter.Weapon.Projectiles.Projectile;
 
+/**
+ * @abstractclass AbstractWeapon
+ * @brief Abstract class representing a generic Weapon in the game.
+ * 
+ * This class defines the common properties and behaviors of all weapon types,
+ * including ammo, magazine capacity, reload behavior, and fire rate. This class also 
+ * handles the firing of projectiles, reload mechanics, and sound effects for weapon actions. 
+ * Subclasses should extend this class and implement the specific behavior for each weapon type.
+ * 
+ * @see Weapon
+ * @see Projectile
+ */
 public abstract class AbstractWeapon implements Weapon {
-    protected int damage;
-    protected int magazineCapacity;
-    protected int magazineCount;
-    protected int fireRate;
-    protected int reloadDuration;
-    protected int ammo;
-    protected TimeTick reloadTick;
-    protected TimeTick fireTick;
-    protected WeaponType type = WeaponType.UNDEFINED;
+    protected int damage;                               /** The damage dealt by the weapon per shot. */
+    protected int magazineCapacity;                     /** The maximum capacity of the weapon's magazine. */
+    protected int magazineCount;                        /** The current number of magazines available for the weapon. */
+    protected int fireRate;                             /** The rate of fire for the weapon (rounds per minute). */
+    protected int reloadDuration;                       /** The duration it takes to reload the weapon in seconds. */
+    protected int ammo;                                 /** The current ammo count in the magazine. */
+    protected TimeTick reloadTick;                      /** A time tick to manage reloading events. */
+    protected TimeTick fireTick;                        /** A time tick to manage firing events and cooldowns. */
+    protected WeaponType type = WeaponType.UNDEFINED;   /** The type of weapon (Default UNDEFINED). */
 
-    protected SoundFX firingSoundFX = null; 
-    protected SoundFX emptyClickSoundFX = null; 
-    protected SpriteAnimation flashAnimation = null;  // Muzzle flash animation
+    protected SoundFX firingSoundFX = null;             /** Sound effect for weapon fire. */
+    protected SoundFX emptyClickSoundFX = null;         /** Sound effect for trigger click of empty ammo */
+    protected SpriteAnimation flashAnimation = null;    /** Flash animation for muzzle */
 
+    /**
+     * Default constructor for AbstractWeapon.
+     * 
+     */
     public AbstractWeapon() {}
 
+    /**
+     * Constructor that initializes the weapon with specific properties.
+     * 
+     * @param properties The properties for the weapon.
+     */
     public AbstractWeapon(WeaponProperties properties) {
         this.damage = properties.damage();
         this.fireRate = properties.fireRate() > 0 ? properties.fireRate(): 1;  // FireRate (1/min) cannot be zero
@@ -44,22 +94,6 @@ public abstract class AbstractWeapon implements Weapon {
         this.reloadTick.setRepeats(-1);  // Repeates indefinetly
 
         this.emptyClickSoundFX = new SoundFX(Globals.EMPTY_GUN_CLICK_SOUND_FX_PATH); 
-    }
-
-    public AbstractWeapon(int damage, int magazineCapacity, int magazineCount, 
-                          int fireRate, int reloadDuration, int ammo, TimeTick reloadTick, 
-                          TimeTick fireTick, WeaponType type) {
-        this.damage = damage;
-        this.magazineCapacity = magazineCapacity;
-        this.magazineCount = magazineCount;
-        this.fireRate = fireRate;
-        this.reloadDuration = reloadDuration;
-        this.ammo = ammo;
-        this.reloadTick = reloadTick;
-        this.reloadTick.setAction(null);
-        this.fireTick = fireTick;
-        this.fireTick.setAction(null);
-        this.type = type;
     }
 
     @Override
@@ -152,6 +186,9 @@ public abstract class AbstractWeapon implements Weapon {
         return this.type;
     }
 
+    /**
+     * Plays the firing sound effect for the weapon.
+     */
     protected final void applySoundFX() {
         this.firingSoundFX.play(false);
     }

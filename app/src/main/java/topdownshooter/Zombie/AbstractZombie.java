@@ -1,3 +1,36 @@
+/*
+ * @file AbstractZombie.java
+ * @brief This file defines the `AbstractZombie` class which implements some common 
+ * zombie behaviors.
+ * 
+ * The `AbstractZombie` class implements `Zombie` interface class.
+ * It implements the required behavior of common zombie properties.
+ *
+ * Created on Wed Mar 19 2025
+ *
+ * @copyright MIT License
+ *
+ * Copyright (c) 2025 Mert LIMONCUOGLU
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package topdownshooter.Zombie;
 
 import java.awt.*;
@@ -13,21 +46,37 @@ import topdownshooter.Core.Globals;
 import topdownshooter.Core.Position;
 import topdownshooter.Core.SpriteAnimation;
 
+/**
+ * @brief Abstract class representing a generic Zombie in the game.
+ *
+ * This class defines the common properties and behaviors of all zombie types,
+ * including health, speed, damage, and the ability to move toward the player and take damage.
+ * Specific zombie types (e.g., TankZombie, OrdinaryZombie) extend this class and provide
+ * their own unique behavior.
+ */
 public abstract class AbstractZombie implements Zombie {
-    protected int x = 0, y = 0;
-    protected double r = 0.0; // Rotation angle in radians
-    protected int WIDTH = 80;
-    protected int HEIGHT = 67;
-    protected double health = 0;
-    protected int speed = 0;
-    protected int damage = 0;
-    protected int points = 0;
-    protected ZombieType type;
+    protected int x = 0, y = 0;                         /**< X and Y coordinates of the zombie. */
+    protected double r = 0.0;                           /* Rotation angle of the zombie in radians */
+    protected int WIDTH = 80;                           /**< Width of the zombie sprite. */
+    protected int HEIGHT = 67;                          /**< Height of the zombie sprite. */
+    protected double health = 0;                        /**< Height of the zombie sprite. */
+    protected int speed = 0;                            /**< Speed of the zombie. */
+    protected int damage = 0;                           /**< Damage dealt by the zombie. */
+    protected int points = 0;                           /**< Points awarded when the zombie is killed. */
+    protected ZombieType type;                          /**< Type of the zombie (e.g., Tank, Ordinary). */
+    protected SpriteAnimation spriteAnimation = null;   /**< Animation for the zombie's sprite. */
 
-    protected SpriteAnimation spriteAnimation = null;
-
+    /**
+     * @brief Default constructor for AbstractZombie.
+     *
+     */
     public AbstractZombie() {}
 
+    /**
+     * @brief Constructor to create a zombie with specified properties.
+     *
+     * @param properties The properties used to configure the zombie's health, speed, damage, and points.
+     */
     public AbstractZombie(ZombieProperties properties) {
         this.x = 0;
         this.y = 0;
@@ -41,6 +90,11 @@ public abstract class AbstractZombie implements Zombie {
         this.spriteAnimation.setTargetSize(WIDTH, HEIGHT);
     }
 
+    /**
+     * @brief Copy constructor of the `AbstractZombie` that clones from another instance.
+     *
+     * @param other The other AbstractZombie instance to clone.
+     */
     public AbstractZombie(AbstractZombie other) {
         this.x = other.x;
         this.y = other.y;
