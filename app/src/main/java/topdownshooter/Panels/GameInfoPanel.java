@@ -40,6 +40,10 @@ import topdownshooter.Player.InventoryInfo;
 import topdownshooter.Weapon.WeaponType;
 
 public class GameInfoPanel extends JPanel implements ActionListener, MouseListener{
+    private static Color bgColor = Color.BLACK;
+    private static Color foreColor = Color.WHITE;
+    private static Font fontStyle = new Font("Arial", Font.BOLD, 18);
+    
     private class WeaponSlot extends JPanel {
         private final JLabel iconLabel;
         private final JLabel ammoLabel;
@@ -52,21 +56,21 @@ public class GameInfoPanel extends JPanel implements ActionListener, MouseListen
         public WeaponSlot(ImageIcon icon) {
             setLayout(new BorderLayout());
             setPreferredSize(new Dimension(100, 50)); // Fixed size
-            setBackground(Color.BLACK);
+            setBackground(GameInfoPanel.bgColor);
 
             // Create the icon label
             this.iconLabel = new JLabel(icon);
 
             // Create ammo & magazine labels
             this.ammoLabel = new JLabel("-", SwingConstants.LEFT);
-            this.ammoLabel.setForeground(Color.WHITE);
-            this.ammoLabel.setFont(new Font("Arial", Font.BOLD, 18));
+            this.ammoLabel.setForeground(GameInfoPanel.foreColor);
+            this.ammoLabel.setFont(GameInfoPanel.fontStyle);
             this.ammoLabel.setPreferredSize(new Dimension(25, 25));
             this.ammoLabel.setHorizontalAlignment(SwingConstants.LEFT);
 
             this.magazineLabel = new JLabel("-", SwingConstants.LEFT);
-            this.magazineLabel.setForeground(Color.WHITE);
-            this.magazineLabel.setFont(new Font("Arial", Font.BOLD, 18));
+            this.magazineLabel.setForeground(GameInfoPanel.foreColor);
+            this.magazineLabel.setFont(GameInfoPanel.fontStyle);
             this.magazineLabel.setPreferredSize(new Dimension(25, 25));
             this.magazineLabel.setHorizontalAlignment(SwingConstants.LEFT);
            
@@ -77,7 +81,7 @@ public class GameInfoPanel extends JPanel implements ActionListener, MouseListen
             // Create a panel for the ammo & magazine info
             JPanel infoPanel = new JPanel(new GridLayout(2, 2));
             infoPanel.setPreferredSize(new Dimension(100, 100)); // Fixed size for alignment
-            infoPanel.setBackground(Color.BLACK);
+            infoPanel.setBackground(GameInfoPanel.bgColor);
 
             infoPanel.add(this.ammoIconLabel);
             infoPanel.add(this.ammoLabel);
@@ -128,7 +132,7 @@ public class GameInfoPanel extends JPanel implements ActionListener, MouseListen
 
         public WeaponInventoryPanel() {   
             setLayout(new GridLayout(1, 5, 10, 10));
-            setBackground(Color.BLACK);
+            setBackground(GameInfoPanel.bgColor);
 
             weaponSlots = new LinkedHashMap<>();
             weaponSlots.put(WeaponType.PISTOL, new WeaponSlot(iconPistolEmpty));
@@ -255,20 +259,25 @@ public class GameInfoPanel extends JPanel implements ActionListener, MouseListen
     public GameInfoPanel(ConfigHandler config) {
         // Set the layout of the panel to BorderLayout for the overall structure
         setLayout(new BorderLayout());
-        setBackground(Color.ORANGE);
+        setBackground(GameInfoPanel.bgColor);
+
+        // TOP MARGIN
+        JPanel topMargin = new JPanel();
+        topMargin.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
+        topMargin.setBackground(GameInfoPanel.bgColor);
 
         // LEFT PANEL
         JPanel leftPanel = new JPanel();
-        leftPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 0)); // Align left with spacing
-        leftPanel.setBackground(Color.BLACK);
+        leftPanel.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 0));
+        leftPanel.setBackground(GameInfoPanel.bgColor);
 
         // Menu button
-        ImageIcon pngIcon = Globals.loadPNGIcon("menu-icon.png", 32, 32); // Provide the path to your PNG file
+        ImageIcon pngIcon = Globals.loadPNGIcon("menu-icon.png", 32, 32);
         JButton menuButton = new JButton(pngIcon);
         menuButton.setBackground(Color.GRAY);
-        menuButton.setForeground(Color.WHITE);  // Set text color to white
-        menuButton.setBorder(BorderFactory.createEmptyBorder()); // Remove border
-        menuButton.setFocusPainted(false); // Disable the focus paint (no border on focu
+        menuButton.setForeground(GameInfoPanel.foreColor);
+        menuButton.setBorder(BorderFactory.createEmptyBorder());
+        menuButton.setFocusPainted(false);
         menuButton.setPreferredSize(new Dimension(50, 50));
         menuButton.addMouseListener(new MouseAdapter() {
             @Override
@@ -299,7 +308,7 @@ public class GameInfoPanel extends JPanel implements ActionListener, MouseListen
         });
 
         this.weaponInventoryPanel = new WeaponInventoryPanel();
-        this.weaponInventoryPanel.setPreferredSize(new Dimension(800, 50)); // Adjust the width/height as needed
+        this.weaponInventoryPanel.setPreferredSize(new Dimension(800, 50));
         
         leftPanel.add(menuButton);
         leftPanel.add(weaponInventoryPanel);
@@ -307,44 +316,52 @@ public class GameInfoPanel extends JPanel implements ActionListener, MouseListen
         // CENTER PANEL
 
         JPanel centerPanel = new JPanel();
-        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS)); // Set vertical layout
-        centerPanel.setBackground(Color.BLACK);
+        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
+        centerPanel.setBackground(GameInfoPanel.bgColor);
 
         gameLevelLabel = new JLabel("");
         gameLevelLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        gameLevelLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        gameLevelLabel.setForeground(Color.WHITE);
+        gameLevelLabel.setFont(GameInfoPanel.fontStyle);
+        gameLevelLabel.setForeground(GameInfoPanel.foreColor);
         remainingZombiesLabel = new JLabel("");
         remainingZombiesLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        remainingZombiesLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        remainingZombiesLabel.setForeground(Color.WHITE);
+        remainingZombiesLabel.setFont(GameInfoPanel.fontStyle);
+        remainingZombiesLabel.setForeground(GameInfoPanel.foreColor);
         
         centerPanel.add(gameLevelLabel);
         centerPanel.add(remainingZombiesLabel);
 
-        // Player Health and Score
+        // RIGHT PANEL
         JPanel rightPanel = new JPanel();
+        topMargin.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 10));
         rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
-        rightPanel.setBackground(Color.BLACK);
+        rightPanel.setBackground(GameInfoPanel.bgColor);
 
         healthLabel = new JLabel("");
-        healthLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        healthLabel.setForeground(Color.WHITE);
+        healthLabel.setFont(GameInfoPanel.fontStyle);
+        healthLabel.setForeground(GameInfoPanel.foreColor);
         scoreLabel = new JLabel("");
-        scoreLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        scoreLabel.setForeground(Color.WHITE);
+        scoreLabel.setFont(GameInfoPanel.fontStyle);
+        scoreLabel.setForeground(GameInfoPanel.foreColor);
         remainingTimeLabel = new JLabel("");
-        remainingTimeLabel.setFont(new Font("Arial", Font.BOLD, 18));
-        remainingTimeLabel.setForeground(Color.WHITE);
+        remainingTimeLabel.setFont(GameInfoPanel.fontStyle);
+        remainingTimeLabel.setForeground(GameInfoPanel.foreColor);
 
         rightPanel.add(healthLabel);
         rightPanel.add(scoreLabel);
         rightPanel.add(remainingTimeLabel);
+    
+        // BOTTOM MARGIN
+        JPanel bottomMargin = new JPanel();
+        bottomMargin.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
+        bottomMargin.setBackground(GameInfoPanel.bgColor);
         
         // Add panels to the main panel
+        add(topMargin, BorderLayout.NORTH);
         add(leftPanel, BorderLayout.WEST);
         add(centerPanel, BorderLayout.CENTER);
         add(rightPanel, BorderLayout.EAST);
+        add(bottomMargin, BorderLayout.SOUTH);
     }
 
     @Override

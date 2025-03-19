@@ -177,7 +177,6 @@ public class SpriteAnimation implements Serializable{
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
-        System.out.println(this.spriteSheet);
         this.spriteSheet = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(this.struct.imagePath)));
         setSubFrames();
     }

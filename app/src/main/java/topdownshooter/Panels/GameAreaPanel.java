@@ -187,7 +187,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
                 this.player.addNewWeapon(config, weaponPrize);
             }
             
-            String message = "Wave " + this.gameLevel.getLevel() + " comming!";
+            String message = "Wave " + this.gameLevel.getLevel() + " Approaching!";
             this.parentPanel.getNotificationPanel().show(message, Globals.WAVE_SUSPEND_DURATION_MS);
             this.backgroundSoundFX.delayedPlay(true, Globals.WAVE_SUSPEND_DURATION_MS);
         }
@@ -323,8 +323,6 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
                     Zombie zombie = zombieIterator.next();
                     if (Globals.isObjectsCollided(rocket.getBounds(), zombie.getBounds())) {
                         // Rocket damages its surrounded area
-                        System.out.println("Rocket damages its surrounded area");
-                        System.out.println("X:" + rocket.getX() + " Y:" + rocket.getY() + " D:" + rocket.getDamage() + " R:" +  rocket.getEffectiveRange());
                         damageZombies(rocket.getX(), rocket.getY(), rocket.getDamage(), rocket.getEffectiveRange());
                         isProjectileDetonated = true;
                         break;  // No need to continue since explosion applies for all zombies in range
