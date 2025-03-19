@@ -86,8 +86,8 @@ public interface Globals {
     public static final SpriteAnimationStruct CRAWLER_ZOMBIE_ATTACK = new SpriteAnimationStruct("Textures/Zombie/crawler_zombie_attack.png", 23, FRAME_DELAY, 5, 5, 30, 12);
     public static final SpriteAnimationStruct ACID_ZOMBIE_MOVE = new SpriteAnimationStruct("Textures/Zombie/acid_zombie_move.png", 17, FRAME_DELAY, 6, 3, 30, 12);
     public static final SpriteAnimationStruct ACID_ZOMBIE_ATTACK = new SpriteAnimationStruct("Textures/Zombie/acid_zombie_attack.png", 9, FRAME_DELAY, 3, 3, 30, 12);
-    public static final SpriteAnimationStruct TANK_ZOMBIE_MOVE = new SpriteAnimationStruct("Textures/Zombie/tank_zombie_move.png", 42, FRAME_DELAY, 9, 5, 30, 12);
-    public static final SpriteAnimationStruct TANK_ZOMBIE_ATTACK = new SpriteAnimationStruct("Textures/Zombie/tank_zombie_attack.png", 42, FRAME_DELAY, 9, 5, 30, 12);
+    public static final SpriteAnimationStruct TANK_ZOMBIE_MOVE = new SpriteAnimationStruct("Textures/Zombie/tank_zombie_move.png", 25, FRAME_DELAY, 5, 5, 30, 12);
+    public static final SpriteAnimationStruct TANK_ZOMBIE_ATTACK = new SpriteAnimationStruct("Textures/Zombie/tank_zombie_attack.png", 25, FRAME_DELAY, 5, 5, 30, 12);
 
     /**
      * MISCS TEXTURES
@@ -98,9 +98,10 @@ public interface Globals {
 
     public static final SpriteAnimationStruct MUZZLE_ANIMATION = new SpriteAnimationStruct("Textures/Miscs/fire.png", 16, FRAME_DELAY, 4, 4, 40, 12);
 
-    //public static final String ROCKET_TEXTURE_PATH = "Textures/Miscs/bullet_fx.png";
-    public static final String BULLET_TEXTURE_PATH = "Textures/Miscs/bullet_fx.png";
-    public static final String TOXIC_SPLIT_TEXTURE_PATH = "Textures/Miscs/bullet_fx.png";
+    public static final String BULLET_TEXTURE_PATH = "Textures/Miscs/bullet.png";
+    public static final String ROCKET_TEXTURE_PATH = "Textures/Miscs/rocket_shell.png";
+    public static final String ACID_SPIT_TEXTURE_PATH = "Textures/Miscs/acid_spit.png";
+    public static final String PROJECTILE_TEXTURE_PATH = "Textures/Miscs/projectile.png";
 
     /**
      * SOUND EFFECTS

@@ -11,7 +11,7 @@ public class ArmorPiercingBullet extends Projectile {
         super(x, y, r, damage);
 
         this.type = ProjectileType.ARMOR_PIERCING_BULLET;
-        this.projectileEffect = new TextureFX(new TextureFXStruct(Globals.BULLET_TEXTURE_PATH, -25, 0, 3));
+        this.projectileEffect = new TextureFX(new TextureFXStruct(Globals.PROJECTILE_TEXTURE_PATH, -25, 0, 3));
         this.projectileEffect.setTargetSize(50, 20);
     }
 

@@ -212,13 +212,11 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         for (Zombie z : zombies) {
             z.update(player.getBounds());
 
-
             // Acid zombies have special ranged attack
             if (z.getType() == ZombieType.ACID) {
                 AcidZombie acidZombie = (AcidZombie) z;
                 Projectile projectile = (Projectile) acidZombie.rangedAttack();
-                if (projectile != null)
-                this.projectiles.add(projectile);
+                if (projectile != null) this.projectiles.add(projectile);
             }
         }
     }
@@ -439,7 +437,6 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
             // Calculate detonation damage with the function of the distance from origin
             double damage = calculateDamage(originDamage, distanceSquared, effectiveRangeSquared, effectiveRange);
 
-            System.out.println("Zombie Normalized Damage: " + damage + " Origin Damage: " + originDamage  + " Distance Squared: " + distanceSquared);
             if (damage>0) {
                 zombie.takeDamage(damage);
             }
@@ -453,8 +450,6 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
 
         // Calculate detonation damage with the function of the distance from origin
         double damage = calculateDamage(originDamage, distanceSquared, effectiveRangeSquared, effectiveRange);
-
-        System.out.println("Player Normalized Damage: " + damage + " Origin Damage: " + originDamage  + " Distance Squared: " + distanceSquared);
 
         if (damage>0) {
             this.player.takeDamage(damage);

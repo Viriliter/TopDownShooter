@@ -62,6 +62,9 @@ public class CrawlerZombie extends AbstractZombie {
                 this.isJumped = false;
             }
         }
+        
+        // Update sprite animation
+        this.spriteAnimation.update();
     }
 
     @Override

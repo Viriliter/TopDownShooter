@@ -317,6 +317,13 @@ public class Player extends JPanel {
         return new Rectangle(this.x, this.y, this.WIDTH, this.HEIGHT);
     }
 
+    public Rectangle getTargetBounds() {
+        double width = this.WIDTH * 0.8;
+        double height = this.HEIGHT * 0.8;
+
+        return new Rectangle(this.x + (int) width/2, this.y + (int) height/2, (int) width, (int) height);
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

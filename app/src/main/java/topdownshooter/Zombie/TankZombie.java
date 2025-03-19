@@ -7,6 +7,9 @@ import topdownshooter.Core.Globals;
 import topdownshooter.Core.SpriteAnimation;
 
 public class TankZombie extends AbstractZombie {
+    protected int WIDTH = 120;
+    protected int HEIGHT = 95;
+
     public TankZombie(ZombieProperties properties, int x, int y) {
         super(properties);
         this.x = x;

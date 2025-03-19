@@ -1,6 +1,9 @@
 package topdownshooter.Core;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 import topdownshooter.Core.ConfigHandler.LevelProperties;
@@ -32,6 +35,9 @@ public class GameLevel implements Serializable {
     private TimeTick waveTick;
     private TimeTick newWaveSuspendTick;
 
+    private List<ZombieType> zombieHorde = new ArrayList<>();
+    private int currentZombieTypeIndex = 0;
+
     private static Random random = new Random(); // Reuse random instance
 
     public GameLevel(ConfigHandler config) {
@@ -48,26 +54,11 @@ public class GameLevel implements Serializable {
         this.tankZombieCount = 0;
         this.acidZombieCount = 0;
         this.spawnPeriod = 0;
+        this.currentZombieTypeIndex = 0;
 
         this.spawnTick = null;
         this.waveTick = null;
         this.newWaveSuspendTick = new TimeTick(Globals.Time2GameTick(Globals.WAVE_SUSPEND_DURATION_MS), () -> startWaveInvokeLater());
-    }
-
-    public GameLevel(int level, GameLevelStatus gameLevelStatus, int waveDuration, int ordinaryZombieCount, int crawlerZombieCount, int tankZombieCount,
-                     int acidZombieCount, int spawnPeriod, TimeTick spawnTick, TimeTick waveTick, TimeTick newWaveSuspendTick) {
-        this.level = level;
-        this.gameLevelStatus = gameLevelStatus;
-        this.waveDuration = 0;
-        this.ordinaryZombieCount = 0;
-        this.crawlerZombieCount = 0;
-        this.tankZombieCount = 0;
-        this.acidZombieCount = 0;
-        this.spawnPeriod = 0;
-
-        this.spawnTick = spawnTick;
-        this.waveTick = waveTick;
-        this.newWaveSuspendTick = newWaveSuspendTick;
     }
 
     public void setConfig(ConfigHandler config) {
@@ -127,6 +118,15 @@ public class GameLevel implements Serializable {
             this.crawlerZombieCount = levelProperties.crawlerZombieCount();
             this.tankZombieCount = levelProperties.tankZombieCount();
             this.acidZombieCount = levelProperties.acidZombieCount();
+            
+            for (int i = 0; i < levelProperties.ordinaryZombieCount(); i++) this.zombieHorde.add(ZombieType.ORDINARY);
+            for (int i = 0; i < levelProperties.crawlerZombieCount(); i++) this.zombieHorde.add(ZombieType.CRAWLER);
+            for (int i = 0; i < levelProperties.tankZombieCount(); i++) this.zombieHorde.add(ZombieType.TANK);
+            for (int i = 0; i < levelProperties.acidZombieCount(); i++) this.zombieHorde.add(ZombieType.ACID);
+
+            // Shuffle to randomize zombie types
+            Collections.shuffle(this.zombieHorde, GameLevel.random);
+            this.currentZombieTypeIndex = 0;
 
             int totalZombies = getRemainingZombies();
             if (totalZombies > 0) {
@@ -201,34 +201,32 @@ public class GameLevel implements Serializable {
             return null;
         }
 
-        // If there are no zombies of the current type left, randomize again
-        int randZombieType = 0;
-        do {
-            randZombieType = random.nextInt(5);  // 0 = ordinary, 1 = crawler, 2 = tank, 3 = acid
-            if (randZombieType == 0 && this.ordinaryZombieCount > 0) break;
-            if (randZombieType == 1 && this.crawlerZombieCount > 0) break;
-            if (randZombieType == 2 && this.tankZombieCount > 0) break;
-            if (randZombieType == 3 && this.acidZombieCount > 0) break;
-    
-        } while (getRemainingZombies() > 0); // Retry if no zombies left for that type
-
+        // Get zombie type from randomized list
+        ZombieType currentZombieType = null;
+        try {
+            currentZombieType = this.zombieHorde.get(this.currentZombieTypeIndex++);    
+        } catch (IndexOutOfBoundsException ex) {
+            return null;
+        }
         this.spawnTick.reset();  // Reset spawn timer
 
         // Spawn the zombie
-        if (randZombieType == 0 && this.ordinaryZombieCount > 0) {
-            this.ordinaryZombieCount--;
-            return ZombieFactory.createZombie(this.config, ZombieType.ORDINARY, x, y);
-        } else if (randZombieType == 1 && this.crawlerZombieCount > 0) {
-            this.crawlerZombieCount--;
-            return ZombieFactory.createZombie(this.config, ZombieType.CRAWLER, x, y);
-        } else if (randZombieType == 2 && this.tankZombieCount > 0) {
-            this.tankZombieCount--;
-            return ZombieFactory.createZombie(this.config, ZombieType.TANK, x, y);
-        } else if (randZombieType == 3 && this.acidZombieCount > 0) {
-            this.acidZombieCount--;
-            return ZombieFactory.createZombie(this.config, ZombieType.ACID, x, y);
+        switch(currentZombieType) {
+            case ORDINARY:
+                this.ordinaryZombieCount--;
+                return ZombieFactory.createZombie(this.config, ZombieType.ORDINARY, x, y);
+            case CRAWLER:
+                this.crawlerZombieCount--;
+                return ZombieFactory.createZombie(this.config, ZombieType.CRAWLER, x, y);
+            case TANK:
+                this.tankZombieCount--;
+                return ZombieFactory.createZombie(this.config, ZombieType.TANK, x, y);
+            case ACID:
+                this.acidZombieCount--;
+                return ZombieFactory.createZombie(this.config, ZombieType.ACID, x, y);
+            default:
+                return null;
         }
-        return null;
     }
 
     private void startWaveInvokeLater() {

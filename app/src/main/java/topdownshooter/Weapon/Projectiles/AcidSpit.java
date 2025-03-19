@@ -5,6 +5,10 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
 
+import topdownshooter.Core.Globals;
+import topdownshooter.Core.TextureFX;
+import topdownshooter.Core.TextureFXStruct;
+
 public class AcidSpit extends Projectile {
     private static final int EFFECTIVE_RANGE = 50;
     protected int speed = 5;
@@ -12,8 +16,10 @@ public class AcidSpit extends Projectile {
 
     public AcidSpit (int x, int y, double r, int damage) {
         super(x, y, r, damage);
-
         this.type = ProjectileType.ACID_SPIT;
+
+        this.projectileEffect = new TextureFX(new TextureFXStruct(Globals.ACID_SPIT_TEXTURE_PATH, -25, 0, 3));
+        this.projectileEffect.setTargetSize(size, size);
     }
 
     public int getEffectiveRange() {
@@ -22,22 +28,7 @@ public class AcidSpit extends Projectile {
 
     @Override   
     public void draw(Graphics g) {
-
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setColor(Color.RED);
-
-        // Save current transformation
-        AffineTransform oldTransform = g2d.getTransform();
-
-        // Move to bullet's position
-        g2d.translate(x, y);
-        g2d.rotate(this.r); // Rotate bullet
-
-        // Draw bullet as a small rotated rectangle
-        g2d.fillRect(-this.size / 2, -this.size / 2, this.size, this.size);
-
-        // Restore previous transformation
-        g2d.setTransform(oldTransform);
+        this.projectileEffect.draw(g, x, y, r);
     }
     
     @Override

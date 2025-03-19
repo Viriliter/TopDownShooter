@@ -74,8 +74,10 @@ public class AcidZombie extends AbstractZombie {
             
             // Rotate the zombie towards player
             if (distance > 0) this.r = Math.atan2(dy, dx);
-
         }
+
+        // Update sprite animation
+        this.spriteAnimation.update();
     }
 
     @Override
