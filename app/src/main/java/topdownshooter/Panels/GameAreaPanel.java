@@ -51,8 +51,10 @@ import topdownshooter.Core.Globals;
 import topdownshooter.Core.SoundFX;
 import topdownshooter.Core.TileGenerator;
 import topdownshooter.Core.ConfigHandler;
+import topdownshooter.Core.BlastFX;
 import topdownshooter.Core.GameLevel;
 import topdownshooter.Core.TimeTick;
+import topdownshooter.Core.BlastFX.BlastType;
 import topdownshooter.Player.Loot;
 import topdownshooter.Player.Player;
 import topdownshooter.Weapon.WeaponType;
@@ -76,6 +78,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
     private ArrayList<Zombie> zombies = null;
     private ArrayList<Projectile> projectiles = null;
     private ArrayList<Loot> loots = null;
+    private ArrayList<BlastFX> blastFXs = null;
 
     private static boolean isGamePaused = false;
     private Timer gameTimer;
@@ -134,6 +137,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         gameTimer.setRepeats(true);
 
         this.playgroundTileGenerator = new TileGenerator(Globals.PLAYGROUND_TILE_PATH);
+        this.blastFXs = new ArrayList<>();
 
         this.backgroundSoundFX = new SoundFX(Globals.BACKGROUND_SOUND_FX_PATH);
     }
@@ -163,6 +167,10 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         for (Loot loot : this.loots) {
             if (loot == null) continue;
             loot.draw(g);
+        }
+
+        for (BlastFX bFX : this.blastFXs) {
+            bFX.draw(g);
         }
     }
 
@@ -209,6 +217,8 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         if (this.fireRateTick!=null) this.fireRateTick.updateTick();
         
         updateGameInfo();
+
+        updateBlasts();
 
         repaint();
     }
@@ -283,6 +293,17 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         }
     }
 
+    private void updateBlasts() {
+        if (this.blastFXs==null) return;
+
+        Iterator<BlastFX> blastFXIterator = this.blastFXs.listIterator();
+        while (blastFXIterator.hasNext()) {
+            BlastFX bFX = blastFXIterator.next();
+            boolean isUpdated = bFX.update();
+            if (!isUpdated) blastFXIterator.remove();  // If blast animation has finished, it returns false so remove it.
+        }
+    }
+
     private void checkProjectileCollisions() {
         if (this.player==null ||this.zombies==null || this.projectiles==null) return;
 
@@ -328,7 +349,12 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
                         break;  // No need to continue since explosion applies for all zombies in range
                     }
                 }
-                if (isProjectileDetonated) projectileIterator.remove();  // After detonation, remove it.
+                if (isProjectileDetonated) {
+                    // Create blast effect and add into the blast list
+                    this.blastFXs.add(new BlastFX(BlastType.EXPLOSIVE_BLAST, rocket.getX(), rocket.getY(), rocket.getEffectiveRange()));
+
+                    projectileIterator.remove();  // After detonation, remove it.
+                }
 
             } else if (projectile.getType() == ProjectileType.SHOTGUN_PELLETS) {
                 ShotgunPellets pellets = (ShotgunPellets) projectile;
@@ -386,10 +412,13 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
 
                 zombieIterator.remove();
 
-                // Acid zombies damages their surrounds when they killed
+                // Acid zombies damages their surrounds when they killed (reduce original damage of the zombie when it explodes.)
                 if (zombieType == ZombieType.ACID) {
-                    damageZombies(zombieX, zombieY, zombieDamage, 200);
-                    damagePlayer(zombieX, zombieY, zombieDamage, 200);
+                    damageZombies(zombieX, zombieY, (int) ((double) zombieDamage * 0.3), AcidZombie.EFFECTIVE_RANGE);
+                    damagePlayer(zombieX, zombieY, (int) ((double) zombieDamage * 0.3), AcidZombie.EFFECTIVE_RANGE);
+
+                    // Create blast effect and add into the blast list
+                    this.blastFXs.add(new BlastFX(BlastType.TOXIC_BLAST, zombieX, zombieY, AcidZombie.EFFECTIVE_RANGE));
                 }
             }
         }
@@ -543,6 +572,9 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
 
         // Serialize loots
         os.writeObject(this.loots);
+
+        // Serialize blast effects
+        os.writeObject(this.blastFXs);
     }
 
     @SuppressWarnings("unchecked")
@@ -558,7 +590,9 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
             this.projectiles = (ArrayList<Projectile>) os.readObject();
             
             this.loots = (ArrayList<Loot>) os.readObject();
-            
+
+            this.blastFXs = (ArrayList<BlastFX>) os.readObject();
+
             /*
             do {
                 Object object = os.readObject();

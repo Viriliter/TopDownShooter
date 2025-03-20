@@ -71,7 +71,7 @@ public class MenuPanel extends JPanel {
 
         // Load and resize background image
         try {
-            InputStream input = getClass().getClassLoader().getResourceAsStream("wallpaper.jpg");
+            InputStream input = getClass().getClassLoader().getResourceAsStream(Globals.WALLPAPER_PATH);
             if (input != null) {
                 Image image = ImageIO.read(input);  // Load the image
                 this.bgImage = image.getScaledInstance(windowProperties.windowWidth(), windowProperties.windowHeight(), Image.SCALE_SMOOTH);  // Resize the image
@@ -324,7 +324,9 @@ public class MenuPanel extends JPanel {
         // Create and display a dialog with instructions on how to play the game
         String helpText = "<html><h2>Credits</h2>"
             + "<p> This top down view zombie shooter game created for BIL015 course project.</p>"
-            + "<p> AI generated game wallpaper and soundtrack used. For more informationi visit the websites: https://deepai.org/ and  https://www.mureka.ai .</p>"
+            + "<p> The wallpaper and intro soundtrack generated using AI tools. For more information, visit the websites: https://deepai.org/ and  https://www.mureka.ai .</p>"
+            + "<p> </p>"
+            + "<p> Some in game textures obtained from a ZombieV Github project (see https://github.com/johnBuffer/ZombieV).</p>"
             + "<p><b>Author:</b></p>"
             + "<ul>"
             + "<li><b>Mert LİMONCUOĞLU</b></li>"

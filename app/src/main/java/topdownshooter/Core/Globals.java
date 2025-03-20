@@ -66,6 +66,8 @@ public interface Globals {
 
     public static final int FRAME_DELAY = 5;
 
+    public static final String WALLPAPER_PATH = "wallpaper.png";
+
     /**
      * PLAYGROUND TEXTURES
      */
@@ -126,6 +128,9 @@ public interface Globals {
     public static final SpriteAnimationStruct SMALL_MEDIC_ANIMATION = new SpriteAnimationStruct("Textures/Miscs/small_medic_pack.png", 42, 1, 9, 5, 0, 0);
 
     public static final SpriteAnimationStruct MUZZLE_ANIMATION = new SpriteAnimationStruct("Textures/Miscs/fire.png", 16, FRAME_DELAY, 4, 4, 40, 12);
+
+    public static final SpriteAnimationStruct EXPLOSIVE_BLAST_ANIMATION = new SpriteAnimationStruct("Textures/Miscs/explosive_blast.png", 96, 1, 20, 5, 0, 0);
+    public static final SpriteAnimationStruct TOXIC_BLAST_ANIMATION = new SpriteAnimationStruct("Textures/Miscs/toxic_blast.png", 96, 1, 20, 5, 0, 0);
 
     public static final String BULLET_TEXTURE_PATH = "Textures/Miscs/bullet.png";
     public static final String ROCKET_TEXTURE_PATH = "Textures/Miscs/rocket_shell.png";

@@ -61,8 +61,7 @@ public abstract class Projectile implements Serializable{
                                                                 // (It should be meaningful value for collision detection)
     protected ProjectileType type = ProjectileType.UNDEFINED;   // Type of the projectile (default: UNDEFINED)
 
-    protected transient TextureFX projectileEffect = null;      // Visual effect of the projectile 
-
+    protected TextureFX projectileEffect = null;      // Visual effect of the projectile 
     /**
      * Default constructor for subclasses.
      */
@@ -178,7 +177,7 @@ public abstract class Projectile implements Serializable{
      * @throws IOException If an I/O error occurs during deserialization.
      * @throws ClassNotFoundException If the class of the object cannot be found.
      */
-    public void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
     }
 }

@@ -48,7 +48,6 @@ import topdownshooter.Zombie.AcidZombie;
  */
 public class AcidSpit extends Projectile {
     private static final int EFFECTIVE_RANGE = 50;  // The range at which the acid spit is effective
-    protected int speed = 5;                        // Speed at which the acid spit moves
     protected int size = 15;                        // Size of the acid spit sprite
 
     /**
@@ -63,6 +62,7 @@ public class AcidSpit extends Projectile {
     public AcidSpit (int x, int y, double r, int damage) {
         super(x, y, r, damage);
         this.type = ProjectileType.ACID_SPIT;
+        this.speed = 5;
 
         this.projectileEffect = new TextureFX(new TextureFXStruct(Globals.ACID_SPIT_TEXTURE_PATH, -25, 0, 3));
         this.projectileEffect.setTargetSize(size, size);

@@ -132,7 +132,7 @@ public class SpriteAnimation implements Serializable{
         return new Offset(this.offsetX, this.offsetY);
     }
 
-    public void update() {
+    public boolean update() {
         if (this.delay>0) this.delay--;
 
         this.frameCounter++;
@@ -148,14 +148,16 @@ public class SpriteAnimation implements Serializable{
                 } else {
                     this.repeatCount--;  // Decrement after last repeat
                     if (this.repeatCount >= 0) {
-                        this.currentFrame = 0; // Restart animation
+                        this.currentFrame = 0; // Reset to first animation
                         this.delay = this.defaultDelay;
+                        return false;
                     }
                 }
             } else {
                 // Do nothing if no repeat left
             }
         }
+        return true;
     }
 
     public void draw(Graphics g, int x, int y, double rotation) {

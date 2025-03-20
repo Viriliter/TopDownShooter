@@ -51,6 +51,7 @@ import topdownshooter.Core.SpriteAnimation;
 public class AcidZombie extends AbstractZombie {
     private final int SPIT_RANGE = 500;
     private final double MAX_SPREAD_ANGLE_DEG = 15;  // Spead Angle of Toxic Spit In degree
+    public static final int EFFECTIVE_RANGE = 200;  // Effective Range of Exposion (After the zombie killed) In Pixels
 
     private static Random random = new Random(); // Reuse random instance
 
