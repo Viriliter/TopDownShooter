@@ -57,12 +57,12 @@ public class Pistol extends AbstractWeapon {
         super(properties);
 
         this.type = WeaponType.PISTOL;
+        
         this.firingSoundFX = new SoundFX(Globals.FIRE_PISTOL_SOUND_FX_PATH);
         
-        this.flashAnimation = new SpriteAnimation(Globals.MUZZLE_ANIMATION);
-        this.flashAnimation.setTargetSize(20, 20);
-        this.flashAnimation.setRotationOffset(Globals.degToRad(90));
-        this.flashAnimation.setRepeat(0);
+        this.weaponAnimation = new SpriteAnimation(Globals.MUZZLE_ANIMATION);
+        this.weaponAnimation.setTargetSize(20, 20);
+        this.weaponAnimation.setRepeat(0);
     }
 
     @Override
@@ -76,7 +76,7 @@ public class Pistol extends AbstractWeapon {
             fireTick.reset();
             this.ammo--;
             applySoundFX();
-            this.flashAnimation.setRepeat(1);  // Only repeat animation once
+            this.weaponAnimation.setRepeat(1);  // Only repeat animation once
             return new Bullet(x, y, r, this.damage);
         }
         return null;

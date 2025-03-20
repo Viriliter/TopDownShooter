@@ -32,6 +32,7 @@ package topdownshooter.Weapon;
 import topdownshooter.Core.ConfigHandler.WeaponProperties;
 import topdownshooter.Core.Globals;
 import topdownshooter.Core.SoundFX;
+import topdownshooter.Core.SpriteAnimation;
 import topdownshooter.Weapon.Projectiles.ShotgunPellets;
 
 /**
@@ -56,7 +57,12 @@ public class Shotgun extends AbstractWeapon {
         super(properties);
 
         this.type = WeaponType.SHOTGUN;
+
         this.firingSoundFX = new SoundFX(Globals.FIRE_SHOTGUN_SOUND_FX_PATH);
+
+        this.weaponAnimation = new SpriteAnimation(Globals.MUZZLE_ANIMATION);
+        this.weaponAnimation.setTargetSize(20, 20);
+        this.weaponAnimation.setRepeat(0);
     }
 
     @Override
@@ -70,6 +76,7 @@ public class Shotgun extends AbstractWeapon {
             fireTick.reset();
             this.ammo--;
             applySoundFX();
+            this.weaponAnimation.setRepeat(1);  // Only repeat animation once
             return new ShotgunPellets(x, y, r, this.damage);
         }
         return null;

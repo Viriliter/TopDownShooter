@@ -249,7 +249,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
 
         // Move zombies towards player
         for (Zombie z : zombies) {
-            z.update(player.getBounds());
+            z.update(player.getTargetBounds());
 
             // Acid zombies have special ranged attack
             if (z.getType() == ZombieType.ACID) {
@@ -382,7 +382,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
             } else if (projectile.getType() == ProjectileType.ACID_SPIT) {
                 AcidSpit acidSpit = (AcidSpit) projectile;
 
-                if (Globals.isObjectsCollided(acidSpit.getBounds(), this.player.getBounds())) {
+                if (Globals.isObjectsCollided(acidSpit.getBounds(), this.player.getTargetBounds())) {
                     this.player.takeDamage(acidSpit.getDamage());
                     projectileIterator.remove();  // After contact with player, remove it.
                 }
@@ -431,7 +431,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         while (zombieIterator.hasNext()) {
             Zombie zombie = zombieIterator.next();
             // If zombie collides with the player, it gives damage by attacking
-            boolean isColliding = Globals.isObjectsCollided(zombie.getBounds(), player.getBounds());
+            boolean isColliding = Globals.isObjectsCollided(zombie.getBounds(), player.getTargetBounds());
 
             if (isColliding) {
                 // Normalize damage according to game tick (Full damage is taken by player in 500ms)
@@ -446,7 +446,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
 
         while (lootIterator.hasNext()) {
             Loot loot = lootIterator.next();
-            if (Globals.isObjectsCollided(loot.getBounds(), this.player.getBounds())) {
+            if (Globals.isObjectsCollided(loot.getBounds(), this.player.getTargetBounds())) {
                 this.player.addLoot(loot);
                 lootIterator.remove();  // Remove the loot after player takes it
             }

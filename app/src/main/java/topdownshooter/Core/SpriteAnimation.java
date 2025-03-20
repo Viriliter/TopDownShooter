@@ -91,6 +91,7 @@ public class SpriteAnimation implements Serializable{
             this.offsetY = this.struct.yOffset;
             this.defaultDelay = this.struct.defaultDelay;
             this.delay = this.struct.defaultDelay;
+            this.rOffset = this.struct.rOffset;
 
             setSubFrames();
         } catch (IOException e) {
@@ -169,6 +170,23 @@ public class SpriteAnimation implements Serializable{
         // Apply transformations (rotation + centering)
         g2d.translate(x + targetWidth / 2, y + targetHeight / 2);
         g2d.rotate(rotation+rOffset);
+
+        if (this.subFrames != null) {
+            g2d.drawImage(this.subFrames[this.currentFrame], -this.targetWidth / 2, -this.targetHeight / 2, this.targetWidth, this.targetHeight, null);
+        }
+
+        g2d.setTransform(oldTransform);
+    }
+
+    public void draw2(Graphics g, int x, int y, double rotation) {
+        if (this.repeatCount == 0) return;  // If there is no repeat for the animation do not draw
+
+        Graphics2D g2d = (Graphics2D) g;
+        AffineTransform oldTransform = g2d.getTransform();
+
+        // Apply transformations (rotation + centering)
+        g2d.translate(x, y);
+        g2d.rotate(rotation+this.rOffset);
 
         if (this.subFrames != null) {
             g2d.drawImage(this.subFrames[this.currentFrame], -this.targetWidth / 2, -this.targetHeight / 2, this.targetWidth, this.targetHeight, null);

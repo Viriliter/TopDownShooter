@@ -127,7 +127,8 @@ public interface Globals {
     public static final SpriteAnimationStruct LARGE_MEDIC_ANIMATION = new SpriteAnimationStruct("Textures/Miscs/large_medic_pack.png", 35, 1, 7, 5, 0, 0);
     public static final SpriteAnimationStruct SMALL_MEDIC_ANIMATION = new SpriteAnimationStruct("Textures/Miscs/small_medic_pack.png", 42, 1, 9, 5, 0, 0);
 
-    public static final SpriteAnimationStruct MUZZLE_ANIMATION = new SpriteAnimationStruct("Textures/Miscs/fire.png", 16, FRAME_DELAY, 4, 4, 40, 12);
+    public static final SpriteAnimationStruct MUZZLE_ANIMATION = new SpriteAnimationStruct("Textures/Miscs/fire.png", 16, 1, 4, 4, 43, 17, 0, 90);
+    public static final SpriteAnimationStruct SMOKE_ANIMATION = new SpriteAnimationStruct("Textures/Miscs/smoke.png", 16, 1, 4, 4, 43, 17, 0, 90);
 
     public static final SpriteAnimationStruct EXPLOSIVE_BLAST_ANIMATION = new SpriteAnimationStruct("Textures/Miscs/explosive_blast.png", 96, 1, 20, 5, 0, 0);
     public static final SpriteAnimationStruct TOXIC_BLAST_ANIMATION = new SpriteAnimationStruct("Textures/Miscs/toxic_blast.png", 96, 1, 20, 5, 0, 0);

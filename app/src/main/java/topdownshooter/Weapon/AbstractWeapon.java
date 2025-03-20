@@ -67,7 +67,7 @@ public abstract class AbstractWeapon implements Weapon {
 
     protected SoundFX firingSoundFX = null;             /** Sound effect for weapon fire. */
     protected SoundFX emptyClickSoundFX = null;         /** Sound effect for trigger click of empty ammo */
-    protected SpriteAnimation flashAnimation = null;    /** Flash animation for muzzle */
+    protected SpriteAnimation weaponAnimation = null;   /** Weapon animation (e.g Flash animation for muzzle) */
 
     /**
      * Default constructor for AbstractWeapon.
@@ -119,30 +119,30 @@ public abstract class AbstractWeapon implements Weapon {
         this.fireTick.updateTick();
         this.reloadTick.updateTick();
 
-        if (this.flashAnimation!=null) this.flashAnimation.update();
+        if (this.weaponAnimation!=null) this.weaponAnimation.update();
     }
     
     @Override
     public void draw(Graphics g, int x, int y, double r) {
-        if (this.flashAnimation == null) return;
+        if (this.weaponAnimation == null) return;
         
-        Offset offset = this.flashAnimation.getOffset();
+        Offset offset = this.weaponAnimation.getOffset();
         double translatedX = x + offset.getX() * Math.cos(r) - offset.getY() * Math.sin(r);
         double translatedY = y + offset.getX() * Math.sin(r) + offset.getY() * Math.cos(r);
 
-        Graphics2D g2d = (Graphics2D) g; // Enable rotation
+        //Graphics2D g2d = (Graphics2D) g; // Enable rotation
+//
+        //AffineTransform oldTransform = g2d.getTransform();
+//
+        //g2d.setColor(Color.WHITE);
+        //g2d.translate(translatedX, translatedY);
+        //g2d.rotate(r);  // Rotate to face the player
+        //g2d.fillRect(-20 / 2, -20 / 2, 20, 20);
+//
+        //// Reset transformation
+        //g2d.setTransform(oldTransform);
 
-        AffineTransform oldTransform = g2d.getTransform();
-
-        g2d.setColor(Color.WHITE);
-        g2d.translate(translatedX, translatedY);
-        g2d.rotate(r);  // Rotate to face the player
-        g2d.fillRect(-20 / 2, -20 / 2, 20, 20);
-
-        // Reset transformation
-        g2d.setTransform(oldTransform);
-
-        if (this.flashAnimation!=null) this.flashAnimation.draw(g, (int) translatedX, (int) translatedY, r);
+        if (this.weaponAnimation!=null) this.weaponAnimation.draw2(g, (int) translatedX, (int) translatedY, r);
     }
 
     @Override

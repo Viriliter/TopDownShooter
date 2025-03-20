@@ -34,6 +34,7 @@ import java.util.Random;
 import topdownshooter.Core.ConfigHandler.WeaponProperties;
 import topdownshooter.Core.Globals;
 import topdownshooter.Core.SoundFX;
+import topdownshooter.Core.SpriteAnimation;
 import topdownshooter.Weapon.Projectiles.Bullet;
 
 /**
@@ -58,6 +59,11 @@ public class AssaultRifle extends AbstractWeapon {
         this.type = WeaponType.ASSAULTRIFLE;
 
         this.firingSoundFX = new SoundFX(Globals.FIRE_RIFLE_SOUND_FX_PATH);
+
+        this.weaponAnimation = new SpriteAnimation(Globals.MUZZLE_ANIMATION);
+        this.weaponAnimation.setTargetSize(20, 20);
+        this.weaponAnimation.setRepeat(0);
+
     }
 
     @Override
@@ -67,6 +73,7 @@ public class AssaultRifle extends AbstractWeapon {
             fireTick.reset();
             this.ammo--;
             applySoundFX();
+            this.weaponAnimation.setRepeat(1);  // Only repeat animation once
             return new Bullet(x, y, r + Globals.degToRad(spreadAngle), this.damage);
         }
         return null;

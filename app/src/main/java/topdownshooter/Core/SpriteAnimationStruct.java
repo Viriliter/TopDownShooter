@@ -39,6 +39,7 @@ public class SpriteAnimationStruct implements Serializable {
     int columns;
     int xOffset;
     int yOffset;
+    double rOffset;
     int defaultDelay;
 
     public SpriteAnimationStruct(
@@ -52,6 +53,7 @@ public class SpriteAnimationStruct implements Serializable {
         this.columns = columns;
         this.xOffset = xOffset;
         this.yOffset = yOffset;
+        this.rOffset = 0;
         this.defaultDelay = defaultDelay;
     }
     public SpriteAnimationStruct(
@@ -65,6 +67,21 @@ public class SpriteAnimationStruct implements Serializable {
         this.columns = columns;
         this.xOffset = xOffset;
         this.yOffset = yOffset;
+        this.rOffset = 0;
         this.defaultDelay = 0;
+    }
+    public SpriteAnimationStruct(
+        String imagePath, int totalFrames, int frameDelay, 
+        int rows, int columns, int xOffset, int yOffset, int defaultDelay, int rOffset
+    ) {
+        this.imagePath = imagePath;
+        this.totalFrames = totalFrames;
+        this.frameDelay = frameDelay;
+        this.rows = rows;
+        this.columns = columns;
+        this.xOffset = xOffset;
+        this.yOffset = yOffset;
+        this.rOffset = Globals.degToRad(rOffset);
+        this.defaultDelay = defaultDelay;
     }
 }
