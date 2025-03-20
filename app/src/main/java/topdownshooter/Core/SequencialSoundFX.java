@@ -1,6 +1,6 @@
 /*
  * @file SequencialSoundFX.java
- * @brief This file defines the ${fileNameNoExt} class.
+ * @brief This file defines the `SequencialSoundFX` class.
  *
  * Created on Wed Mar 19 2025
  *

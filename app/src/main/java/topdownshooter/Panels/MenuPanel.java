@@ -1,6 +1,6 @@
 /*
  * @file MenuPanel.java
- * @brief This file defines the ${fileNameNoExt} class.
+ * @brief This file defines the `MenuPanel` class.
  *
  * Created on Wed Mar 19 2025
  *

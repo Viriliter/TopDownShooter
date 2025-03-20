@@ -1,6 +1,6 @@
 /*
  * @file GamePanel.java
- * @brief This file defines the ${fileNameNoExt} class.
+ * @brief This file defines the `GamePanel` class.
  *
  * Created on Wed Mar 19 2025
  *

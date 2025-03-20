@@ -1,6 +1,6 @@
 /*
  * @file GameAreaPanel.java
- * @brief This file defines the ${fileNameNoExt} class.
+ * @brief This file defines the `GameAreaPanel` class.
  *
  * Created on Wed Mar 19 2025
  *

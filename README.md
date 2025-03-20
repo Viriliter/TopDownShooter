@@ -12,6 +12,7 @@ TopDownShooter is a top down shooter game where the players try to survive from 
 ## Requirements
 - Java 21 or above
 - Gradle 7.0+
+- ini4j
 - Windows (not mandatory but need comprehensive tests for other OSes)
 
 ## Installation

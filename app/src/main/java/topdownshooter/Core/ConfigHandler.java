@@ -1,6 +1,6 @@
 /*
  * @file ConfigHandler.java
- * @brief This file defines the ${fileNameNoExt} class.
+ * @brief This file defines the `ConfigHandler` class.
  *
  * Created on Wed Mar 19 2025
  *
@@ -37,7 +37,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
 
+/**
+ * @class ConfigHandler
+ * @brief Handles the loading, parsing, and retrieval of configuration values from a file.
+ */
 public final class ConfigHandler implements Serializable{
+
     public record WindowProperties (
         int windowWidth,
         int windowHeight,
@@ -78,6 +83,10 @@ public final class ConfigHandler implements Serializable{
 
     private static Ini ini;
 
+    /**
+     * @brief Constructor that loads and parses the configuration file.
+     * @param filePath The path to the configuration file.
+     */
     public ConfigHandler(String path) {
         try (InputStream input = getClass().getClassLoader().getResourceAsStream(path)) {
             if (input == null) {
@@ -89,10 +98,21 @@ public final class ConfigHandler implements Serializable{
         }
     }
 
+    /**
+     * @brief Sets value for the key of the configuration parameter in provided section.
+     * @param section The section where the key locates.
+     * @param key The key of the configuration parameter.
+     * @param value The value to set.
+     */
     public <T> void setProperty(String section, String key, T value) {
         ConfigHandler.ini.put(section, key, value);
     }
 
+    /**
+     * @brief Returns weapon type according to provided String formatted type.
+     * @param type String representation of the weapon type.
+     * @return The weapon type.
+     */
     private WeaponType getWeaponType(String type) {
         if (type == "PISTOL")
             return WeaponType.PISTOL;
@@ -108,6 +128,10 @@ public final class ConfigHandler implements Serializable{
             return WeaponType.UNDEFINED;
     }
 
+    /**
+     * @brief Returns window properties of the game.
+     * @return The weapon properties.
+     */
     public WindowProperties getWindowProperties() {
         Integer windowWidth = Integer.parseInt(ConfigHandler.ini.get("Window").get("Width"));
         Integer windowHeight = Integer.parseInt(ConfigHandler.ini.get("Window").get("Height"));
@@ -116,6 +140,10 @@ public final class ConfigHandler implements Serializable{
         return new WindowProperties(windowWidth, windowHeight, x ,y);
     }
 
+    /**
+     * @brief Returns weapon properties of the pistol.
+     * @return The weapon properties.
+     */
     public WeaponProperties getPistolProperties() {
         Integer weaponDamage = Integer.parseInt(ConfigHandler.ini.get("Pistol").get("Damage"));
         Integer weaponFireRate = Integer.parseInt(ConfigHandler.ini.get("Pistol").get("FireRate"));
@@ -125,6 +153,10 @@ public final class ConfigHandler implements Serializable{
         return new WeaponProperties(weaponDamage, weaponFireRate, weaponMagazineCapacity, weaponMagazineCount, reloadDuration);
     }
 
+    /**
+     * @brief Returns weapon properties of the assault rifle.
+     * @return The weapon properties.
+     */
     public WeaponProperties getAssaultRifleProperties() {
         Integer weaponDamage = Integer.parseInt(ConfigHandler.ini.get("AssaultRifle").get("Damage"));
         Integer weaponFireRate = Integer.parseInt(ConfigHandler.ini.get("AssaultRifle").get("FireRate"));
@@ -134,6 +166,10 @@ public final class ConfigHandler implements Serializable{
         return new WeaponProperties(weaponDamage, weaponFireRate, weaponMagazineCapacity, weaponMagazineCount, reloadDuration);
     }
 
+    /**
+     * @brief Returns weapon properties of the shotgun.
+     * @return The weapon properties.
+     */
     public WeaponProperties getShotgunProperties() {
         Integer weaponDamage = Integer.parseInt(ConfigHandler.ini.get("Shotgun").get("Damage"));
         Integer weaponFireRate = Integer.parseInt(ConfigHandler.ini.get("Shotgun").get("FireRate"));
@@ -143,6 +179,10 @@ public final class ConfigHandler implements Serializable{
         return new WeaponProperties(weaponDamage, weaponFireRate, weaponMagazineCapacity, weaponMagazineCount, reloadDuration);
     }
 
+    /**
+     * @brief Returns weapon properties of the sniper rifle.
+     * @return The weapon properties.
+     */
     public WeaponProperties getSniperRifleProperties() {
         Integer weaponDamage = Integer.parseInt(ConfigHandler.ini.get("SniperRifle").get("Damage"));
         Integer weaponFireRate = Integer.parseInt(ConfigHandler.ini.get("SniperRifle").get("FireRate"));
@@ -152,6 +192,10 @@ public final class ConfigHandler implements Serializable{
         return new WeaponProperties(weaponDamage, weaponFireRate, weaponMagazineCapacity, weaponMagazineCount, reloadDuration);
     }
 
+    /**
+     * @brief Returns weapon properties of the rocket launcher.
+     * @return The weapon properties.
+     */
     public WeaponProperties getRocketLauncherProperties() {
         Integer weaponDamage = Integer.parseInt(ConfigHandler.ini.get("Rocketlauncher").get("Damage"));
         Integer weaponFireRate = Integer.parseInt(ConfigHandler.ini.get("Rocketlauncher").get("FireRate"));
@@ -161,6 +205,10 @@ public final class ConfigHandler implements Serializable{
         return new WeaponProperties(weaponDamage, weaponFireRate, weaponMagazineCapacity, weaponMagazineCount, reloadDuration);
     }
 
+    /**
+     * @brief Returns player properties.
+     * @return The player properties.
+     */
     public PlayerProperties getPlayerProperties() {
         Integer playerStartingX = Integer.parseInt(ConfigHandler.ini.get("Player").get("StartingX"));
         Integer playerStartingY = Integer.parseInt(ConfigHandler.ini.get("Player").get("StartingY"));
@@ -169,6 +217,10 @@ public final class ConfigHandler implements Serializable{
         return new PlayerProperties(playerStartingX, playerStartingY, playerStartingHealth, playerSpeed);
     }
 
+    /**
+     * @brief Returns zombie properties of the ordinary type.
+     * @return The zombie properties.
+     */
     public ZombieProperties getOrdinaryZombieProperties() {
         Integer zombieHealth = Integer.parseInt(ConfigHandler.ini.get("OrdinaryZombie").get("Health"));
         Integer zombieSpeed = Integer.parseInt(ConfigHandler.ini.get("OrdinaryZombie").get("Speed"));
@@ -177,6 +229,10 @@ public final class ConfigHandler implements Serializable{
         return new ZombieProperties(zombieHealth, zombieSpeed, zombieDamage, zombiePoints);
     }
 
+    /**
+     * @brief Returns zombie properties of the crawler type.
+     * @return The zombie properties.
+     */
     public ZombieProperties getCrawlerZombieProperties() {
         Integer zombieHealth = Integer.parseInt(ConfigHandler.ini.get("CrawlerZombie").get("Health"));
         Integer zombieSpeed = Integer.parseInt(ConfigHandler.ini.get("CrawlerZombie").get("Speed"));
@@ -185,6 +241,10 @@ public final class ConfigHandler implements Serializable{
         return new ZombieProperties(zombieHealth, zombieSpeed, zombieDamage, zombiePoints);
     }
 
+    /**
+     * @brief Returns zombie properties of the tank type.
+     * @return The zombie properties.
+     */
     public ZombieProperties getTankZombieProperties() {
         Integer zombieHealth = Integer.parseInt(ConfigHandler.ini.get("TankZombie").get("Health"));
         Integer zombieSpeed = Integer.parseInt(ConfigHandler.ini.get("TankZombie").get("Speed"));
@@ -193,6 +253,10 @@ public final class ConfigHandler implements Serializable{
         return new ZombieProperties(zombieHealth, zombieSpeed, zombieDamage, zombiePoints);
     }
 
+    /**
+     * @brief Returns zombie properties of the acid type.
+     * @return The zombie properties.
+     */
     public ZombieProperties getAcidZombieProperties() {
         Integer zombieHealth = Integer.parseInt(ConfigHandler.ini.get("AcidZombie").get("Health"));
         Integer zombieSpeed = Integer.parseInt(ConfigHandler.ini.get("AcidZombie").get("Speed"));
@@ -201,6 +265,10 @@ public final class ConfigHandler implements Serializable{
         return new ZombieProperties(zombieHealth, zombieSpeed, zombieDamage, zombiePoints);
     }
 
+    /**
+     * @brief Returns level properties of level 1.
+     * @return The level properties.
+     */
     public LevelProperties getLevel1Properties() {
         Integer levelWaveDuration = Integer.parseInt(ConfigHandler.ini.get("Level1").get("WaveDuration"));
         Integer levelOrdinaryZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level1").get("OrdinaryZombieCount"));
@@ -211,6 +279,10 @@ public final class ConfigHandler implements Serializable{
         return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount, weaponPrize);
     }
 
+    /**
+     * @brief Returns level properties of level 2.
+     * @return The level properties.
+     */
     public LevelProperties getLevel2Properties() {
         Integer levelWaveDuration = Integer.parseInt(ConfigHandler.ini.get("Level2").get("WaveDuration"));
         Integer levelOrdinaryZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level2").get("OrdinaryZombieCount"));
@@ -221,6 +293,10 @@ public final class ConfigHandler implements Serializable{
         return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount, weaponPrize);
     }
 
+    /**
+     * @brief Returns level properties of level 3.
+     * @return The level properties.
+     */
     public LevelProperties getLevel3Properties() {
         Integer levelWaveDuration = Integer.parseInt(ConfigHandler.ini.get("Level3").get("WaveDuration"));
         Integer levelOrdinaryZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level3").get("OrdinaryZombieCount"));
@@ -231,6 +307,10 @@ public final class ConfigHandler implements Serializable{
         return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount, weaponPrize);
     }
 
+    /**
+     * @brief Returns level properties of level 4.
+     * @return The level properties.
+     */
     public LevelProperties getLevel4Properties() {
         Integer levelWaveDuration = Integer.parseInt(ConfigHandler.ini.get("Level4").get("WaveDuration"));
         Integer levelOrdinaryZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level4").get("OrdinaryZombieCount"));
@@ -241,6 +321,10 @@ public final class ConfigHandler implements Serializable{
         return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount, weaponPrize);
     }
 
+    /**
+     * @brief Returns level properties of level 5.
+     * @return The level properties.
+     */
     public LevelProperties getLevel5Properties() {
         Integer levelWaveDuration = Integer.parseInt(ConfigHandler.ini.get("Level5").get("WaveDuration"));
         Integer levelOrdinaryZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level5").get("OrdinaryZombieCount"));
@@ -251,6 +335,10 @@ public final class ConfigHandler implements Serializable{
         return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount, weaponPrize);
     }
 
+    /**
+     * @brief Returns level properties of level 6.
+     * @return The level properties.
+     */
     public LevelProperties getLevel6Properties() {
         Integer levelWaveDuration = Integer.parseInt(ConfigHandler.ini.get("Level6").get("WaveDuration"));
         Integer levelOrdinaryZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level6").get("OrdinaryZombieCount"));
@@ -261,6 +349,10 @@ public final class ConfigHandler implements Serializable{
         return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount, weaponPrize);
     }
 
+    /**
+     * @brief Returns level properties of level 7.
+     * @return The level properties.
+     */
     public LevelProperties getLevel7Properties() {
         Integer levelWaveDuration = Integer.parseInt(ConfigHandler.ini.get("Level7").get("WaveDuration"));
         Integer levelOrdinaryZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level7").get("OrdinaryZombieCount"));
@@ -271,6 +363,10 @@ public final class ConfigHandler implements Serializable{
         return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount, weaponPrize);
     }
 
+    /**
+     * @brief Returns level properties of level 8.
+     * @return The level properties.
+     */
     public LevelProperties getLevel8Properties() {
         Integer levelWaveDuration = Integer.parseInt(ConfigHandler.ini.get("Level8").get("WaveDuration"));
         Integer levelOrdinaryZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level8").get("OrdinaryZombieCount"));
@@ -281,6 +377,10 @@ public final class ConfigHandler implements Serializable{
         return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount, weaponPrize);
     }
 
+    /**
+     * @brief Returns level properties of level 9.
+     * @return The level properties.
+     */
     public LevelProperties getLevel9Properties() {
         Integer levelWaveDuration = Integer.parseInt(ConfigHandler.ini.get("Level9").get("WaveDuration"));
         Integer levelOrdinaryZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level9").get("OrdinaryZombieCount"));
@@ -291,6 +391,10 @@ public final class ConfigHandler implements Serializable{
         return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount, weaponPrize);
     }
 
+    /**
+     * @brief Returns level properties of level 10.
+     * @return The level properties.
+     */
     public LevelProperties getLevel10Properties() {
         Integer levelWaveDuration = Integer.parseInt(ConfigHandler.ini.get("Level10").get("WaveDuration"));
         Integer levelOrdinaryZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level10").get("OrdinaryZombieCount"));
@@ -301,6 +405,10 @@ public final class ConfigHandler implements Serializable{
         return new LevelProperties(levelWaveDuration, levelOrdinaryZombieCount, levelCrawlerZombieCount, levelTankZombieCount, levelAcidZombieCount, weaponPrize);
     }
 
+    /**
+     * @brief Returns level properties after level 10.
+     * @return The level properties.
+     */
     public LevelProperties getLevel10PlusProperties() {
         Integer levelWaveDuration = Integer.parseInt(ConfigHandler.ini.get("Level10+").get("WaveDuration"));
         Integer levelOrdinaryZombieCount = Integer.parseInt(ConfigHandler.ini.get("Level10+").get("OrdinaryZombieCount"));

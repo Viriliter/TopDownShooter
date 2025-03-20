@@ -1,6 +1,6 @@
 /*
  * @file NotificationPanel.java
- * @brief This file defines the ${fileNameNoExt} class.
+ * @brief This file defines the `NotificationPanel` class.
  *
  * Created on Wed Mar 19 2025
  *

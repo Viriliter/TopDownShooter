@@ -1,6 +1,6 @@
 /*
  * @file SpriteAnimationStruct.java
- * @brief This file defines the ${fileNameNoExt} class.
+ * @brief This file defines the `SpriteAnimationStruct` class.
  *
  * Created on Wed Mar 19 2025
  *

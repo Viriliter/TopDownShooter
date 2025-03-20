@@ -1,6 +1,6 @@
 /*
  * @file AbstractActionPanel.java
- * @brief This file defines the ${fileNameNoExt} class.
+ * @brief This file defines the `AbstractActionPanel` class.
  *
  * Created on Wed Mar 19 2025
  *

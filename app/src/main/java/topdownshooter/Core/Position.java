@@ -1,6 +1,6 @@
 /*
  * @file Position.java
- * @brief This file defines the ${fileNameNoExt} class.
+ * @brief This file defines the `Position` record.
  *
  * Created on Wed Mar 19 2025
  *

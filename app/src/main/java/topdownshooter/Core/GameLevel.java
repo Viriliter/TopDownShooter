@@ -1,6 +1,6 @@
 /*
  * @file GameLevel.java
- * @brief This file defines the ${fileNameNoExt} class.
+ * @brief This file defines the `GameLevel` class.
  *
  * Created on Wed Mar 19 2025
  *

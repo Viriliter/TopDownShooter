@@ -1,6 +1,6 @@
 /*
  * @file SoundFX.java
- * @brief This file defines the ${fileNameNoExt} class.
+ * @brief This file defines the `SoundFX` class.
  *
  * Created on Wed Mar 19 2025
  *

@@ -1,6 +1,6 @@
 /*
  * @file InGameMenuPanel.java
- * @brief This file defines the ${fileNameNoExt} class.
+ * @brief This file defines the `InGameMenuPanel` class.
  *
  * Created on Wed Mar 19 2025
  *
