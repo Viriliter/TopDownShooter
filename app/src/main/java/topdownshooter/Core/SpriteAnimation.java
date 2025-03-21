@@ -40,45 +40,79 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.Objects;
 
+/**
+ * @class SpriteAnimation
+ * @brief Class to handle sprite-based animation using a sprite sheet.
+ * 
+ * This class loads a sprite sheet, preloads individual frames from it, and
+ * manages frame updates, animation speed, repeat count, and drawing the 
+ * animation with rotation.
+ * The animation frames are drawn sequentially with a specified delay between 
+ * each frame.
+ *  
+ * @see SpriteAnimationStruct
+ */
 public class SpriteAnimation implements Serializable{
-    private SpriteAnimationStruct struct = null;
-    private transient BufferedImage spriteSheet = null;
-    private transient BufferedImage[] subFrames = null;  // Preloaded animation frames
-    private int frameWidth = 0, frameHeight = 0;  // Size of each frame in sprite sheet
-    private int totalFrames; // Total number of frames in the sprite sheet
-    private int currentFrame = 0; // Current animation frame
-    private int frameDelay; // Delay before switching frames
-    private int frameCounter = 0; // Counter to control animation speed
-    private int rows;  // Number of columns in sprite sheet
-    private int columns;  // Number of rows in sprite sheet
-    private int repeatCount = -1;  // Animation repeat count
-    private int targetWidth = 0, targetHeight = 0;  // Size of target frame which will be drawn
+    private SpriteAnimationStruct struct = null;        /**< Structure holding the metadata of the sprite animation. */
+    private transient BufferedImage spriteSheet = null; /**<The sprite sheet image containing the frames. */
+    private transient BufferedImage[] subFrames = null; /**< Preloaded animation frames. */
+    private int frameWidth = 0, frameHeight = 0;        /**< Size of each frame in sprite sheet. */
+    private int totalFrames;                            /**< Total number of frames in the sprite sheet. */
+    private int currentFrame = 0;                       /**< Current animation frame. */
+    private int frameDelay;                             /**< Delay before switching frames. */
+    private int frameCounter = 0;                       /**< Counter to control animation speed. */
+    private int rows;                                   /**< Number of columns in sprite sheet. */
+    private int columns;                                /**< Number of rows in sprite sheet. */
+    private int repeatCount = -1;                       /**< Animation repeat count. */
+    private int targetWidth = 0, targetHeight = 0;      /**< Size of target frame which will be drawn. */
 
-    private int offsetX;
-    private int offsetY;
-    private int defaultDelay = 0;
-    private int delay = 0;
+    private int offsetX;                                /**< The offset for the sprite's X position. */
+    private int offsetY;                                /**< The offset for the sprite's Y position. */
+    private int defaultDelay = 0;                       /**< The default delay between each frame in game ticks. */
+    private int delay = 0;                              /**< The delay between each frame in game ticks. */
 
-    private double rOffset = 0;  // Rotation offset in radians
+    private double rOffset = 0;                         /**< Rotation offset in radians. */
 
+    /**
+     * @class Offset
+     * @brief Helper class for storing the X and Y offsets for the sprite.
+     */
     public class Offset {
         int x;
         int y;
 
+        /**
+         * Constructor for Offset.
+         * 
+         * @param x The X offset.
+         * @param y The Y offset.
+         */
         public Offset(int x, int y) {
             this.x = x;
             this.y = y;
         }
 
+        /**
+         * @return The X offset.
+         */
         public int getX() {
              return this.x;
         }
 
+        /**
+         * @return The Y offset.
+         */
         public int getY() {
             return this.y;
        }
     }
 
+    /**
+     * Constructor that initializes the sprite animation from a given struct.
+     * 
+     * @param struct The metadata struct that defines the sprite sheet properties.
+     * @throws IOException If there's an error loading the sprite sheet image.
+     */
     public SpriteAnimation(SpriteAnimationStruct struct) {
         try {
             this.struct = struct;
@@ -99,6 +133,12 @@ public class SpriteAnimation implements Serializable{
         }
     }
 
+    /**
+     * Preloads all frames from the sprite sheet into the subFrames array.
+     * 
+     * Perform this operation on constructor so that no need to perform this 
+     * operation over and over again since it is bit time consuming.
+     */
     public void setSubFrames() {
         this.frameWidth = this.spriteSheet.getWidth() / this.columns;
         this.frameHeight = this.spriteSheet.getHeight() / this.rows;
@@ -116,23 +156,49 @@ public class SpriteAnimation implements Serializable{
         }
     }
 
+    /**
+     * Sets the number of times the animation should repeat.
+     * 
+     * @param repeatCount The number of repetitions (set to -1 for infinite repeats).
+     */
     public void setRepeat(int repeatCount) {
         this.repeatCount = repeatCount;
     }
     
+    /**
+     * Sets the size of the target frame to be drawn.
+     * 
+     * @param width The width of the target frame.
+     * @param height The height of the target frame.
+     */
     public void setTargetSize(int width, int height) {
         this.targetWidth = width;
         this.targetHeight = height;
     }
 
+    /**
+     * Sets the rotation offset to be applied to the sprite.
+     * 
+     * @param rOffset The rotation offset in radians.
+     */
     public void setRotationOffset(double rOffset) {
         this.rOffset = rOffset;
     }
 
+    /**
+     * Gets the offset values for the sprite.
+     * 
+     * @return An Offset object containing the X and Y offsets.
+     */
     public Offset getOffset() {
         return new Offset(this.offsetX, this.offsetY);
     }
 
+    /**
+     * Updates the animation by advancing to the next frame or repeating the animation.
+     * 
+     * @return True if the animation should continue; false if it has finished.
+     */
     public boolean update() {
         if (this.delay>0) this.delay--;
 
@@ -161,6 +227,14 @@ public class SpriteAnimation implements Serializable{
         return true;
     }
 
+    /**
+     * Draws the current frame of the animation to the screen with rotation.
+     * 
+     * @param g The Graphics object to draw on.
+     * @param x The X position of the sprite.
+     * @param y The Y position of the sprite.
+     * @param rotation The rotation angle (in radians).
+     */
     public void draw(Graphics g, int x, int y, double rotation) {
         if (this.repeatCount == 0) return;  // If there is no repeat for the animation do not draw
 
@@ -178,6 +252,14 @@ public class SpriteAnimation implements Serializable{
         g2d.setTransform(oldTransform);
     }
 
+    /**
+     * Alternative method for drawing the current frame with a different transformation.
+     * 
+     * @param g The Graphics object to draw on.
+     * @param x The X position of the sprite.
+     * @param y The Y position of the sprite.
+     * @param rotation The rotation angle (in radians).
+     */
     public void draw2(Graphics g, int x, int y, double rotation) {
         if (this.repeatCount == 0) return;  // If there is no repeat for the animation do not draw
 
@@ -195,6 +277,13 @@ public class SpriteAnimation implements Serializable{
         g2d.setTransform(oldTransform);
     }
 
+    /**
+     * Custom deserialization method to reload the sprite sheet and frames after deserialization.
+     * 
+     * @param in The ObjectInputStream used for deserialization.
+     * @throws IOException If an error occurs during deserialization.
+     * @throws ClassNotFoundException If the class of the serialized object is not found.
+     */
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         this.spriteSheet = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(this.struct.imagePath)));

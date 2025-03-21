@@ -44,7 +44,7 @@ import topdownshooter.Core.ConfigHandler;
  */
 public class Game {
     /**
-     * @brief Main method to start the game.
+     * Main method to start the game.
      *
      * Loads game configurations, sets up the game window, 
      * and initializes the menu panel.

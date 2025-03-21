@@ -45,13 +45,27 @@ import topdownshooter.Core.Globals;
 import topdownshooter.Core.SoundFX;
 import topdownshooter.Core.ConfigHandler.WindowProperties;
 
+/**
+ * @class MenuPanel
+ * @brief A panel that displays the main menu for the game.
+ * 
+ * This class represents the main menu of the game, where users can interact with various options, including starting a new game, loading a saved game, viewing help, checking credits, and exiting the game. The panel features a background image, music, and several styled buttons for navigation.
+ * 
+ * @note This panel should be added to a JFrame to function as part of the game interface.
+ */
 public class MenuPanel extends JPanel {
-    private JFrame frame;
-    private ConfigHandler config = null;
-    private Image bgImage;
-    private SoundFX menuMusic = null;
-    private GamePanel gamePanel = null;
+    private JFrame frame;                   //*< The parent JFrame that holds this panel. */
+    private ConfigHandler config = null;    //*< The configuration handler for game settings. */
+    private Image bgImage;                  //*< The background image for the menu. */
+    private SoundFX menuMusic = null;       //*< The sound effects or music for the menu. */
+    private GamePanel gamePanel = null;     //*< The GamePanel for transitioning to the game view. */
 
+    /**
+     * Constructs a MenuPanel with the specified parent JFrame and configuration handler.
+     * 
+     * @param frame The parent JFrame that will hold the menu panel.
+     * @param config The configuration handler that manages game settings.
+     */
     public MenuPanel(JFrame frame, ConfigHandler config) {
         this.frame = frame;
         this.config = config;
@@ -61,6 +75,10 @@ public class MenuPanel extends JPanel {
         initPanel();
     }
 
+    /**
+     * Initializes the components of the menu panel, including setting up buttons,
+     * loading the background image, and setting up the music.
+     */
     private void initPanel() {
         this.menuMusic.play(true, 5000);
 
@@ -126,7 +144,13 @@ public class MenuPanel extends JPanel {
         // Add the button panel to the center of the menu
         add(centerPanel, BorderLayout.CENTER);
     }
-
+    
+    /**
+     * Creates a styled button with the specified text for the menu.
+     * 
+     * @param text The text to be displayed on the button.
+     * @return A styled JButton for the menu.
+     */
     private JButton createStyledButton(String text) {
         JButton button = new JButton(text);
         button.setFont(new Font("Arial", Font.BOLD, 16));
@@ -162,6 +186,11 @@ public class MenuPanel extends JPanel {
         return button;
     }
 
+    /**
+     * Paints the components of the menu panel, including the background image.
+     * 
+     * @param g The Graphics object used to paint the component.
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -173,6 +202,10 @@ public class MenuPanel extends JPanel {
         frame.repaint();
     }
 
+    /**
+     * Displays the main menu.
+     * 
+     */
     public void showMenu() {
         this.gamePanel = null;
 
@@ -184,6 +217,9 @@ public class MenuPanel extends JPanel {
         this.frame.setVisible(true);
     }
 
+    /**
+     * Starts a new game when the user clicks "Start Game" button.
+     */
     private void startGame() {
         this.menuMusic.stop();
 
@@ -198,6 +234,9 @@ public class MenuPanel extends JPanel {
         this.gamePanel.startGame();
     }
 
+    /**
+     * Loads a previously saved game when the user clicks "Load Game" button.
+     */
     private void loadGame() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Open File");
@@ -273,6 +312,9 @@ public class MenuPanel extends JPanel {
         }   
     }
 
+    /**
+     * Opens the help dialog when the user clicks "Help" button.
+     */
     private void help() {
         // Create and display a dialog with instructions on how to play the game
         String helpText = "<html><h2>How to Play the Game</h2>"
@@ -320,6 +362,9 @@ public class MenuPanel extends JPanel {
         helpDialog.setVisible(true);  // Show the dialog
     }
 
+    /**
+     * Opens the help dialog when the user clicks "Credit" button.
+     */
     private void credits() {
         // Create and display a dialog with instructions on how to play the game
         String helpText = "<html><h2>Credits</h2>"
@@ -361,7 +406,10 @@ public class MenuPanel extends JPanel {
         helpDialog.add(closePanel, BorderLayout.SOUTH);
         helpDialog.setVisible(true);  // Show the dialog
     }
-
+    
+    /**
+     * Exits the game when the user clicks "Exit" button.
+     */
     private void exit() {
         // Confirm the exit with the user
         int response = JOptionPane.showConfirmDialog(frame, 

@@ -34,14 +34,29 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
+/**
+ * @class GameOverPanel
+ * @brief A panel that displays the game over screen.
+ *
+ * This class represents the game over state, displaying a "GAME OVER" message. 
+ * The panel is displayed when the game ends.
+ */
 public class GameOverPanel extends AbstractActionPanel {
-    private JFrame frame;
-    private JLabel gameOverLabel;
-    private JLabel scoreLabel;
-    private JLabel levelLabel;
-    private JButton backButton;
-    private GamePanel parentPanel;
+    private JFrame frame;           /**< The JFrame containing this panel. */
+    private JLabel gameOverLabel;   /**< Label showing the "GAME OVER" text. */
+    private JLabel scoreLabel;      /**< Label showing the player's final score. */
+    private JLabel levelLabel;      /**< Label showing the level the player reached. */
+    private JButton backButton;     /**< Button to return to the main menu. */
+    private GamePanel parentPanel;  /**< Reference to the parent game panel. */
 
+    /**
+     * Constructs the GameOverPanel.
+     * 
+     * Initializes the game over screen components: the "GAME OVER" label, final score label, level label,
+     * and the "Back to Menu" button. All components are added to the panel with absolute positioning.
+     *
+     * @param frame The JFrame containing the panel.
+     */
     public GameOverPanel(JFrame frame) {
         super();
         this.frame = frame;
@@ -63,6 +78,14 @@ public class GameOverPanel extends AbstractActionPanel {
         add(backButton);
     }
 
+    /**
+     * Helper method to create a JLabel with specified text, font size, and color.
+     * 
+     * @param text The text to display on the label.
+     * @param fontSize The font size for the label text.
+     * @param color The color of the text.
+     * @return A JLabel configured with the specified properties.
+     */
     private JLabel createLabel(String text, int fontSize, Color color) {
         JLabel label = new JLabel(text, JLabel.CENTER);
         label.setFont(new Font("Arial", Font.BOLD, fontSize));
@@ -70,6 +93,14 @@ public class GameOverPanel extends AbstractActionPanel {
         return label;
     }
 
+    /**
+     * Custom painting method to draw the game over screen.
+     * 
+     * Fills the background with a semi-transparent black color and positions the labels and button on the panel.
+     * The components are positioned relative to the width and height of the panel.
+     * 
+     * @param g The Graphics object used for painting the component.
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -95,20 +126,48 @@ public class GameOverPanel extends AbstractActionPanel {
         this.frame.repaint();
     }
 
+    /**
+     * Sets the parent panel for the GameOverPanel.
+     * 
+     * This method allows the GameOverPanel to access and communicate with the parent GamePanel.
+     *
+     * @param panel The parent GamePanel.
+     */
     void setParentPanel(GamePanel panel) {
         this.parentPanel = panel;
     }
 
+    /**
+     * Updates the score label to display the player's final score.
+     * 
+     * This method is called when the game ends to show the final score on the game over screen.
+     *
+     * @param score The final score of the player.
+     */
     void setPlayerScore(int score) {
         this.scoreLabel.setText("Final Score: " + score);
         repaint();
     }
 
+    /**
+     * Updates the score label to display the player's final score.
+     * 
+     * This method is called when the game ends to show the final score on the game over screen.
+     *
+     * @param score The final score of the player.
+     */
     void setGameLevel(int level) {
         this.levelLabel.setText("Reached Level: " + level);
         repaint();
     }
 
+    /**
+     * Updates the score label to display the player's final score.
+     * 
+     * This method is called when the game ends to show the final score on the game over screen.
+     *
+     * @param score The final score of the player.
+     */
     void returnToMenu() {
         this.parentPanel.switchToMenu();
         this.close();

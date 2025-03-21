@@ -44,11 +44,22 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+/**
+ * @class NotificationPanel
+ * @brief A panel that displays a notification message for a specified duration.
+ * 
+ * @note The notification panel uses absolute positioning and should be added to a JFrame for proper display.
+ */
 public class NotificationPanel extends JPanel {
     private String message = "";
     private Frame frame = null;
     private Timer timer;
 
+    /**
+     * Constructs a NotificationPanel with the specified parent JFrame.
+     * 
+     * @param frame The parent JFrame that will be used to repaint the notification panel.
+     */
     public NotificationPanel(JFrame frame) {
         super();
         this.frame = frame;
@@ -59,6 +70,12 @@ public class NotificationPanel extends JPanel {
         setPreferredSize(new Dimension(300, 60));
     }
 
+    /**
+     * Paints the notification panel by drawing a rounded rectangle background 
+     * and the message text in the center of the panel.
+     * 
+     * @param g The Graphics object used to paint the component.
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -83,6 +100,12 @@ public class NotificationPanel extends JPanel {
         this.frame.repaint();
     }
 
+    /**
+     * Displays the notification message for a specified duration.
+     * 
+     * @param message The message to be displayed in the notification.
+     * @param displayTimeMs The duration (in milliseconds) for which the message should be displayed.
+     */
     public void show(String message, int displayTimeMs) {
         this.message = message;
         setVisible(true);

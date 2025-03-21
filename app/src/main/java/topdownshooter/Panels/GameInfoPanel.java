@@ -39,10 +39,17 @@ import topdownshooter.Core.Globals;
 import topdownshooter.Player.InventoryInfo;
 import topdownshooter.Weapon.WeaponType;
 
+/**
+ * @class GameInfoPanel
+ * @brief A panel that displays game information such as health, score, level, and weapon inventory which is located at top of the game window.
+ * 
+ * This class manages the graphical display of the player's health, score, game level, remaining zombies, and remaining time. 
+ * The panel updates dynamically based on the game's state and interacts with other components like the game panel.
+ */
 public class GameInfoPanel extends JPanel implements ActionListener, MouseListener{
-    private static Color bgColor = Color.BLACK;
-    private static Color foreColor = Color.WHITE;
-    private static Font fontStyle = new Font("Arial", Font.BOLD, 18);
+    private static Color bgColor = Color.BLACK;                                  /**< Background color of the panel. */
+    private static Color foreColor = Color.WHITE;                                /**< Foreground (text) color of the panel. */
+    private static Font fontStyle = new Font("Arial", Font.BOLD, 18);  /**< Font style of the panel. */
     
     private class WeaponSlot extends JPanel {
         private final JLabel iconLabel;
@@ -53,6 +60,11 @@ public class GameInfoPanel extends JPanel implements ActionListener, MouseListen
 
         public static final int weaponIconSize = 50;
     
+        /**
+         * Constructs a WeaponSlot with the provided weapon icon.
+         * 
+         * @param icon The image icon for the weapon.
+         */
         public WeaponSlot(ImageIcon icon) {
             setLayout(new BorderLayout());
             setPreferredSize(new Dimension(100, 50)); // Fixed size
@@ -93,19 +105,34 @@ public class GameInfoPanel extends JPanel implements ActionListener, MouseListen
             add(infoPanel, BorderLayout.CENTER);
         }
 
+        /**
+         * Updates the ammo and magazine count displayed in the weapon slot.
+         * 
+         * @param ammo The current ammo count.
+         * @param magazine The current magazine count.
+         */
         public void updateAmmo(int ammo, int magazine) {
             this.ammoLabel.setText(ammo < 0 ? "-": String.valueOf(ammo));
             this.magazineLabel.setText(magazine < 0 ? "-": String.valueOf(magazine));
         }
 
+        /**
+         * Sets the weapon icon for the weapon slot that indicates waepon status.
+         * 
+         * @param icon The new image icon for the weapon.
+         */
         public void setIcon(ImageIcon icon) {
             this.iconLabel.setIcon(icon);
         }
     }
 
     private class WeaponInventoryPanel extends JPanel {
+        
+        /**
+         * @enum Enum representing the status of a weapon in the inventory.
+         */
         private enum WeaponStatus {
-            EMPTY,      // The weapon has not been earned yet 
+            NULL,       // The weapon has not been earned yet (aka null)
             INACTIVE,   // The weapon is not using
             ACTIVE      // Current weapon that is used by the player
         }
@@ -114,32 +141,36 @@ public class GameInfoPanel extends JPanel implements ActionListener, MouseListen
 
         private LinkedHashMap<WeaponType, WeaponSlot> weaponSlots = null;
         
-        private static final ImageIcon iconPistolEmpty = Globals.loadPNGIcon(Globals.ICON_PATH_PISTOL_EMPTY, WeaponSlot.weaponIconSize, WeaponSlot.weaponIconSize);
+        private static final ImageIcon iconPistolNull = Globals.loadPNGIcon(Globals.ICON_PATH_PISTOL_NULL, WeaponSlot.weaponIconSize, WeaponSlot.weaponIconSize);
         private static final ImageIcon iconPistolUnselected = Globals.loadPNGIcon(Globals.ICON_PATH_PISTOL_UNSELECTED, WeaponSlot.weaponIconSize, WeaponSlot.weaponIconSize);
         private static final ImageIcon iconPistolSelected = Globals.loadPNGIcon(Globals.ICON_PATH_PISTOL_SELECTED, WeaponSlot.weaponIconSize, WeaponSlot.weaponIconSize);
-        private static final ImageIcon iconAssaultRifleEmpty = Globals.loadPNGIcon(Globals.ICON_PATH_ASSAULT_RIFLE_EMPTY, WeaponSlot.weaponIconSize, WeaponSlot.weaponIconSize);
+        private static final ImageIcon iconAssaultRifleNull = Globals.loadPNGIcon(Globals.ICON_PATH_ASSAULT_RIFLE_NULL, WeaponSlot.weaponIconSize, WeaponSlot.weaponIconSize);
         private static final ImageIcon iconAssaultRifleUnselected = Globals.loadPNGIcon(Globals.ICON_PATH_ASSAULT_RIFLE_UNSELECTED, WeaponSlot.weaponIconSize, WeaponSlot.weaponIconSize);
         private static final ImageIcon iconAssaultRifleSelected = Globals.loadPNGIcon(Globals.ICON_PATH_ASSAULT_RIFLE_SELECTED, WeaponSlot.weaponIconSize, WeaponSlot.weaponIconSize);
-        private static final ImageIcon iconShotgunEmpty = Globals.loadPNGIcon(Globals.ICON_PATH_SHOTGUN_EMPTY, WeaponSlot.weaponIconSize, WeaponSlot.weaponIconSize);
+        private static final ImageIcon iconShotgunNull = Globals.loadPNGIcon(Globals.ICON_PATH_SHOTGUN_NULL, WeaponSlot.weaponIconSize, WeaponSlot.weaponIconSize);
         private static final ImageIcon iconShotgunUnselected = Globals.loadPNGIcon(Globals.ICON_PATH_SHOTGUN_UNSELECTED, WeaponSlot.weaponIconSize, WeaponSlot.weaponIconSize);
         private static final ImageIcon iconShotgunSelected = Globals.loadPNGIcon(Globals.ICON_PATH_SHOTGUN_SELECTED, WeaponSlot.weaponIconSize, WeaponSlot.weaponIconSize);
-        private static final ImageIcon iconSniperRifleEmpty = Globals.loadPNGIcon(Globals.ICON_PATH_SNIPER_RIFLE_EMPTY, WeaponSlot.weaponIconSize, WeaponSlot.weaponIconSize);
+        private static final ImageIcon iconSniperRifleNull = Globals.loadPNGIcon(Globals.ICON_PATH_SNIPER_RIFLE_NULL, WeaponSlot.weaponIconSize, WeaponSlot.weaponIconSize);
         private static final ImageIcon iconSniperRifleUnselected = Globals.loadPNGIcon(Globals.ICON_PATH_SNIPER_RIFLE_UNSELECTED, WeaponSlot.weaponIconSize, WeaponSlot.weaponIconSize);
         private static final ImageIcon iconSniperRifleSelected = Globals.loadPNGIcon(Globals.ICON_PATH_SNIPER_RIFLE_SELECTED, WeaponSlot.weaponIconSize, WeaponSlot.weaponIconSize);
-        private static final ImageIcon iconRocketLauncherEmpty = Globals.loadPNGIcon(Globals.ICON_PATH_ROCKET_LAUNCHER_EMPTY, WeaponSlot.weaponIconSize, WeaponSlot.weaponIconSize);
+        private static final ImageIcon iconRocketLauncherNull = Globals.loadPNGIcon(Globals.ICON_PATH_ROCKET_LAUNCHER_NULL, WeaponSlot.weaponIconSize, WeaponSlot.weaponIconSize);
         private static final ImageIcon iconRocketLauncherUnselected = Globals.loadPNGIcon(Globals.ICON_PATH_ROCKET_LAUNCHER_UNSELECTED, WeaponSlot.weaponIconSize, WeaponSlot.weaponIconSize);
         private static final ImageIcon iconRocketLauncherSelected = Globals.loadPNGIcon(Globals.ICON_PATH_ROCKET_LAUNCHER_SELECTED, WeaponSlot.weaponIconSize, WeaponSlot.weaponIconSize);
 
+        /**
+         * Constructs a WeaponInventoryPanel and initializes weapon slots.
+         * 
+         */
         public WeaponInventoryPanel() {   
             setLayout(new GridLayout(1, 5, 10, 10));
             setBackground(GameInfoPanel.bgColor);
 
             weaponSlots = new LinkedHashMap<>();
-            weaponSlots.put(WeaponType.PISTOL, new WeaponSlot(iconPistolEmpty));
-            weaponSlots.put(WeaponType.ASSAULTRIFLE, new WeaponSlot(iconAssaultRifleEmpty));
-            weaponSlots.put(WeaponType.SHOTGUN, new WeaponSlot(iconShotgunEmpty));
-            weaponSlots.put(WeaponType.SNIPERRIFLE, new WeaponSlot(iconSniperRifleEmpty));
-            weaponSlots.put(WeaponType.ROCKETLAUNCHER, new WeaponSlot(iconRocketLauncherEmpty));
+            weaponSlots.put(WeaponType.PISTOL, new WeaponSlot(iconPistolNull));
+            weaponSlots.put(WeaponType.ASSAULTRIFLE, new WeaponSlot(iconAssaultRifleNull));
+            weaponSlots.put(WeaponType.SHOTGUN, new WeaponSlot(iconShotgunNull));
+            weaponSlots.put(WeaponType.SNIPERRIFLE, new WeaponSlot(iconSniperRifleNull));
+            weaponSlots.put(WeaponType.ROCKETLAUNCHER, new WeaponSlot(iconRocketLauncherNull));
 
             for (WeaponType wt : weaponSlots.keySet()) {
                 add(this.weaponSlots.get(wt));  // Add the slot to the panel
@@ -147,6 +178,11 @@ public class GameInfoPanel extends JPanel implements ActionListener, MouseListen
 
         }
 
+        /**
+         * Updates the weapon inventory based on the given inventory information.
+         * 
+         * @param inventoryInfo The current inventory info containing weapon and ammo data.
+         */
         public void updateInventory(final InventoryInfo inventoryInfo) {
             for (WeaponType weaponType : WeaponType.values()) {
                 WeaponType selectedWeaponType = inventoryInfo.selectedWeaponType;
@@ -183,7 +219,7 @@ public class GameInfoPanel extends JPanel implements ActionListener, MouseListen
                     this.lastWeaponType = selectedWeaponType;
                 } else {
                     // Set the unselected or empty icon
-                    this.weaponSlots.get(weaponType).setIcon(isWeaponEmpty ? getEmptyIcon(weaponType) : getUnselectedIcon(weaponType));
+                    this.weaponSlots.get(weaponType).setIcon(isWeaponEmpty ? getNullIcon(weaponType) : getUnselectedIcon(weaponType));
                 }
                 
                 // Update ammo for each weapon type
@@ -191,6 +227,12 @@ public class GameInfoPanel extends JPanel implements ActionListener, MouseListen
             }
         }
         
+        /**
+         * Gets the selected icon for a given weapon type.
+         * 
+         * @param weaponType The weapon type.
+         * @return The selected icon for the weapon.
+         */
         private ImageIcon getSelectedIcon(WeaponType weaponType) {
             switch (weaponType) {
                 case PISTOL: return iconPistolSelected;
@@ -202,6 +244,12 @@ public class GameInfoPanel extends JPanel implements ActionListener, MouseListen
             }
         }
         
+        /**
+         * Gets the unselected icon for a given weapon type.
+         * 
+         * @param weaponType The weapon type.
+         * @return The unselected icon for the weapon.
+         */
         private ImageIcon getUnselectedIcon(WeaponType weaponType) {
             switch (weaponType) {
                 case PISTOL: return iconPistolUnselected;
@@ -213,13 +261,19 @@ public class GameInfoPanel extends JPanel implements ActionListener, MouseListen
             }
         }
         
-        private ImageIcon getEmptyIcon(WeaponType weaponType) {
+        /**
+         * Gets the null icon for a given weapon type.
+         * 
+         * @param weaponType The weapon type.
+         * @return The empty icon for the weapon.
+         */
+        private ImageIcon getNullIcon(WeaponType weaponType) {
             switch (weaponType) {
-                case PISTOL: return iconPistolEmpty;
-                case ASSAULTRIFLE: return iconAssaultRifleEmpty;
-                case SHOTGUN: return iconShotgunEmpty;
-                case SNIPERRIFLE: return iconSniperRifleEmpty;
-                case ROCKETLAUNCHER: return iconRocketLauncherEmpty;
+                case PISTOL: return iconPistolNull;
+                case ASSAULTRIFLE: return iconAssaultRifleNull;
+                case SHOTGUN: return iconShotgunNull;
+                case SNIPERRIFLE: return iconSniperRifleNull;
+                case ROCKETLAUNCHER: return iconRocketLauncherNull;
                 default: return null;
             }
         }

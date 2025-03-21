@@ -41,7 +41,7 @@ import topdownshooter.Core.ConfigHandler;
  */
 public class WeaponFactory {
     /**
-     * @brief Creates a new weapon based on the given type.
+     * Creates a new weapon based on the given type.
      *
      * This method generates a weapon using the provided configuration 
      *

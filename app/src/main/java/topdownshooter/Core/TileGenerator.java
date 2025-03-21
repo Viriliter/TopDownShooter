@@ -38,11 +38,27 @@ import java.util.Objects;
 
 import javax.imageio.ImageIO;
 
+/**
+ * @class TileGenerator
+ * @brief A class that handles the generation and drawing of tile-based backgrounds.
+ * 
+ * The TileGenerator class is responsible for loading a tile image and drawing it repeatedly
+ * to cover the entire screen or specified area. The image is drawn in a grid pattern.
+ */
 public class TileGenerator implements Serializable{
     private String tilePath;
     private BufferedImage tileImage;
     private int tileWidth, tileHeight;
     
+    /**
+     * Constructs a TileGenerator with the specified tile image path.
+     * 
+     * This constructor loads the tile image from the provided path and initializes the tile's width
+     * and height based on the loaded image.
+     * 
+     * @param tilePath The path to the tile image file.
+     * @throws IOException If the tile image cannot be loaded.
+     */
     public TileGenerator(String tilePath) {
         try {
             this.tilePath = tilePath;
@@ -57,6 +73,15 @@ public class TileGenerator implements Serializable{
         }
     }
 
+    /**
+     * Draws the tile image across the screen or specified area.
+     * 
+     * This method tiles the image across the given screen width and height, filling the entire area.
+     * 
+     * @param g The Graphics object used for drawing the tile.
+     * @param screenWidth The width of the area to fill with tiles.
+     * @param screenHeight The height of the area to fill with tiles.
+     */
     public void draw(Graphics g, int screenWidth, int screenHeight) {
         if (tileImage == null) return;
 
@@ -66,7 +91,14 @@ public class TileGenerator implements Serializable{
             }
         }
     }
-    
+
+    /**
+     * Custom deserialization method to restore the tile image and its dimensions.
+     * 
+     * @param in The ObjectInputStream used for deserialization.
+     * @throws IOException If the tile image cannot be loaded during deserialization.
+     * @throws ClassNotFoundException If the class of the object being deserialized cannot be found.
+     */
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         this.tileImage = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(this.tilePath)));

@@ -44,7 +44,7 @@ import topdownshooter.Core.ConfigHandler;
  */
 public class ZombieFactory {
     /**
-     * @brief Creates a new zombie based on the given type.
+     * Creates a new zombie based on the given type.
      *
      * This method generates a zombie using the provided configuration 
      * and assigns it the given x and y coordinates.

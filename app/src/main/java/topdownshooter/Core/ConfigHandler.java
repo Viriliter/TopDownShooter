@@ -84,7 +84,7 @@ public final class ConfigHandler implements Serializable{
     private static Ini ini;
 
     /**
-     * @brief Constructor that loads and parses the configuration file.
+     * Constructor that loads and parses the configuration file.
      * @param filePath The path to the configuration file.
      */
     public ConfigHandler(String path) {
@@ -99,7 +99,7 @@ public final class ConfigHandler implements Serializable{
     }
 
     /**
-     * @brief Sets value for the key of the configuration parameter in provided section.
+     * Sets value for the key of the configuration parameter in provided section.
      * @param section The section where the key locates.
      * @param key The key of the configuration parameter.
      * @param value The value to set.
@@ -109,7 +109,7 @@ public final class ConfigHandler implements Serializable{
     }
 
     /**
-     * @brief Returns weapon type according to provided String formatted type.
+     * Returns weapon type according to provided String formatted type.
      * @param type String representation of the weapon type.
      * @return The weapon type.
      */
@@ -129,7 +129,7 @@ public final class ConfigHandler implements Serializable{
     }
 
     /**
-     * @brief Returns window properties of the game.
+     * Returns window properties of the game.
      * @return The weapon properties.
      */
     public WindowProperties getWindowProperties() {
@@ -141,7 +141,7 @@ public final class ConfigHandler implements Serializable{
     }
 
     /**
-     * @brief Returns weapon properties of the pistol.
+     * Returns weapon properties of the pistol.
      * @return The weapon properties.
      */
     public WeaponProperties getPistolProperties() {
@@ -154,7 +154,7 @@ public final class ConfigHandler implements Serializable{
     }
 
     /**
-     * @brief Returns weapon properties of the assault rifle.
+     * Returns weapon properties of the assault rifle.
      * @return The weapon properties.
      */
     public WeaponProperties getAssaultRifleProperties() {
@@ -167,7 +167,7 @@ public final class ConfigHandler implements Serializable{
     }
 
     /**
-     * @brief Returns weapon properties of the shotgun.
+     * Returns weapon properties of the shotgun.
      * @return The weapon properties.
      */
     public WeaponProperties getShotgunProperties() {
@@ -180,7 +180,7 @@ public final class ConfigHandler implements Serializable{
     }
 
     /**
-     * @brief Returns weapon properties of the sniper rifle.
+     * Returns weapon properties of the sniper rifle.
      * @return The weapon properties.
      */
     public WeaponProperties getSniperRifleProperties() {
@@ -193,7 +193,7 @@ public final class ConfigHandler implements Serializable{
     }
 
     /**
-     * @brief Returns weapon properties of the rocket launcher.
+     * Returns weapon properties of the rocket launcher.
      * @return The weapon properties.
      */
     public WeaponProperties getRocketLauncherProperties() {
@@ -206,7 +206,7 @@ public final class ConfigHandler implements Serializable{
     }
 
     /**
-     * @brief Returns player properties.
+     * Returns player properties.
      * @return The player properties.
      */
     public PlayerProperties getPlayerProperties() {
@@ -218,7 +218,7 @@ public final class ConfigHandler implements Serializable{
     }
 
     /**
-     * @brief Returns zombie properties of the ordinary type.
+     * Returns zombie properties of the ordinary type.
      * @return The zombie properties.
      */
     public ZombieProperties getOrdinaryZombieProperties() {
@@ -230,7 +230,7 @@ public final class ConfigHandler implements Serializable{
     }
 
     /**
-     * @brief Returns zombie properties of the crawler type.
+     * Returns zombie properties of the crawler type.
      * @return The zombie properties.
      */
     public ZombieProperties getCrawlerZombieProperties() {
@@ -242,7 +242,7 @@ public final class ConfigHandler implements Serializable{
     }
 
     /**
-     * @brief Returns zombie properties of the tank type.
+     * Returns zombie properties of the tank type.
      * @return The zombie properties.
      */
     public ZombieProperties getTankZombieProperties() {
@@ -254,7 +254,7 @@ public final class ConfigHandler implements Serializable{
     }
 
     /**
-     * @brief Returns zombie properties of the acid type.
+     * Returns zombie properties of the acid type.
      * @return The zombie properties.
      */
     public ZombieProperties getAcidZombieProperties() {
@@ -266,7 +266,7 @@ public final class ConfigHandler implements Serializable{
     }
 
     /**
-     * @brief Returns level properties of level 1.
+     * Returns level properties of level 1.
      * @return The level properties.
      */
     public LevelProperties getLevel1Properties() {
@@ -280,7 +280,7 @@ public final class ConfigHandler implements Serializable{
     }
 
     /**
-     * @brief Returns level properties of level 2.
+     * Returns level properties of level 2.
      * @return The level properties.
      */
     public LevelProperties getLevel2Properties() {
@@ -294,7 +294,7 @@ public final class ConfigHandler implements Serializable{
     }
 
     /**
-     * @brief Returns level properties of level 3.
+     * Returns level properties of level 3.
      * @return The level properties.
      */
     public LevelProperties getLevel3Properties() {
@@ -308,7 +308,7 @@ public final class ConfigHandler implements Serializable{
     }
 
     /**
-     * @brief Returns level properties of level 4.
+     * Returns level properties of level 4.
      * @return The level properties.
      */
     public LevelProperties getLevel4Properties() {
@@ -322,7 +322,7 @@ public final class ConfigHandler implements Serializable{
     }
 
     /**
-     * @brief Returns level properties of level 5.
+     * Returns level properties of level 5.
      * @return The level properties.
      */
     public LevelProperties getLevel5Properties() {
@@ -336,7 +336,7 @@ public final class ConfigHandler implements Serializable{
     }
 
     /**
-     * @brief Returns level properties of level 6.
+     * Returns level properties of level 6.
      * @return The level properties.
      */
     public LevelProperties getLevel6Properties() {
@@ -350,7 +350,7 @@ public final class ConfigHandler implements Serializable{
     }
 
     /**
-     * @brief Returns level properties of level 7.
+     * Returns level properties of level 7.
      * @return The level properties.
      */
     public LevelProperties getLevel7Properties() {
@@ -364,7 +364,7 @@ public final class ConfigHandler implements Serializable{
     }
 
     /**
-     * @brief Returns level properties of level 8.
+     * Returns level properties of level 8.
      * @return The level properties.
      */
     public LevelProperties getLevel8Properties() {
@@ -378,7 +378,7 @@ public final class ConfigHandler implements Serializable{
     }
 
     /**
-     * @brief Returns level properties of level 9.
+     * Returns level properties of level 9.
      * @return The level properties.
      */
     public LevelProperties getLevel9Properties() {
@@ -392,7 +392,7 @@ public final class ConfigHandler implements Serializable{
     }
 
     /**
-     * @brief Returns level properties of level 10.
+     * Returns level properties of level 10.
      * @return The level properties.
      */
     public LevelProperties getLevel10Properties() {
@@ -406,7 +406,7 @@ public final class ConfigHandler implements Serializable{
     }
 
     /**
-     * @brief Returns level properties after level 10.
+     * Returns level properties after level 10.
      * @return The level properties.
      */
     public LevelProperties getLevel10PlusProperties() {

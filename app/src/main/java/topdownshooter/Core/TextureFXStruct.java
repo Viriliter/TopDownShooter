@@ -31,12 +31,27 @@ package topdownshooter.Core;
 
 import java.io.Serializable;
 
+/**
+ * @class TextureFXStruct
+ * @brief A structure that holds metadata and configuration for a texture effect.
+ * 
+ * This class is used to define the properties of a texture effect, including the path to the texture
+ * file, offset values for positioning, and the default delay for rendering the texture.
+ */
 public class TextureFXStruct implements Serializable {
-    String path;
-    int offsetX;
-    int offsetY;
-    int defaultDelay;
+    String path;         /**< The path to the texture image file. */
+    int offsetX;         /**< The X offset to apply to the texture's position. */
+    int offsetY;         /**< The Y offset to apply to the texture's position. */
+    int defaultDelay;    /**< The default delay (in frames) for the texture effect before it is rendered again ( 0 means no delay). */
 
+    /**
+     * Constructs a TextureFXStruct object with specified path, offsets, and delay.
+     * 
+     * @param path The path to the texture image file.
+     * @param offsetX The X offset to apply to the texture's position.
+     * @param offsetY The Y offset to apply to the texture's position.
+     * @param defaultDelay The default delay (in frames) before the texture effect is rendered again.
+     */
     public TextureFXStruct(String path, int offsetX, int offsetY, int defaultDelay) {
         this.path = path;
         this.offsetX = offsetX;
@@ -44,6 +59,13 @@ public class TextureFXStruct implements Serializable {
         this.defaultDelay = defaultDelay;
     }
 
+    /**
+     * Constructs a TextureFXStruct object with specified path and offsets, using a default delay of 0.
+     * 
+     * @param path The path to the texture image file.
+     * @param offsetX The X offset to apply to the texture's position.
+     * @param offsetY The Y offset to apply to the texture's position.
+     */
     public TextureFXStruct(String path, int offsetX, int offsetY) {
         this.path = path;
         this.offsetX = offsetX;

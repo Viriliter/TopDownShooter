@@ -29,7 +29,10 @@
 
 package topdownshooter.Core;
 
+/**
+ * @brief Represents a position with x and y coordinates.
+ */
 public record Position (
-    int x,
-    int y
+    int x,  /**< The x-coordinate of the position. */
+    int y   /**< The y-coordinate of the position. */
 ) {}

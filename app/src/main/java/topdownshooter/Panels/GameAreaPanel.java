@@ -31,6 +31,8 @@ package topdownshooter.Panels;
 
 import javax.swing.*;
 
+import org.checkerframework.common.returnsreceiver.qual.This;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.EOFException;
@@ -69,25 +71,41 @@ import topdownshooter.Zombie.AcidZombie;
 import topdownshooter.Zombie.Zombie;
 import topdownshooter.Zombie.ZombieType;
 
+/**
+ * @class GameAreaPanel
+ * @brief Panel that handles the main gameplay area, including game objects, interactions, and rendering.
+ * 
+ * This class is responsible for managing and rendering the game area. It interacts with the player, zombies, 
+ * projectiles, loot, blast effects, and the game level. It handles the game loop, collision detection, and state 
+ * updates (e.g., pausing, resuming, saving, loading, etc.). The panel also responds to key presses and action events 
+ * to control the gameplay.
+ */
 public class GameAreaPanel extends JPanel implements ActionListener, KeyListener{
-    private GamePanel parentPanel = null;
-    private ConfigHandler config;
+    private GamePanel parentPanel = null;                   /*< Reference to the parent game panel. */
+    private ConfigHandler config;                           /*< Configuration handler for game settings. */
 
-    private GameLevel gameLevel = null;
-    private Player player = null;
-    private ArrayList<Zombie> zombies = null;
-    private ArrayList<Projectile> projectiles = null;
-    private ArrayList<Loot> loots = null;
-    private ArrayList<BlastFX> blastFXs = null;
+    private GameLevel gameLevel = null;                     /*< The current game level. */
+    private Player player = null;                           /*< The player object in the game. */
+    private ArrayList<Zombie> zombies = null;               /*< List of zombies in the game. */
+    private ArrayList<Projectile> projectiles = null;       /*< List of projectiles fired by the player. */
+    private ArrayList<Loot> loots = null;                   /*< List of loot items in the game. */
+    private ArrayList<BlastFX> blastFXs = null;             /*< List of blast effects in the game. */
+    
+    private static boolean isGamePaused = false;            /*< Flag indicating whether the game is paused. */
+    private Timer gameTimer;                                /*< Timer for handling periodic updates. */
+    private TimeTick fireRateTick = null;                   /*< Time tick for handling fire rate control. */
+    
+    private TileGenerator playgroundTileGenerator = null;   /*< Tile generator for creating the game terrain. */
 
-    private static boolean isGamePaused = false;
-    private Timer gameTimer;
-    private TimeTick fireRateTick = null;
+    private SoundFX backgroundSoundFX = null;               /*< Background sound effects. */
 
-    private TileGenerator playgroundTileGenerator = null;
-
-    private SoundFX backgroundSoundFX = null;
-
+    /**
+     * Constructs the GameAreaPanel with the provided configuration handler.
+     * 
+     * Initializes the panel with the necessary configuration and sets up the initial state.
+     * 
+     * @param config The configuration handler that contains the game settings.
+     */
     public GameAreaPanel(ConfigHandler config) {
         setFocusable(true);
         requestFocusInWindow();
@@ -142,12 +160,24 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         this.backgroundSoundFX = new SoundFX(Globals.BACKGROUND_SOUND_FX_PATH);
     }
 
+    /**
+     * Called when the panel is added to the container.
+     * 
+     * This method is overridden to set this panel for focus which is required for keyboard events.
+     */
     @Override
     public void addNotify() {
         super.addNotify();
         requestFocus();
     }
 
+    /**
+     * Custom paint method for rendering the game area.
+     * 
+     * This method is responsible for drawing all game objects (player, zombies, projectiles, etc.) on the screen.
+     * 
+     * @param g The Graphics object used to render the game area.
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -174,13 +204,32 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         }
     }
 
+    /**
+     * Handles action events for the game.
+     * 
+     * Not implemented.
+     * 
+     * @param e The action event that occurred.
+     */
     @Override
     public void actionPerformed(ActionEvent e) {}
 
+    /**
+     * Sets the parent panel for this game area.
+     * 
+     * This method links the current game area panel to the parent panel.
+     * 
+     * @param panel The parent GamePanel to link.
+     */
     public void setParentPanel(GamePanel panel) {
         this.parentPanel = panel;
     }
 
+    /**
+     * Starts a new wave of zombies in the game.
+     * 
+     * This method triggers the spawning of a new wave of zombies.
+     */
     private void startWave() {
         if (this.gameLevel.getWaveStatus()== GameLevel.GameLevelStatus.UNDEFINED ||
             this.gameLevel.getWaveStatus()== GameLevel.GameLevelStatus.ENDED)  {
@@ -201,6 +250,11 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         }
     }
 
+    /**
+     * Updates all game objects, and draw them into the screen accordingly.
+     * 
+     * This method is called periodically to update all the game objects and check for collisions.
+     */
     public void update() {
         updatePlayer();
 
@@ -223,6 +277,9 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         repaint();
     }
 
+    /**
+     * Updates the player state, such as position and status.
+     */
     private void updatePlayer() {
         if (this.player==null) return;
 
@@ -233,6 +290,9 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         }
     }
 
+    /**
+     * Updates the game level status, including checking level progression.
+     */
     private void updateGameLevel() {
         if (this.gameLevel==null || this.player == null || this.zombies == null) return;
 
@@ -244,6 +304,9 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         if (zombie != null) zombies.add(zombie);
     }
 
+    /**
+     * Updates the zombies, including their movement and interactions.
+     */
     private void updateZombies() {
         if (this.player==null ||this.zombies==null) return;
 
@@ -260,6 +323,9 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         }
     }
 
+    /**
+     * Updates the projectiles, including their movement and interactions.
+     */
     private void updateProjectiles() {
         if (this.projectiles==null) return;
 
@@ -276,6 +342,9 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         }
     }
 
+    /**
+     * Updates the loot, including their position and the state.
+     */
     private void updateLoots() {
         if (this.player==null || this.loots==null) return;
 
@@ -293,6 +362,9 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         }
     }
 
+    /**
+     * Updates the blast effects in the game area.
+     */
     private void updateBlasts() {
         if (this.blastFXs==null) return;
 
@@ -304,6 +376,9 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         }
     }
 
+    /**
+     * Checks for collisions between projectiles and other game objects (e.g. Zombie and Player).
+     */
     private void checkProjectileCollisions() {
         if (this.player==null ||this.zombies==null || this.projectiles==null) return;
 
@@ -424,6 +499,11 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         }
     }
 
+    /**
+     * Checks for collisions between zombies and the player.
+     * 
+     * This method updates zombie health if a collision occurs.
+     */
     private void checkZombieCollisions() {
         if (this.player==null ||this.zombies==null) return;
 
@@ -441,6 +521,9 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         }
     }
 
+    /**
+     * Checks for collisions between loot and the player.
+     */
     private void checkLootCollisions() {
         ListIterator<Loot> lootIterator = this.loots.listIterator();
 
@@ -453,6 +536,9 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         }
     }
 
+    /**
+     * Checks for any collisions between the various game objects (player, zombies, projectiles, loot).
+     */
     private void checkCollisions() {
         // Projectile collisions
         checkProjectileCollisions();
@@ -464,12 +550,32 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         checkLootCollisions();
     }
 
+    /**
+     * Calculates the squared distance between two points to avoid using the costly square root operation.
+     * 
+     * @param x1 The x-coordinate of the first point.
+     * @param y1 The y-coordinate of the first point.
+     * @param x2 The x-coordinate of the second point.
+     * @param y2 The y-coordinate of the second point.
+     * @return The squared distance between the two points.
+     */
     private double getDistanceSquared(int x1, int y1, int x2, int y2) {
         int dx = x1 - x2;
         int dy = y1 - y2;
         return dx * dx + dy * dy;
     }
     
+    /**
+     * Calculates the damage dealt to an entity based on the distance from the origin.
+     * 
+     * The damage decreases based on the distance squared from the origin compared to the effective range.
+     * 
+     * @param originDamage The damage of the attack at the origin point.
+     * @param distanceSquared The squared distance from the attack's origin to the target.
+     * @param effectiveRangeSquared The squared effective range of the attack.
+     * @param effectiveRange The maximum effective range of the attack. (No damage if the distance is more than that)
+     * @return The calculated damage to be applied.
+     */
     private double calculateDamage(int originDamage, double distanceSquared, double effectiveRangeSquared, int effectiveRange) {
         if (distanceSquared == 0) {
             return originDamage;
@@ -481,6 +587,16 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         return 0;
     }
 
+    /**
+     * Damages zombies within range of a specific attack.
+     * 
+     * This method applies damage to zombies based on their distance from the origin of the attack.
+     * 
+     * @param originX The x-coordinate of the attack's origin.
+     * @param originY The y-coordinate of the attack's origin.
+     * @param originDamage The damage of the attack at the origin point.
+     * @param effectiveRange The maximum effective range of the attack. (No damage if the distance is more than that)
+     */
     private void damageZombies(int originX, int originY, int originDamage, int effectiveRange) {
         double effectiveRangeSquared = effectiveRange * effectiveRange;
 
@@ -499,6 +615,16 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         }
     }
 
+    /**
+     * Damages the player if they are within range of an attack.
+     * 
+     * This method applies damage to the player based on their distance from the attack's origin.
+     * 
+     * @param originX The x-coordinate of the attack's origin.
+     * @param originY The y-coordinate of the attack's origin.
+     * @param originDamage The damage of the attack at the origin point.
+     * @param effectiveRange The maximum effective range of the attack. (No damage if the distance is more than that)
+     */
     private void damagePlayer(int originX, int originY, int originDamage, int effectiveRange) {
         double effectiveRangeSquared = effectiveRange * effectiveRange;
 
@@ -512,6 +638,9 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         }
     }
 
+    /**
+     * Updates the game information (score, level, etc.) based on the current game state.
+     */
     private void updateGameInfo() {
         GameInfoPanel gameInfoPanel = this.parentPanel.getGameInfoPanel();
         gameInfoPanel.updatePlayerHealth(this.player==null ? 0 : this.player.getHealth());
@@ -522,17 +651,28 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         gameInfoPanel.updatePlayerInventory(this.player.getInventoryInfo());
     }
 
+    /**
+     * Starts the game, initializing all necessary game objects and state.
+     */
     public void startGame() {
         GameAreaPanel.isGamePaused = false;
         gameTimer.start();
     }
 
+    /** 
+     * This method pauses the game, freezing all game activity by stoping game timer.
+     */
     public void pauseGame() {
         GameAreaPanel.isGamePaused = true;
         gameTimer.stop();
         this.backgroundSoundFX.stop();
     }
 
+    /**
+     * Resumes the game from a paused state.
+     * 
+     * This method resumes all game activity after being paused.
+     */
     public void resumeGame() {
         requestFocus();
 
@@ -541,6 +681,11 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         this.backgroundSoundFX.play(true);
     }
 
+    /**
+     * Shows the game over dialog when the game ends.
+     * 
+     * This method is called to display the game over screen and any related information.
+     */
     private void showGameOverDialog() {
         GameOverPanel gameOverPanel = this.parentPanel.getGameOverPanel();
         gameOverPanel.setPlayerScore(this.player.getScore());
@@ -548,6 +693,11 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         gameOverPanel.fadeIn();  // Animated pop up 
     }
 
+    /**
+     * Resets the game to its initial state.
+     * 
+     * This method is called when restarting the game to clear all game objects and reset settings.
+     */
     private void resetGame() {
         this.loots.clear();
         this.projectiles.clear();
@@ -557,6 +707,12 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         this.gameLevel = null;
     }
 
+    /**
+     * Serializes the current game objects to an output stream.
+     * 
+     * @param os The output stream to write the serialized game objects to.
+     * @throws IOException If an I/O error occurs during serialization.
+     */
     private void serializeGameObjects(ObjectOutputStream os) throws IOException{
         // Serialize player object
         os.writeObject(this.player);
@@ -577,6 +733,13 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         os.writeObject(this.blastFXs);
     }
 
+    /**
+     * Creates game objects from a serialized input stream.
+     * 
+     * @param os The input stream to read the serialized game objects from.
+     * @throws IOException If an I/O error occurs during deserialization.
+     * @throws ClassNotFoundException If the class definition of a game object is not found.
+     */
     @SuppressWarnings("unchecked")
     private void createGameObjects(ObjectInputStream os) throws IOException, ClassNotFoundException{
         try {
@@ -629,6 +792,13 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         }
     }
 
+    /**
+     * Loads a saved game from a file.
+     * 
+     * @param inputStream The input stream from which the saved game data is loaded.
+     * @throws IOException If an I/O error occurs during loading.
+     * @throws ClassNotFoundException If the class definitions for the saved game objects are not found.
+     */
     public void loadGame(FileInputStream inputStream) throws IOException, ClassNotFoundException{
         if (inputStream==null) return;
 
@@ -641,6 +811,9 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         os.close();
     }
 
+    /**
+     * Opens a dialog screen to save the current game state to a file.
+     */
     public void saveGame() {
         SwingUtilities.invokeLater(() -> {
             JFileChooser fileChooser = new JFileChooser();
@@ -678,6 +851,12 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         });
     }
 
+    /**
+     * Starts the fire rate timer to control how frequently the player can fire.
+     * 
+     * It is triggered by mouse events.
+     * 
+     */
     public void startFireTimer() {
         if (this.fireRateTick == null || this.fireRateTick.isTimeOut()) {
             this.fireRateTick = new TimeTick(Globals.Time2GameTick(Globals.GAME_TICK_MS), () -> triggerFireFunction()); // Calls function every 15ms
@@ -685,16 +864,28 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         }
     }
 
+    /**
+     * Stops firing and cancels the fire rate timer.
+     * 
+     * It is triggered by mouse events.
+     * 
+     */
     public void stopFire() {
         this.fireRateTick = null;
     }
 
+    /**
+     * Adds a projectile to the projectile list when the player shoots.
+     */
     public void triggerFireFunction() {
         Projectile projectile = player.fire();
         if (projectile != null)
             this.projectiles.add(projectile);
     }
 
+    /**
+     * Ends the game and transitions to the game over state.
+     */
     public void endGame() {
         if (this.gameTimer!=null) this.gameTimer.stop();
         if (this.fireRateTick != null) this.fireRateTick.reset();
@@ -714,6 +905,9 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         if (this.backgroundSoundFX!=null) this.backgroundSoundFX.stop();
     }
 
+    /**
+     * Exits the game, closing all resources and returning to the main menu.
+     */
     private void openInGameMenu() {
         pauseGame();
 
@@ -721,6 +915,12 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         inGameMenuPanel.fadeIn();
     }
 
+    /**
+     * Handles key press events.
+     * This method is called when a key is pressed.
+     *
+     * @param e The KeyEvent that contains the details of the key press.
+     */
     @Override
     public void keyPressed(KeyEvent e) {
         switch (e.getKeyCode()) {
@@ -734,12 +934,25 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         }
     }
 
+    /**
+     * Handles key release events.
+     * This method is called when a key is released.
+     *
+     * @param e The KeyEvent that contains the details of the key release.
+     */
     @Override
     public void keyReleased(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_A || e.getKeyCode() == KeyEvent.VK_D) player.setDx(0);
         if (e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_S) player.setDy(0);
     }
 
+/**
+     * Handles key typing events.
+     * 
+     * Not implemented
+     *
+     * @param e The KeyEvent that contains the details of the key typed.
+     */
     @Override
     public void keyTyped(KeyEvent e) { }
 }

@@ -41,13 +41,23 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
+/**
+ * @class InGameMenuPanel
+ * @brief A panel that displays the in-game menu with options to resume, save, or return to the main menu.
+ * 
+ */
 public class InGameMenuPanel extends AbstractActionPanel{
-    private GamePanel parentPanel = null;
-    private JFrame frame; 
-    private JButton resumeButton = null;
-    private JButton saveButton = null;
-    private JButton returnMenuButton = null;
+    private GamePanel parentPanel = null;         ///< The parent GamePanel that holds the game logic
+    private JFrame frame;                         ///< The parent JFrame that holds this panel
+    private JButton resumeButton = null;          ///< The button to resume the game
+    private JButton saveButton = null;            ///< The button to save the game
+    private JButton returnMenuButton = null;      ///< The button to return to the main menu
 
+    /**
+     * Constructs the InGameMenuPanel and sets up the layout and buttons.
+     * 
+     * @param frame The parent JFrame that holds the in-game menu panel.
+     */
     public InGameMenuPanel(JFrame frame) {
         this.frame = frame;
         setLayout(new BorderLayout());
@@ -87,6 +97,11 @@ public class InGameMenuPanel extends AbstractActionPanel{
         add(centerPanel, BorderLayout.CENTER);
     }
 
+    /**
+     * Paints the components of the in-game menu panel, including the background and buttons.
+     * 
+     * @param g The Graphics object used to paint the component.
+     */
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
@@ -94,12 +109,20 @@ public class InGameMenuPanel extends AbstractActionPanel{
         this.frame.repaint();
     }
 
+    /**
+     * Resumes the game by closing the in-game menu and calling the game area to resume.
+     */
     private void resumeGame() {
         System.out.println("Resuming game...");
         this.close();
         this.parentPanel.getGameAreaPanel().resumeGame();
     }
 
+    /**
+     * Saves the current game state when the user clicks the "Save Game" button.
+     * 
+     * If saving the game fails, an error message is displayed.
+     */
     private void saveGame() {
         try {
             System.out.println("Saving game...");
@@ -115,6 +138,9 @@ public class InGameMenuPanel extends AbstractActionPanel{
         }
     }
 
+    /**
+     * Returns the player to the main menu by closing the in-game menu and switching to the main menu.
+     */
     private void returnToMenu() {
         System.out.println("Returning to menu...");
         this.parentPanel.getGameAreaPanel().exit();
@@ -122,6 +148,11 @@ public class InGameMenuPanel extends AbstractActionPanel{
         this.close();
     }
 
+    /**
+     * Sets the parent GamePanel that controls the game logic.
+     * 
+     * @param panel The GamePanel to set as the parent.
+     */
     public void setParentPanel(GamePanel panel) {
         this.parentPanel = panel;
     }

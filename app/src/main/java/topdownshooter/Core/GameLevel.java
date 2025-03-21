@@ -41,7 +41,15 @@ import topdownshooter.Zombie.Zombie;
 import topdownshooter.Zombie.ZombieFactory;
 import topdownshooter.Zombie.ZombieType;
 
+/**
+ * @class GameLevel
+ * @brief Manages the game level, zombie spawning, and wave progression.
+ */
 public class GameLevel implements Serializable {
+    /**
+     * @enum GameLevelStatus
+     * @brief Represents the current status of the game level.
+     */
     public enum GameLevelStatus {
         UNDEFINED,
         STARTED,
@@ -49,26 +57,31 @@ public class GameLevel implements Serializable {
         ENDED,
     }
 
-    private int levelBonus = 10;
-    private int level = 0;
-    private GameLevelStatus gameLevelStatus;
+    private int levelBonus = 10;                /**< Bonus awarded per level. */
+    private int level = 0;                      /**< Current level number. */
+    private GameLevelStatus gameLevelStatus;    /**< Current status of the level. */
 
-    private ConfigHandler config;
-    private int waveDuration;
-    private int ordinaryZombieCount;
-    private int crawlerZombieCount;
-    private int tankZombieCount;
-    private int acidZombieCount;
-    private int spawnPeriod;
-    private TimeTick spawnTick;
-    private TimeTick waveTick;
-    private TimeTick newWaveSuspendTick;
+    private ConfigHandler config;               /**< Configuration handler. */
+    private int waveDuration;                   /**< Duration of the wave in seconds. */
+    private int ordinaryZombieCount;            /**< Count of ordinary zombies. */
+    private int crawlerZombieCount;             /**< Count of crawler zombies. */
+    private int tankZombieCount;                /**< Count of tank zombies. */
+    private int acidZombieCount;                /**< Count of acid zombies. */
+    private int spawnPeriod;                    /**< Time interval between zombie spawns in seconds. */
+    private TimeTick spawnTick;                 /**< Timer for zombie spawning. */
+    private TimeTick waveTick;                  /**< Timer for wave duration. */
+    private TimeTick newWaveSuspendTick;        /**< Timer for suspending new wave after finishing the last one. */
 
-    private List<ZombieType> zombieHorde = new ArrayList<>();
-    private int currentZombieTypeIndex = 0;
+    private List<ZombieType> zombieHorde = new ArrayList<>();   /**< List of zombie types for the level. */
+    private int currentZombieTypeIndex = 0;                     /**< Current index of the zombieHorde. */
 
-    private static Random random = new Random(); // Reuse random instance
+    private static Random random = new Random();                /**< Random number generator. */
 
+    /**
+     * Constructs a GameLevel with the specified configuration.
+     * @param config The configuration handler.
+     * @throws IllegalStateException if the configuration is null.
+     */
     public GameLevel(ConfigHandler config) {
         if (config == null) {
             throw new IllegalStateException("ConfigHandler cannot be null!");
@@ -90,10 +103,19 @@ public class GameLevel implements Serializable {
         this.newWaveSuspendTick = new TimeTick(Globals.Time2GameTick(Globals.WAVE_SUSPEND_DURATION_MS), () -> startWaveInvokeLater());
     }
 
+    /**
+     * Sets the configuration handler.
+     * @param config The new configuration handler.
+     */
     public void setConfig(ConfigHandler config) {
         this.config = config;
     }
 
+    /**
+     * Loads the specified level configuration.
+     * @param level The level number.
+     * @return The weapon awarded for completing the level.
+     */
     private WeaponType loadLevel(long level) {
         if (this.config==null) {
             System.err.println("Cannot load level since no configuration is defined!");
@@ -171,7 +193,13 @@ public class GameLevel implements Serializable {
         }
         return null;
     }
-
+    
+    /**
+     * Updates the game state and spawns zombies if needed.
+     * @param maxWidth The maximum width of the game field.
+     * @param maxHeight The maximum height of the game field.
+     * @return The newly spawned zombie, or null if no zombie is spawned.
+     */
     public Zombie update(final int maxWidth, final int maxHeight) {
         if (this.gameLevelStatus == GameLevelStatus.SUSPENDED) {
                 this.newWaveSuspendTick.updateTick();
@@ -194,10 +222,20 @@ public class GameLevel implements Serializable {
         return null;
     }
 
+    /**
+     * Retrieves the number of remaining zombies in the wave.
+     * @return The count of remaining zombies.
+     */
     public int getRemainingZombies() {
         return this.ordinaryZombieCount + this.crawlerZombieCount + this.tankZombieCount + this.acidZombieCount;
     }
 
+    /**
+     * Spawns a zombie at a random location.
+     * @param maxWidth The maximum width of the game field.
+     * @param maxHeight The maximum height of the game field.
+     * @return The spawned zombie, or null if spawning conditions are not met.
+     */
     public Zombie spawnZombie(final int maxWidth, final int maxHeight) {
         // If no enough time is elapsed to spawn the zombie, do not create a new one.
         if (!this.spawnTick.isTimeOut()) return null;
@@ -258,11 +296,18 @@ public class GameLevel implements Serializable {
         }
     }
 
+    /**
+     * Initiates the wave start sequence after suspension.
+     */
     private void startWaveInvokeLater() {
         this.gameLevelStatus = GameLevelStatus.STARTED;
         this.newWaveSuspendTick.reset();
     }
 
+    /**
+     * Starts a new wave.
+     * @return The weapon prize for completing the wave.
+     */
     public WeaponType startWave() {
 
         if (this.gameLevelStatus == GameLevelStatus.STARTED || 
@@ -274,36 +319,67 @@ public class GameLevel implements Serializable {
         return weaponPrize;
     }
 
+    /**
+     * Ends the current wave.
+     */
     public void endWave() {
         this.gameLevelStatus = GameLevelStatus.ENDED;
     }
 
+    /**
+     * Checks if the wave has started.
+     * @return True if the wave is in progress, false otherwise.
+     */
     public boolean isWaveStarted() {
         return this.gameLevelStatus == GameLevelStatus.STARTED;
     }
 
+    /**
+     * Checks if the wave is over.
+     * @return True if the wave has ended, false otherwise.
+     */
     public boolean isWaveOver() {
         return this.gameLevelStatus == GameLevelStatus.ENDED;
     }
 
+    /**
+     * Gets the current game level.
+     * @return The current level.
+     */
     public int getLevel() {
         return level;
     }
 
+    /**
+     * Gets the remaining time in the wave.
+     * @return The remaining time in milliseconds.
+     */
     public int getRemainingTime() {
         return Globals.GameTick2Time(this.waveTick==null? 0 : this.waveTick.getTick());
     }
 
+    /**
+     * Gets the current status of the wave.
+     * @return The current wave status.
+     */
     public GameLevelStatus getWaveStatus() {
         return this.gameLevelStatus;
     }
 
+    /**
+     * Calculates and updates the level bonus.
+     * @return The new level bonus.
+     */
     public int calculateLevelBonus() {
         if (this.level == 0) return 0;
         this.levelBonus += this.levelBonus;
         return this.levelBonus;
     }
 
+    /**
+     * Converts the GameLevel object to a string representation.
+     * @return The string representation of the object.
+     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

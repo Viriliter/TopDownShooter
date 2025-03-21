@@ -53,7 +53,7 @@ import topdownshooter.Weapon.WeaponType;
  */
 public interface Zombie extends Serializable{
     /**
-     * @brief Updates the zombie's state based on the player's position.
+     * Updates the zombie's state based on the player's position.
      *
      * This method is called to update its behavior according to position of the player.
      *
@@ -62,35 +62,35 @@ public interface Zombie extends Serializable{
     public void update(Rectangle playerBound);
 
     /**
-     * @brief Draws the zombie on the screen.
+     * Draws the zombie on the screen.
      *
      * @param g The Graphics object used for rendering the zombie.
      */
     public void draw(Graphics g);
 
     /**
-     * @brief Gets the bounding rectangle of the zombie.
+     * Gets the bounding rectangle of the zombie.
      *
      * @return The bounding rectangle representing the zombie's position and size.
      */
     public Rectangle getBounds();
 
     /**
-     * @brief Gets the points awarded for killing this zombie.
+     * Gets the points awarded for killing this zombie.
      *
      * @return The points value of the zombie.
      */
     public int getPoints();
 
     /**
-     * @brief Gets the current health of the zombie.
+     * Gets the current health of the zombie.
      *
      * @return The current health of the zombie.
      */
     public double getHealth();
 
     /**
-     * @brief Takes damage, and reduces the zombie's health.
+     * Takes damage, and reduces the zombie's health.
      *
      * @param damage The amount of damage to be affected.
      * @return True if the zombie is still alive after taking damage, otherwise false.
@@ -98,21 +98,21 @@ public interface Zombie extends Serializable{
     public boolean takeDamage(double damage);
 
     /**
-     * @brief Gets the damage dealt by this zombie.
+     * Gets the damage dealt by this zombie.
      *
      * @return The amount of damage the zombie deals.
      */
     public int giveDamage();
 
     /**
-     * @brief Gets the type of this zombie.
+     * Gets the type of this zombie.
      *
      * @return The type of the zombie
      */
     public ZombieType getType();
 
     /**
-     * @brief Kills the zombie and returns loot based on the available weapons.
+     * Kills the zombie and returns loot based on the available weapons.
      *
      * @param weaponList The list of weapons that are available by player
      * @return The loot dropped by the zombie.
@@ -120,28 +120,28 @@ public interface Zombie extends Serializable{
     public Loot kill(List<WeaponType> weaponList);
 
     /**
-     * @brief Gets the current position of the zombie.
+     * Gets the current position of the zombie.
      *
      * @return The position of the zombie.
      */
     public Position getPosition();
 
     /**
-     * @brief Gets the X-coordinate of the zombie.
+     * Gets the X-coordinate of the zombie.
      *
      * @return The X-coordinate of the zombie.
      */
     public int getX();
     
         /**
-     * @brief Gets the Y-coordinate of the zombie.
+     * Gets the Y-coordinate of the zombie.
      *
      * @return The Y-coordinate of the zombie.
      */
     public int getY();
 
     /**
-     * @brief Custom deserialization of the zombie object.
+     * Custom deserialization of the zombie object.
      *
      * @param in The ObjectInputStream for deserialization.
      * @throws IOException If an I/O error occurs during deserialization.

@@ -60,7 +60,7 @@ public class BlastFX {
     private static Random random = new Random();    /** Random number generator for effect randomization. */
 
     /**
-     * @brief Constructs a new BlastFX object.
+     * Constructs a new BlastFX object.
      * @param type The type of the blast (explosive or toxic).
      * @param x The X-coordinate where the blast occurs.
      * @param y The Y-coordinate where the blast occurs.
@@ -85,7 +85,7 @@ public class BlastFX {
     }
 
     /**
-     * @brief Updates the animation state of the blast.
+     * Updates the animation state of the blast.
      * @return True if the animation is still running, false if completed.
      */
     public boolean update() {
@@ -94,7 +94,7 @@ public class BlastFX {
     }
     
     /**
-     * @brief Draws the blast effect on the screen.
+     * Draws the blast effect on the screen.
      * @param g The Graphics object to render the explosion.
      */
     public void draw(Graphics g) {

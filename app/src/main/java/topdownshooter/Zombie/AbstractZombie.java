@@ -67,13 +67,13 @@ public abstract class AbstractZombie implements Zombie {
     protected SpriteAnimation spriteAnimation = null;   /**< Animation for the zombie's sprite. */
 
     /**
-     * @brief Default constructor for AbstractZombie.
+     * Default constructor for AbstractZombie.
      *
      */
     public AbstractZombie() {}
 
     /**
-     * @brief Constructor to create a zombie with specified properties.
+     * Constructor to create a zombie with specified properties.
      *
      * @param properties The properties used to configure the zombie's health, speed, damage, and points.
      */
@@ -91,7 +91,7 @@ public abstract class AbstractZombie implements Zombie {
     }
 
     /**
-     * @brief Copy constructor of the `AbstractZombie` that clones from another instance.
+     * Copy constructor of the `AbstractZombie` that clones from another instance.
      *
      * @param other The other AbstractZombie instance to clone.
      */

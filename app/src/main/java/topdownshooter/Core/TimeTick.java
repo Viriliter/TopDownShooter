@@ -31,41 +31,85 @@ package topdownshooter.Core;
 
 import java.io.Serializable;
 
+/**
+ * @class TimeTick
+ * @brief A class that manages a countdown timer with optional repeat functionality and associated actions.
+ * 
+ * The TimeTick class is responsible for managing a countdown timer, executing actions when the timer reaches zero. 
+ * It allows setting a countdown action which triggers when the countdown reaches zero.
+ */
 public class TimeTick implements Serializable {
-    private int tick = 0;
-    private int defaultTick = 0;
-    private int repeatCount = -1;
-    private SerializableRunnable action = null;
+    private int tick = 0;                       /**< The current tick value, representing the remaining time. */
+    private int defaultTick = 0;                /**< The default tick value used to reset the timer. */
+    private int repeatCount = -1;               /**< The number of times the timer will repeat after reaching zero. -1 means infinite repeats. */
+    private SerializableRunnable action = null; /**< The action to be executed when the timer reaches zero. */
 
+    /**
+     * Constructs a TimeTick object with the specified default tick value.
+     * 
+     * @param defaultTick The default number of ticks before the timer reaches zero.
+     */
     public TimeTick(int defaultTick) {
         this.defaultTick = defaultTick;
         this.reset();
     }
 
+    /**
+     * Constructs a TimeTick object with the specified default tick value and an action to execute when the timer reaches zero.
+     * 
+     * @param defaultTick The default number of ticks before the timer reaches zero.
+     * @param action The action to execute when the timer reaches zero.
+     */
     public TimeTick(int defaultTick, SerializableRunnable action) {
         this.defaultTick = defaultTick;
         this.action = action;
         this.reset();
     }
 
+    /**
+     * Constructs a TimeTick object with the specified tick, default tick value, and repeat count.
+     * 
+     * @param tick The initial tick value for the timer.
+     * @param defaultTick The default number of ticks before the timer reaches zero.
+     * @param repeatCount The number of repeats after the timer reaches zero. -1 means infinite repeats.
+     */
     public TimeTick(int tick, int defaultTick, int repeatCount) {
         this.tick = tick;
         this.defaultTick = defaultTick;
         this.repeatCount = repeatCount;
     }
 
+    /**
+     * Sets the repeat count for the timer.
+     * 
+     * @param repeatCount The number of times to repeat the countdown after reaching zero. -1 means infinite repeats.
+     */
     public void setRepeats(int repeatCount) {
         this.repeatCount = repeatCount;
     }
 
+    /**
+     * Returns the current tick value of the timer.
+     * 
+     * @return The remaining time in ticks.
+     */
     public int getTick() {
         return this.tick;
     }
 
+    /**
+     * Sets the action to be executed when the timer reaches zero.
+     * 
+     * @param action The action to execute when the timer reaches zero.
+     */
     public void setAction(SerializableRunnable action) {
         this.action = action;
     }
 
+    /**
+     * Updates the timer by decrementing the tick value and executing the action if the timer reaches zero.
+     * 
+     */
     public void updateTick() {
         if (this.tick > 0) this.tick--;
 
@@ -83,10 +127,18 @@ public class TimeTick implements Serializable {
         }
     }
 
+    /**
+     * Resets the timer to its default tick value.
+     */
     public void reset() {
         this.tick = this.defaultTick;
     }
 
+    /**
+     * Checks if the timer has timed out.
+     * 
+     * @return True if the timer has timed out, otherwise false.
+     */
     public boolean isTimeOut() {
         return this.tick == 0; 
     }

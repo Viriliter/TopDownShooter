@@ -31,5 +31,10 @@ package topdownshooter.Core;
 
 import java.io.Serializable;
 
+/**
+ * @interface SerializableRunnable
+ * @brief A serializable version of the Runnable interface.
+ * 
+ */
 public interface SerializableRunnable extends Serializable, Runnable {
 }

@@ -39,6 +39,10 @@ import java.util.List;
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 
+/**
+ * @class Globals
+ * @brief Stores game specific configuration parameters and file paths of the resources that can be used throughout the application life.
+ */
 public interface Globals {
     /**
      * IN-GAME CONSTANTS
@@ -79,19 +83,19 @@ public interface Globals {
     public static final String ICON_PATH_BULLET = "Icons/bullet.png";
     public static final String ICON_PATH_MAGAZINE = "Icons/magazine.png";
 
-    public static final String ICON_PATH_PISTOL_EMPTY = "Icons/pistol-empty.png";
+    public static final String ICON_PATH_PISTOL_NULL = "Icons/pistol-null.png";
     public static final String ICON_PATH_PISTOL_UNSELECTED = "Icons/pistol-unselected.png";
     public static final String ICON_PATH_PISTOL_SELECTED = "Icons/pistol-selected.png";
-    public static final String ICON_PATH_ASSAULT_RIFLE_EMPTY = "Icons/assaultrifle-empty.png";
+    public static final String ICON_PATH_ASSAULT_RIFLE_NULL = "Icons/assaultrifle-null.png";
     public static final String ICON_PATH_ASSAULT_RIFLE_UNSELECTED = "Icons/assaultrifle-unselected.png";
     public static final String ICON_PATH_ASSAULT_RIFLE_SELECTED = "Icons/assaultrifle-selected.png";
-    public static final String ICON_PATH_SHOTGUN_EMPTY = "Icons/shotgun-empty.png";
+    public static final String ICON_PATH_SHOTGUN_NULL = "Icons/shotgun-null.png";
     public static final String ICON_PATH_SHOTGUN_UNSELECTED = "Icons/shotgun-unselected.png";
     public static final String ICON_PATH_SHOTGUN_SELECTED = "Icons/shotgun-selected.png";
-    public static final String ICON_PATH_SNIPER_RIFLE_EMPTY = "Icons/sniperrifle-empty.png";
+    public static final String ICON_PATH_SNIPER_RIFLE_NULL = "Icons/sniperrifle-null.png";
     public static final String ICON_PATH_SNIPER_RIFLE_UNSELECTED = "Icons/sniperrifle-unselected.png";
     public static final String ICON_PATH_SNIPER_RIFLE_SELECTED = "Icons/sniperrifle-selected.png";
-    public static final String ICON_PATH_ROCKET_LAUNCHER_EMPTY = "Icons/rocketlauncher-empty.png";
+    public static final String ICON_PATH_ROCKET_LAUNCHER_NULL = "Icons/rocketlauncher-null.png";
     public static final String ICON_PATH_ROCKET_LAUNCHER_UNSELECTED = "Icons/rocketlauncher-unselected.png";
     public static final String ICON_PATH_ROCKET_LAUNCHER_SELECTED = "Icons/rocketlauncher-selected.png";
 

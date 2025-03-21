@@ -90,7 +90,7 @@ public class Player extends JPanel {
     public Player() {}
 
     /**
-     * @brief Constructor to create a player with specified properties.
+     * Constructor to create a player with specified properties.
      *
      * @param properties The properties used to configure the players's inital health, speed.
      */

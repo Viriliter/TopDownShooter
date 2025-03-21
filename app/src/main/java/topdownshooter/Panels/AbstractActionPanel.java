@@ -46,15 +46,31 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Font;
-
+/**
+ * @abstractclass AbstractActionPanel
+ * @brief An abstract JPanel that pops up on game area and It can b used as a notification dialog.
+ * 
+ */
 public abstract class AbstractActionPanel extends JPanel {
-    private int alpha = 0;
-
+    private int alpha = 0;  /**< The alpha value controlling the transparency of the panel during the fade-in effect. */
+    
+    /**
+     * Constructs an AbstractActionPanel and sets its initial properties.
+     * 
+     * The panel is set to be non-opaque and initially invisible.
+     * 
+     */
     public AbstractActionPanel() {
         setOpaque(false);
         setVisible(false);
     }
 
+    /**
+     * Fades the panel in by gradually increasing its opacity from transparent to semi-transparent.
+     * 
+     * The fade-in effect takes place over time using a Timer.
+     * 
+     */
     public void fadeIn() {
         setVisible(true);
     
@@ -72,6 +88,13 @@ public abstract class AbstractActionPanel extends JPanel {
         }).start();
     }
 
+    /**
+     * Paints the component with a fading effect by applying an alpha channel.
+     * 
+     * This method is responsible for drawing the transparent background during the fade-in.
+     * 
+     * @param g The Graphics object used for painting the component.
+     */
     @Override
     protected void paintComponent(Graphics g) {
         Graphics2D g2d = (Graphics2D) g.create();
@@ -85,6 +108,12 @@ public abstract class AbstractActionPanel extends JPanel {
         g2d.dispose();
     }
 
+    /**
+     * Creates a stylized JButton for the panel.
+     * 
+     * @param text The text to display on the button.
+     * @return The customized JButton.
+     */
     protected JButton createButton(String text) {
         JButton button = new JButton(text);
         button.setFont(new Font("Arial", Font.BOLD, 16));
@@ -120,7 +149,10 @@ public abstract class AbstractActionPanel extends JPanel {
         return button;
     }
 
-
+    /**
+     * Hides the panel by setting its visibility to false.
+     * 
+     */
     public void close() {
         setVisible(false);
     }

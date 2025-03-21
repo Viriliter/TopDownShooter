@@ -40,17 +40,32 @@ import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
+/**
+ * @class SoundFX
+ * @brief A class for handling sound effects.
+ * 
+ * This class loads and plays sound files using Java's Clip API. It supports 
+ * functionalities such as playing, stopping, pausing, resuming, looping, 
+ * fading out, and delayed playback.
+ */
 public class SoundFX implements Serializable{
-    private String path;
-    private transient Clip clip;
-    private transient FloatControl volumeControl;
-    private long lastClipPosition = 0;  // Stores paused position of the clip
+    private String path;                            /**< Path to the sound file. */
+    private transient Clip clip;                    /**< The audio clip used for playback. */
+    private transient FloatControl volumeControl;   /**< Control for adjusting the volume. */
+    private long lastClipPosition = 0;              /**< Stores the paused position of the clip. */
 
+    /**
+     * Constructs a SoundFX object with the specified sound file path.
+     * @param path The path to the sound file.
+     */
     public SoundFX(String path) {
         this.path = path;
         initializeClip();
     }
 
+    /**
+     * Initializes the audio clip by loading the sound file.
+     */
     private void initializeClip() {
         try {
             AudioInputStream audioStream = AudioSystem.getAudioInputStream(getClass().getClassLoader().getResourceAsStream(this.path));
@@ -62,6 +77,10 @@ public class SoundFX implements Serializable{
         }
     }
 
+    /**
+     * Stops the audio playback with a fade-out effect.
+     * @param fadeOutDurationMs The duration (in milliseconds) for the fade-out effect.
+     */
     private void fadeOutStop(int fadeOutDurationMs) {
         if (this.clip != null && this.clip.isRunning()) {
             new Thread(() -> {
@@ -90,6 +109,9 @@ public class SoundFX implements Serializable{
         }
     }
 
+    /**
+     * Stops the audio playback immediately.
+     */
     public void stop() {
         if (this.clip != null && this.clip.isRunning()) {
             this.clip.stop(); // Stop the music immediately
@@ -98,6 +120,10 @@ public class SoundFX implements Serializable{
         this.lastClipPosition = 0;
     }
 
+    /**
+     * Plays the sound.
+     * @param loop If true, the sound will loop continuously.
+     */
     public void play(boolean loop) {
         if (this.clip != null) {
             new Thread(() -> {
@@ -116,6 +142,11 @@ public class SoundFX implements Serializable{
         }
     }
 
+    /**
+     * Plays the sound with an optional fade-out effect.
+     * @param loop If true, the sound will loop continuously.
+     * @param fadeOutDurationMs The duration (in milliseconds) of the fade-out effect.
+     */
     public void play(boolean loop, int fadeOutDurationMs) {
         if (this.clip != null) {
             new Thread(() -> {
@@ -133,6 +164,11 @@ public class SoundFX implements Serializable{
         }
     }
 
+    /**
+     * Delays the playback of the sound.
+     * @param loop If true, the sound will loop continuously.
+     * @param delayDurationMS The delay time in milliseconds before playback starts.
+     */
     public void delayedPlay(boolean loop, int delayDurationMS) {
         if (this.clip != null && !this.clip.isRunning()) {
             new Thread(() -> {
@@ -157,6 +193,11 @@ public class SoundFX implements Serializable{
         }
     }
 
+    /**
+     * Pauses the sound playback.
+     * 
+     * Stores the current position of the clip so playback can be resumed.
+     */
     public void pause() {
         if (this.clip != null && this.clip.isRunning()) {
             this.lastClipPosition = this.clip.getMicrosecondPosition(); // Save current position
@@ -164,6 +205,12 @@ public class SoundFX implements Serializable{
         }
     }
 
+    /**
+     * Handles object deserialization and reinitializes the audio clip.
+     * @param in The object input stream.
+     * @throws IOException If an I/O error occurs.
+     * @throws ClassNotFoundException If the class definition is not found.
+     */
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         try {

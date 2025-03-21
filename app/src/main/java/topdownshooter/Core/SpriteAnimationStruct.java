@@ -31,17 +31,40 @@ package topdownshooter.Core;
 
 import java.io.Serializable;
 
+/**
+ * @class SpriteAnimationStruct
+ * @brief A structure that holds metadata for sprite-based animation.
+ * 
+ * This class contains information about the sprite sheet, including the image path,
+ * number of frames, frame delay, number of rows and columns in the sprite sheet,
+ * offsets for positioning, rotation offset, and the default delay for animations.
+ * It is used to initialize the `SpriteAnimation` class for creating and controlling
+ * sprite animations.
+ * 
+ */
 public class SpriteAnimationStruct implements Serializable {
-    String imagePath;
-    int totalFrames;
-    int frameDelay;
-    int rows;
-    int columns;
-    int xOffset;
-    int yOffset;
-    double rOffset;
-    int defaultDelay;
+    String imagePath;   /**< The path to the sprite sheet image. */
+    int totalFrames;    /**< The total number of frames in the sprite sheet. */
+    int frameDelay;     /**< The delay between frames in the animation (in frames). */
+    int rows;           /**< The number of rows in the sprite sheet. */
+    int columns;        /**< The number of columns in the sprite sheet. */
+    int xOffset;        /**< The X offset to apply to the sprite. */
+    int yOffset;        /**< The Y offset to apply to the sprite. */
+    double rOffset;     /**< The rotation offset (in radians) to apply to the sprite. */
+    int defaultDelay;   /**< The default delay for the animation (in frames). */
 
+    /**
+     * Constructor to initialize the sprite animation metadata.
+     * 
+     * @param imagePath The path to the sprite sheet image.
+     * @param totalFrames The total number of frames in the sprite sheet.
+     * @param frameDelay The delay between frames in the animation.
+     * @param rows The number of rows in the sprite sheet.
+     * @param columns The number of columns in the sprite sheet.
+     * @param xOffset The X offset to apply to the sprite.
+     * @param yOffset The Y offset to apply to the sprite.
+     * @param defaultDelay The default delay between frames in the animation.
+     */
     public SpriteAnimationStruct(
         String imagePath, int totalFrames, int frameDelay, 
         int rows, int columns, int xOffset, int yOffset, int defaultDelay
@@ -56,6 +79,19 @@ public class SpriteAnimationStruct implements Serializable {
         this.rOffset = 0;
         this.defaultDelay = defaultDelay;
     }
+    
+    /**
+     * Constructor to initialize the sprite animation metadata without rotation offset
+     * and default delay.
+     * 
+     * @param imagePath The path to the sprite sheet image.
+     * @param totalFrames The total number of frames in the sprite sheet.
+     * @param frameDelay The delay between frames in the animation.
+     * @param rows The number of rows in the sprite sheet.
+     * @param columns The number of columns in the sprite sheet.
+     * @param xOffset The X offset to apply to the sprite.
+     * @param yOffset The Y offset to apply to the sprite.
+     */
     public SpriteAnimationStruct(
         String imagePath, int totalFrames, int frameDelay, 
         int rows, int columns, int xOffset, int yOffset
@@ -70,6 +106,21 @@ public class SpriteAnimationStruct implements Serializable {
         this.rOffset = 0;
         this.defaultDelay = 0;
     }
+    
+    /**
+     * Constructor to initialize the sprite animation metadata with rotation offset
+     * and default delay.
+     * 
+     * @param imagePath The path to the sprite sheet image.
+     * @param totalFrames The total number of frames in the sprite sheet.
+     * @param frameDelay The delay between frames in the animation.
+     * @param rows The number of rows in the sprite sheet.
+     * @param columns The number of columns in the sprite sheet.
+     * @param xOffset The X offset to apply to the sprite.
+     * @param yOffset The Y offset to apply to the sprite.
+     * @param defaultDelay The default delay between frames in the animation.
+     * @param rOffset The rotation offset in degrees to apply to the sprite.
+     */
     public SpriteAnimationStruct(
         String imagePath, int totalFrames, int frameDelay, 
         int rows, int columns, int xOffset, int yOffset, int defaultDelay, int rOffset

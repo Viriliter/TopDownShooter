@@ -41,12 +41,24 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineEvent;
 
+/**
+ * @class SequencialSoundFX
+ * @brief A class that plays a sequence of sound effects.
+ * 
+ * This class preloads a list of sound files and plays them sequentially.
+ * It supports serialization but ensures that sound clips are reloaded upon deserialization.
+ */
 public class SequencialSoundFX implements Serializable{
-    private List<String> paths = null;
-    private transient List<Clip> clips = null;
-    private int currentSoundIndex = 0;
-    private AtomicBoolean isPlaying;
+    private List<String> paths = null;              /**< The list of sound file paths. */
+    private transient List<Clip> clips = null;      /**< The list of preloaded sound clips. */
+    private int currentSoundIndex = 0;              /**< The index of the current sound being played. */
+    private AtomicBoolean isPlaying;                /**< Atomic flag to check if a sound is currently playing. */
 
+    /**
+     * Constructs a SequencialSoundFX instance with a list of sound file paths.
+     * 
+     * @param paths The list of sound file paths to be loaded and played sequentially.
+     */
     public SequencialSoundFX(List<String> paths) {
         this.paths = paths;
         this.isPlaying = new AtomicBoolean(false);
@@ -58,6 +70,12 @@ public class SequencialSoundFX implements Serializable{
         }
     }
 
+    /**
+     * Loads a sound file from the given path.
+     * 
+     * @param path The path of the sound file.
+     * @return The loaded Clip object, or null if loading fails.
+     */
     private Clip loadSound(String path) {
         Clip clip = null;
         try {
@@ -72,12 +90,18 @@ public class SequencialSoundFX implements Serializable{
         return clip;
     }
 
+    /**
+     * Updates the sound system and plays the next sound if no sound is currently playing.
+     */
     public void update() {
         if (this.clips.isEmpty() || this.isPlaying.get()) return;
 
         new Thread(this::play).start();
     }
 
+    /**
+     * Plays the current sound and moves to the next in the sequence.
+     */
     private void play() {
         if (this.clips.isEmpty()) return;
 
@@ -102,12 +126,16 @@ public class SequencialSoundFX implements Serializable{
         this.currentSoundIndex = (this.currentSoundIndex + 1) % this.clips.size();
     }
 
+    /**
+     * Custom deserialization method to reload sound clips after loading from a saved state.
+     * 
+     * @param in The object input stream.
+     * @throws IOException If an I/O error occurs.
+     * @throws ClassNotFoundException If the class cannot be found.
+     */
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
-        // FIXME Fix the bug after loading game: 
-        // Exception in thread "AWT-EventQueue-0" java.lang.NullPointerException: Cannot invoke "java.util.List.isEmpty()" because "this.clips" is null
-        //at topdownshooter.Core.SequencialSoundFX.update(SequencialSoundFX.java:47)
-        System.out.println("-------------------------------------------");
+
         // Preload all the sound files
         this.clips = new ArrayList<>();
         for (String path : this.paths) {
