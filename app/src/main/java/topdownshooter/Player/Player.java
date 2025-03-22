@@ -32,6 +32,7 @@ package topdownshooter.Player;
 import javax.swing.*;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.List;
@@ -43,6 +44,7 @@ import java.util.LinkedHashMap;
 import topdownshooter.Weapon.Weapon;
 import topdownshooter.Core.ConfigHandler;
 import topdownshooter.Core.Globals;
+import topdownshooter.Core.RectangleBound;
 import topdownshooter.Core.ConfigHandler.PlayerProperties;
 import topdownshooter.Core.SequencialSoundFX;
 import topdownshooter.Core.SpriteAnimation;
@@ -474,11 +476,11 @@ public class Player extends JPanel {
      * The size of this rectangle is slightly smaller than the player's bounds.
      * @return A rectangle representing the target bounds.
      */
-    public Rectangle getTargetBounds() {
+    public RectangleBound getTargetBounds() {
         double width = this.WIDTH * 0.8;
         double height = this.HEIGHT * 0.8;
 
-        return new Rectangle(this.x + (int) WIDTH/2, this.y + (int) HEIGHT/2, (int) width, (int) height);
+        return new RectangleBound(this.x + 6, this.y + 10, (int) width, (int) height, this.r);
     }
 
     /**

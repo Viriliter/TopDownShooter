@@ -44,6 +44,7 @@ import topdownshooter.Player.PlayerItem;
 import topdownshooter.Weapon.WeaponType;
 import topdownshooter.Core.Globals;
 import topdownshooter.Core.Position;
+import topdownshooter.Core.RectangleBound;
 import topdownshooter.Core.SpriteAnimation;
 
 /**
@@ -110,23 +111,22 @@ public abstract class AbstractZombie implements Zombie {
     }
 
     @Override
-    public void update(Rectangle playerBounds) {
+    public void update(RectangleBound playerBounds) {
         // Try to catch the player
         int playerX = (int) playerBounds.getX();
         int playerY = (int) playerBounds.getY();
-        
+        int playerMinSize = Math.min((int) playerBounds.getWidth(), (int) playerBounds.getHeight());
+
         // If objects collided, which means zombie catched the player, do not update position of the zombie
-        if (!Globals.isObjectsCollided(this.getBounds(), playerBounds)) {
-            int dx = playerX - this.x;
-            int dy = playerY - this.y;
-            
-            // Need to normalize speed according to the speed vector
-            double distance = Math.sqrt(dx * dx + dy * dy);
-            int normalizedSpeedX = 0, normalizedSpeedY = 0;
-            if (distance != 0) {
-                normalizedSpeedX = (int) (this.speed * Math.abs((double) dx / distance));
-                normalizedSpeedY = (int) (this.speed * Math.abs((double) dy / distance));
-            }
+        int dx = playerX - this.x;
+        int dy = playerY - this.y;
+        
+        // Need to normalize speed according to the speed vector
+        double distance = Math.sqrt(dx * dx + dy * dy);
+        int normalizedSpeedX = 0, normalizedSpeedY = 0;
+        if (distance > playerMinSize * 0.5) {  // Do not coincide to the player
+            normalizedSpeedX = (int) (this.speed * Math.abs((double) dx / distance));
+            normalizedSpeedY = (int) (this.speed * Math.abs((double) dy / distance));
 
             if (this.x < playerX) this.x += normalizedSpeedX;
             if (this.x > playerX) this.x -= normalizedSpeedX;
@@ -147,6 +147,14 @@ public abstract class AbstractZombie implements Zombie {
     @Override
     public Rectangle getBounds() {
         return new Rectangle(x, y, WIDTH, HEIGHT);
+    }
+    
+    @Override
+    public RectangleBound getTargetBounds() {
+        double width = this.WIDTH * 0.8;
+        double height = this.HEIGHT * 0.8;
+
+        return new RectangleBound(this.x, this.y, (int) width, (int) height, this.r);
     }
 
     @Override

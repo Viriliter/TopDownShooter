@@ -115,12 +115,12 @@ public interface Globals {
     public static final SpriteAnimationStruct HUNTER_ROCKET_LAUNCHER_MOVE = new SpriteAnimationStruct("Textures/Survivor/Rocket/survivor_rocket_move.png", 20, FRAME_DELAY, 7, 3, 30, 12);
     public static final SpriteAnimationStruct HUNTER_ROCKET_LAUNCHER_SHOOT = new SpriteAnimationStruct("Textures/Survivor/Rocket/survivor_rocket_shoot.png", 3, FRAME_DELAY, 1, 3, 30, 12);
 
-    public static final SpriteAnimationStruct ORDINARY_ZOMBIE_MOVE = new SpriteAnimationStruct("Textures/Zombie/ordinary_zombie_move.png", 17, FRAME_DELAY, 6, 3, 30, 12);
-    public static final SpriteAnimationStruct ORDINARY_ZOMBIE_ATTACK = new SpriteAnimationStruct("Textures/Zombie/ordinary_zombie_attack.png", 9, FRAME_DELAY, 3, 3, 30, 12);
-    public static final SpriteAnimationStruct CRAWLER_ZOMBIE_MOVE = new SpriteAnimationStruct("Textures/Zombie/crawler_zombie_move.png", 23, FRAME_DELAY, 5, 5, 30, 12);
-    public static final SpriteAnimationStruct CRAWLER_ZOMBIE_ATTACK = new SpriteAnimationStruct("Textures/Zombie/crawler_zombie_attack.png", 23, FRAME_DELAY, 5, 5, 30, 12);
-    public static final SpriteAnimationStruct ACID_ZOMBIE_MOVE = new SpriteAnimationStruct("Textures/Zombie/acid_zombie_move.png", 17, FRAME_DELAY, 6, 3, 30, 12);
-    public static final SpriteAnimationStruct ACID_ZOMBIE_ATTACK = new SpriteAnimationStruct("Textures/Zombie/acid_zombie_attack.png", 9, FRAME_DELAY, 3, 3, 30, 12);
+    public static final SpriteAnimationStruct ORDINARY_ZOMBIE_MOVE = new SpriteAnimationStruct("Textures/Zombie/ordinary_zombie_move.png", 17, FRAME_DELAY, 6, 3, 0, 0);
+    public static final SpriteAnimationStruct ORDINARY_ZOMBIE_ATTACK = new SpriteAnimationStruct("Textures/Zombie/ordinary_zombie_attack.png", 9, FRAME_DELAY, 3, 3, 0, 0);
+    public static final SpriteAnimationStruct CRAWLER_ZOMBIE_MOVE = new SpriteAnimationStruct("Textures/Zombie/crawler_zombie_move.png", 23, FRAME_DELAY, 5, 5, 0, 0);
+    public static final SpriteAnimationStruct CRAWLER_ZOMBIE_ATTACK = new SpriteAnimationStruct("Textures/Zombie/crawler_zombie_attack.png", 23, FRAME_DELAY, 5, 5, 0, 0);
+    public static final SpriteAnimationStruct ACID_ZOMBIE_MOVE = new SpriteAnimationStruct("Textures/Zombie/acid_zombie_move.png", 17, FRAME_DELAY, 6, 3, 0, 0);
+    public static final SpriteAnimationStruct ACID_ZOMBIE_ATTACK = new SpriteAnimationStruct("Textures/Zombie/acid_zombie_attack.png", 9, FRAME_DELAY, 3, 3, 0, 0);
     public static final SpriteAnimationStruct TANK_ZOMBIE_MOVE = new SpriteAnimationStruct("Textures/Zombie/tank_zombie_move.png", 25, FRAME_DELAY, 5, 5, 30, 12);
     public static final SpriteAnimationStruct TANK_ZOMBIE_ATTACK = new SpriteAnimationStruct("Textures/Zombie/tank_zombie_attack.png", 25, FRAME_DELAY, 5, 5, 30, 12);
 
@@ -218,4 +218,13 @@ public interface Globals {
                rect2.getBounds().contains(rect1.getBounds()) || 
                rect1.getBounds().contains(rect2.getBounds());
     }
+
+    public static boolean isObjectsCollided(RectangleBound rectBound1, RectangleBound rectBound2) {
+        return RectangleBound.isCollided(rectBound1, rectBound2);
+    }
+
+    public static boolean isObjectsCollided(Rectangle rect1, RectangleBound rectBound2) {
+        return RectangleBound.isCollided(rect1, rectBound2);
+    }
+
 }

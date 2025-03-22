@@ -391,7 +391,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
                 ListIterator<Zombie> zombieIterator = this.zombies.listIterator();
                 while (zombieIterator.hasNext()) {
                     Zombie zombie = zombieIterator.next();                   
-                    if (Globals.isObjectsCollided(bullet.getBounds(), zombie.getBounds())) {
+                    if (Globals.isObjectsCollided(bullet.getBounds(), zombie.getTargetBounds())) {
                         zombie.takeDamage(bullet.getDamage());
                         projectileIterator.remove();  // After damaging zombie, remove it.
                         break;
@@ -403,7 +403,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
                 ListIterator<Zombie> zombieIterator = this.zombies.listIterator();
                 while (zombieIterator.hasNext()) {
                     Zombie zombie = zombieIterator.next();
-                    if (Globals.isObjectsCollided(bullet.getBounds(), zombie.getBounds())) {
+                    if (Globals.isObjectsCollided(bullet.getBounds(), zombie.getTargetBounds())) {
                         zombie.takeDamage(bullet.getDamage());
                         // Do not remove armor piercing bullets on collision with zombie.
                     }
@@ -415,7 +415,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
                 ListIterator<Zombie> zombieIterator = this.zombies.listIterator();
                 while (zombieIterator.hasNext()) {
                     Zombie zombie = zombieIterator.next();
-                    if (Globals.isObjectsCollided(rocket.getBounds(), zombie.getBounds())) {
+                    if (Globals.isObjectsCollided(rocket.getBounds(), zombie.getTargetBounds())) {
                         // Rocket damages its surrounded area
                         damageZombies(rocket.getX(), rocket.getY(), rocket.getDamage(), rocket.getEffectiveRange());
                         isProjectileDetonated = true;
@@ -445,7 +445,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
                     ListIterator<Bullet> pelletIterator = pellets.getPellets().listIterator();
                     while (pelletIterator.hasNext()) {
                         Bullet bullet = pelletIterator.next();
-                        if (Globals.isObjectsCollided(bullet.getBounds(), zombie.getBounds())) {
+                        if (Globals.isObjectsCollided(bullet.getBounds(), zombie.getTargetBounds())) {
                             zombie.takeDamage(bullet.getDamage());
                             pelletIterator.remove();  // After damaging zombie, remove it.
                             break;
@@ -509,7 +509,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         while (zombieIterator.hasNext()) {
             Zombie zombie = zombieIterator.next();
             // If zombie collides with the player, it gives damage by attacking
-            boolean isColliding = Globals.isObjectsCollided(zombie.getBounds(), player.getTargetBounds());
+            boolean isColliding = Globals.isObjectsCollided(zombie.getTargetBounds(), player.getTargetBounds());
 
             if (isColliding) {
                 // Normalize damage according to game tick (Full damage is taken by player in 500ms)
@@ -895,6 +895,9 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         showGameOverDialog();
     }
 
+    /**
+     * Stops game timer, and clears resources.
+     */
     public void exit() {
         if (this.gameTimer!=null) this.gameTimer.stop();
         if (this.fireRateTick != null) this.fireRateTick.reset();
@@ -944,7 +947,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         if (e.getKeyCode() == KeyEvent.VK_W || e.getKeyCode() == KeyEvent.VK_S) player.setDy(0);
     }
 
-/**
+    /**
      * Handles key typing events.
      * 
      * Not implemented

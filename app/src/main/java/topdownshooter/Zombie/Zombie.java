@@ -40,6 +40,7 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 
 import topdownshooter.Core.Position;
+import topdownshooter.Core.RectangleBound;
 import topdownshooter.Player.Loot;
 import topdownshooter.Weapon.WeaponType;
 
@@ -59,7 +60,7 @@ public interface Zombie extends Serializable{
      *
      * @param playerBound The player's bounding rectangle which represents player's position and its size.
      */
-    public void update(Rectangle playerBound);
+    public void update(RectangleBound playerBound);
 
     /**
      * Draws the zombie on the screen.
@@ -74,6 +75,13 @@ public interface Zombie extends Serializable{
      * @return The bounding rectangle representing the zombie's position and size.
      */
     public Rectangle getBounds();
+    
+    /**
+     * Gets the bounding rectangle of the zombie. It may be probably smaller than the actual bounds.
+     *
+     * @return The bounding rectangle representing the zombie's position and size.
+     */
+    public RectangleBound getTargetBounds();
 
     /**
      * Gets the points awarded for killing this zombie.

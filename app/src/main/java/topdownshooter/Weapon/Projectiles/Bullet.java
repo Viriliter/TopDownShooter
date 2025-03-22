@@ -68,22 +68,6 @@ public class Bullet extends Projectile {
     @Override   
     public void draw(Graphics g) {
         if (this.projectileEffect!=null) this.projectileEffect.draw(g, this.x, this.y, this.r);
-        
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setColor(Color.RED);
-
-        // Save current transformation
-        AffineTransform oldTransform = g2d.getTransform();
-
-        // Move to bullet's position
-        g2d.translate(x, y);
-        g2d.rotate(this.r); // Rotate bullet
-
-        // Draw bullet as a small rotated rectangle
-        g2d.fillRect(-size / 2, -size / 2, size, size);
-        
-        // Restore previous transformation
-        g2d.setTransform(oldTransform);
     }
 
     @Override

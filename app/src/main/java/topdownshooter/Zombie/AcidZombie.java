@@ -39,6 +39,7 @@ import java.util.Random;
 import topdownshooter.Core.ConfigHandler.ZombieProperties;
 import topdownshooter.Weapon.Projectiles.AcidSpit;
 import topdownshooter.Core.Globals;
+import topdownshooter.Core.RectangleBound;
 import topdownshooter.Core.SpriteAnimation;
 
 /**
@@ -50,7 +51,7 @@ import topdownshooter.Core.SpriteAnimation;
  */
 public class AcidZombie extends AbstractZombie {
     private final int SPIT_RANGE = 500;
-    private final double MAX_SPREAD_ANGLE_DEG = 15;  // Spead Angle of Toxic Spit In degree
+    private final double MAX_SPREAD_ANGLE_DEG = 5;  // Spead Angle of Toxic Spit In degree
     public static final int EFFECTIVE_RANGE = 200;  // Effective Range of Exposion (After the zombie killed) In Pixels
 
     private static Random random = new Random(); // Reuse random instance
@@ -85,36 +86,34 @@ public class AcidZombie extends AbstractZombie {
     }
 
     @Override
-    public void update(Rectangle playerBounds) {
+    public void update(RectangleBound playerBounds) {
         // Try to catch the player
         int playerX = (int) playerBounds.getX();
         int playerY = (int) playerBounds.getY();
-        
-        // If objects collided, which means zombie catched the player, do not update position of the zombie
-        if (!Globals.isObjectsCollided(this.getBounds(), playerBounds)) {
-            int dx = playerX - this.x;
-            int dy = playerY - this.y;
-            
-            // Need to normalize speed according to the speed vector
-            double distance = Math.sqrt(dx * dx + dy * dy);
 
-            // If distance is bigger than spit range, try to catch the player
-            if (distance > SPIT_RANGE) {
-                int normalizedSpeedX = 0, normalizedSpeedY = 0;
-                if (distance != 0) {
-                    normalizedSpeedX = (int) (this.speed * Math.abs((double) dx / distance));
-                    normalizedSpeedY = (int) (this.speed * Math.abs((double) dy / distance));
-                }
-    
-                if (this.x < playerX) this.x += normalizedSpeedX;
-                if (this.x > playerX) this.x -= normalizedSpeedX;
-                if (this.y < playerY) this.y += normalizedSpeedY;
-                if (this.y > playerY) this.y -= normalizedSpeedY;    
-            } else { }
+        // If objects collided, which means zombie catched the player, do not update position of the zombie
+        int dx = playerX - this.x;
+        int dy = playerY - this.y;
             
-            // Rotate the zombie towards player
-            if (distance > 0) this.r = Math.atan2(dy, dx);
-        }
+        // Need to normalize speed according to the speed vector
+        double distance = Math.sqrt(dx * dx + dy * dy);
+
+        // If distance is bigger than spit range, try to catch the player
+        if (distance > SPIT_RANGE) {
+            int normalizedSpeedX = 0, normalizedSpeedY = 0;
+            if (distance != 0) {
+                normalizedSpeedX = (int) (this.speed * Math.abs((double) dx / distance));
+                normalizedSpeedY = (int) (this.speed * Math.abs((double) dy / distance));
+            }
+
+            if (this.x < playerX) this.x += normalizedSpeedX;
+            if (this.x > playerX) this.x -= normalizedSpeedX;
+            if (this.y < playerY) this.y += normalizedSpeedY;
+            if (this.y > playerY) this.y -= normalizedSpeedY;    
+        } else { }
+        
+        // Rotate the zombie towards player
+        if (distance > 0) this.r = Math.atan2(dy, dx);
 
         // Update sprite animation
         this.spriteAnimation.update();
