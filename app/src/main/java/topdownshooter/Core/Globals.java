@@ -48,6 +48,7 @@ public interface Globals {
      * IN-GAME CONSTANTS
      */
     public static final String CONFIGURATION_FILE = "config.ini";
+    public static final String CONFIGURATION_FILE_BRUTAL = "config-brutal.ini";
     public static final int GAME_TICK_MS = 10;
 
     public static final String GAME_TITLE = "Survival Echo";

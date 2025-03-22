@@ -109,7 +109,8 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         requestFocusInWindow();
         setBackground(Color.BLACK);
         addKeyListener(this);
-
+        
+        // Handle mouse events
         this.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
             public void mouseMoved(MouseEvent e) {

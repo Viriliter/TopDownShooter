@@ -108,6 +108,10 @@ public class MenuPanel extends JPanel {
         JButton startButton = createStyledButton("Start Game");
         startButton.addActionListener(e -> startGame());
 
+        // Start button (Brutal Game mode)
+        JButton startBrutalButton = createStyledButton("Brutal Game");
+        startBrutalButton.addActionListener(e -> startBrutalGame());
+        
         // Load button
         JButton loadButton = createStyledButton("Load Game");
         loadButton.addActionListener(e -> loadGame());
@@ -127,6 +131,8 @@ public class MenuPanel extends JPanel {
         // Add buttons to the panel
         buttonPanel.add(Box.createVerticalGlue()); // Push buttons to center
         buttonPanel.add(startButton);
+        buttonPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Space between buttons
+        buttonPanel.add(startBrutalButton);
         buttonPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Space between buttons
         buttonPanel.add(loadButton);
         buttonPanel.add(Box.createRigidArea(new Dimension(0, 20))); // Space between buttons
@@ -216,6 +222,9 @@ public class MenuPanel extends JPanel {
         this.revalidate();
         this.repaint();
 
+        // Read configuration file, it may changed on previous session
+        this.config = new ConfigHandler(Globals.CONFIGURATION_FILE);
+
         initPanel();  // Initialize the panel
 
         // Add MenuPanel to the frame
@@ -233,7 +242,28 @@ public class MenuPanel extends JPanel {
         clearMusic();
 
         this.frame.getContentPane().removeAll();
-        this.gamePanel = new GamePanel(this.frame, config);
+        this.gamePanel = new GamePanel(this.frame, this.config);
+        this.gamePanel.setParentPanel(this);
+
+        this.frame.add(this.gamePanel);
+        this.frame.revalidate();
+        this.frame.repaint();
+
+        this.gamePanel.startGame();
+    }
+
+    /**
+     * Starts a new brutal game when the user clicks "Start Game" button.
+     * 
+     * It reads configuration from config-brutal.ini to demonstrate the performance of the game engine.
+     */
+    private void startBrutalGame() {
+        clearMusic();
+
+        ConfigHandler brutal_config = new ConfigHandler(Globals.CONFIGURATION_FILE_BRUTAL);  // Read configuration file again for brutal game mode
+
+        this.frame.getContentPane().removeAll();
+        this.gamePanel = new GamePanel(this.frame, brutal_config);
         this.gamePanel.setParentPanel(this);
 
         this.frame.add(this.gamePanel);
@@ -431,6 +461,9 @@ public class MenuPanel extends JPanel {
         }
     }
 
+    /**
+     * Stops the music and deallocates its resources.
+     */
     private void clearMusic() {
         if (this.menuMusic != null) {
             this.menuMusic.stop();
