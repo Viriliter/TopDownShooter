@@ -32,7 +32,6 @@ package topdownshooter.Player;
 import javax.swing.*;
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.List;
