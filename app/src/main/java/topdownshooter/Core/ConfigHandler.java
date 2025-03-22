@@ -36,6 +36,8 @@ import topdownshooter.Weapon.WeaponType;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @class ConfigHandler
@@ -62,7 +64,8 @@ public final class ConfigHandler implements Serializable{
         int startingX,
         int startingY,
         int startingHealth,
-        int speed
+        int speed,
+        WeaponType[] startingWeapons
     ) {}
 
     public record ZombieProperties (
@@ -127,6 +130,32 @@ public final class ConfigHandler implements Serializable{
         else
             return WeaponType.UNDEFINED;
     }
+
+    public static WeaponType[] parseWeapon(String weaponString) {
+        if (weaponString == null || weaponString.trim().isEmpty()) {
+            return new WeaponType[0]; // Return empty array if field is missing
+        }
+
+        String[] weaponNames = weaponString.split(",");
+        List<WeaponType> weaponList = new ArrayList<>();
+
+        for (String weaponName : weaponNames) {
+            weaponName = weaponName.trim();
+            if (weaponName.equals("PISTOL"))
+                weaponList.add(WeaponType.PISTOL);
+            else if (weaponName.equals("ASSAULT_RIFLE"))
+                weaponList.add(WeaponType.ASSAULTRIFLE);
+            else if (weaponName.equals("SHOTGUN"))
+                weaponList.add(WeaponType.SHOTGUN);
+            else if (weaponName.equals("SNIPER_RIFLE"))
+                weaponList.add(WeaponType.SNIPERRIFLE);
+            else if (weaponName.equals("ROCKET_LAUNCHER"))
+                weaponList.add(WeaponType.ROCKETLAUNCHER);
+            else 
+                System.err.println("Unknown weapon: " + weaponName.trim());
+        }
+        return weaponList.toArray(new WeaponType[0]);
+    }    
 
     /**
      * Returns window properties of the game.
@@ -214,7 +243,8 @@ public final class ConfigHandler implements Serializable{
         Integer playerStartingY = Integer.parseInt(ConfigHandler.ini.get("Player").get("StartingY"));
         Integer playerStartingHealth = Integer.parseInt(ConfigHandler.ini.get("Player").get("StartingHealth"));
         Integer playerSpeed = Integer.parseInt(ConfigHandler.ini.get("Player").get("Speed"));
-        return new PlayerProperties(playerStartingX, playerStartingY, playerStartingHealth, playerSpeed);
+        WeaponType[] startingWeapons = ConfigHandler.parseWeapon(ConfigHandler.ini.get("Player").get("StartingWeapons"));
+        return new PlayerProperties(playerStartingX, playerStartingY, playerStartingHealth, playerSpeed, startingWeapons);
     }
 
     /**

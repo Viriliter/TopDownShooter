@@ -109,17 +109,20 @@ public class Player extends JPanel {
         createSpriteAnimations();
 
         this.inventory = new LinkedHashMap<WeaponType, Weapon>();
-        // Every player starts with a pistol
-        addNewWeapon(config, WeaponType.PISTOL);
-        //addNewWeapon(config, WeaponType.ASSAULTRIFLE);
-        //addNewWeapon(config, WeaponType.SHOTGUN);
-        //addNewWeapon(config, WeaponType.SNIPERRIFLE);
-        //addNewWeapon(config, WeaponType.ROCKETLAUNCHER);
+
+        // Add weapons into inventory
+        for (WeaponType weaponType: playerProperties.startingWeapons()) {
+            addNewWeapon(config, weaponType);
+        }
+
+        // If no weapon specified at the startup with pistol
+        if (playerProperties.startingWeapons().length==0) {
+            addNewWeapon(config, WeaponType.PISTOL);
+        }
 
         // Initialize walking sound effects
         this.walkSoundFX = new SequencialSoundFX(Globals.HUNTER_SOUND_FX_PATH);
     }
-
     
     /**
      *  Method to create the sprite animations for different weapons and states
