@@ -29,11 +29,17 @@
 
 package topdownshooter.Core;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import topdownshooter.Core.ConfigHandler.LevelProperties;
 import topdownshooter.Weapon.WeaponType;
@@ -76,7 +82,10 @@ public class GameLevel implements Serializable {
     private int currentZombieTypeIndex = 0;                     /**< Current index of the zombieHorde. */
 
     private static Random random = new Random();                /**< Random number generator. */
-
+    private static final ExecutorService executor = Executors.newCachedThreadPool();    /**< Creates a thread pool. */
+    private final List<Zombie> zombieBuffer = new ArrayList<>();                        /**< To store the zombie from the async update. */
+    private transient Lock zombieBufferLock = new ReentrantLock();                      /**< Mutex lock to synchronize access to the zombieList. */
+    
     /**
      * Constructs a GameLevel with the specified configuration.
      * @param config The configuration handler.
@@ -194,7 +203,54 @@ public class GameLevel implements Serializable {
         }
         return null;
     }
-    
+    /**
+     * Adds new zombies to the zombie list in thread-safe manner
+     * @param zombies The zombies list where new zombies are about to be added
+     */
+    private void addZombieToList(ArrayList<Zombie> zombies) {
+        this.zombieBufferLock.lock();
+        for (Zombie zombie: this.zombieBuffer) {
+            zombies.add(zombie);
+        }
+        this.zombieBuffer.clear();
+        this.zombieBufferLock.unlock();
+    }
+
+    /**
+     * Updates the game state and spawns zombies asynchronously.
+     * @param maxWidth The maximum width of the game field.
+     * @param maxHeight The maximum height of the game field.
+     * @param zombies The zombie list to be added if new zombies spawned.
+     * @return The newly spawned zombie, or null if no zombie is spawned.
+     */
+    public void updateAsync(final int maxWidth, final int maxHeight, ArrayList<Zombie> zombies) {
+        if (this.gameLevelStatus == GameLevelStatus.SUSPENDED) {
+            this.newWaveSuspendTick.updateTick();
+            return;
+        }
+
+        if (this.spawnTick==null) return;
+
+        if (this.gameLevelStatus == GameLevelStatus.STARTED) {
+            this.spawnTick.updateTick();
+            this.waveTick.updateTick();
+
+            executor.submit(() -> {
+                Zombie zombie = update(maxWidth, maxHeight);
+                if (zombie != null) {
+                    this.zombieBufferLock.lock();
+                    zombieBuffer.add(zombie);
+                    this.zombieBufferLock.unlock();
+                }
+            });
+
+            addZombieToList(zombies);  // Ensure thread-safe access to the list
+            if (getRemainingZombies() <= 0) {
+                endWave();
+            }
+        }
+    }
+
     /**
      * Updates the game state and spawns zombies if needed.
      * @param maxWidth The maximum width of the game field.
@@ -375,6 +431,17 @@ public class GameLevel implements Serializable {
         if (this.level == 0) return 0;
         this.levelBonus += this.levelBonus;
         return this.levelBonus;
+    }
+
+    /**
+     * Handles object deserialization and reinitializes the audio clip.
+     * @param in The object input stream.
+     * @throws IOException If an I/O error occurs.
+     * @throws ClassNotFoundException If the class definition is not found.
+     */
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        this.zombieBufferLock = new ReentrantLock();
     }
 
     /**

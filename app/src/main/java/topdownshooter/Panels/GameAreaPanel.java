@@ -298,8 +298,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
             startWave();
         }
 
-        Zombie zombie = this.gameLevel.update(getWidth(), getHeight());
-        if (zombie != null) zombies.add(zombie);
+        this.gameLevel.updateAsync(getWidth(), getHeight(), zombies);
     }
 
     /**
@@ -805,7 +804,10 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         resetGame();
 
         createGameObjects(os);
-    
+
+        this.backgroundSoundFX = new SoundFX(Globals.BACKGROUND_SOUND_FX_PATH);
+        this.backgroundSoundFX.play(true);
+
         os.close();
     }
 
@@ -886,7 +888,7 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
      */
     public void endGame() {
         exit();
-        
+
         showGameOverDialog();
     }
 

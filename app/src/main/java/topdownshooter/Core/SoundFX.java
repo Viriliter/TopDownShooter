@@ -120,8 +120,8 @@ public class SoundFX implements Serializable{
             this.clip.setFramePosition(0); // Reset to the beginning for the next play
     
             // Release resources
-            this.clip.close();
-            this.clip = null;
+            //this.clip.close();
+            //this.clip = null;
         }
         this.lastClipPosition = 0;
     }
@@ -176,6 +176,7 @@ public class SoundFX implements Serializable{
      * @param delayDurationMS The delay time in milliseconds before playback starts.
      */
     public void delayedPlay(boolean loop, int delayDurationMS) {
+
         if (this.clip != null && !this.clip.isRunning()) {
             new Thread(() -> {
                 try {

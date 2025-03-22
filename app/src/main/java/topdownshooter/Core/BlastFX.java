@@ -30,6 +30,7 @@
 package topdownshooter.Core;
 
 import java.awt.Graphics;
+import java.io.Serializable;
 import java.util.Random;
 
 /**
@@ -40,7 +41,7 @@ import java.util.Random;
  * including explosive and toxic blasts. It initializes animations, updates
  * their state, and renders them with randomized rotation.
  */
-public class BlastFX {
+public class BlastFX implements Serializable {
     /**
      * @enum BlastType
      * @brief Defines different types of blast effects.

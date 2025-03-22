@@ -72,3 +72,12 @@ task doxygen(type: Exec) {
 
     commandLine 'doxygen', './Doxyfile'
 }
+
+run {
+    jvmArgs = [
+        '-XX:+UseG1GC', 
+        '-XX:MaxGCPauseMillis=200', 
+        '-Xms2g', 
+        '-Xmx4g', 
+    ]
+}
