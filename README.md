@@ -15,7 +15,12 @@ TopDownShooter is a top down shooter game where the players try to survive from 
 - ini4j
 - Windows (not mandatory but need comprehensive tests for other OSes)
 
-## Installation
+For Doxygen documentation, following dependencies are needed:
+- doxygen
+- graphviz (for hierarchy graphs)
+
+
+## Build and Run
 1. Clone the repository:
     ```sh
     git clone https://github.com/Viriliter/TopDownShooter.git
@@ -31,6 +36,14 @@ TopDownShooter is a top down shooter game where the players try to survive from 
 4. Run the project using Gradle Wrapper.
     ```sh
     ./gradlew.bat run
+    ```
+
+## Generate Doxygen Documentation
+1. Change `doxygen` and `graphviz` paths according to the computer environment.
+
+2. Run following command:
+    ```sh
+    ./gradlew.bat doxygen
     ```
 
 ## How to Play

@@ -131,12 +131,14 @@ public class GameInfoPanel extends JPanel implements ActionListener, MouseListen
         /**
          * @enum Enum representing the status of a weapon in the inventory.
          */
+        @SuppressWarnings("unused")
         private enum WeaponStatus {
             NULL,       // The weapon has not been earned yet (aka null)
             INACTIVE,   // The weapon is not using
             ACTIVE      // Current weapon that is used by the player
         }
 
+        @SuppressWarnings("unused")
         private WeaponType lastWeaponType = WeaponType.UNDEFINED;
 
         private LinkedHashMap<WeaponType, WeaponSlot> weaponSlots = null;

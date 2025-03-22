@@ -31,8 +31,6 @@ package topdownshooter.Panels;
 
 import javax.swing.*;
 
-import org.checkerframework.common.returnsreceiver.qual.This;
-
 import java.awt.*;
 import java.awt.event.*;
 import java.io.EOFException;

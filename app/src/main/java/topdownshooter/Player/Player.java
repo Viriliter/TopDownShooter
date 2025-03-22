@@ -32,7 +32,6 @@ package topdownshooter.Player;
 import javax.swing.*;
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.util.List;
@@ -195,19 +194,12 @@ public class Player extends JPanel {
         if (currentWeaponType != WeaponType.UNDEFINED) this.spriteAnimations.get(currentWeaponType).get(PlayerState.IDLE).update();
     }
 
+    /**
+     * Draws the player on the screen.
+     * 
+     * @param g The graphics context to use for drawing.
+     */
     public void draw(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g; // Enable rotation
-
-        AffineTransform oldTransform = g2d.getTransform();
-
-        g2d.setColor(Color.GREEN);
-        g2d.translate(x + WIDTH / 2, y + HEIGHT / 2);
-        g2d.rotate(r);  // Rotate to face the player
-        g2d.fillRect(-WIDTH / 2, -HEIGHT / 2, WIDTH, WIDTH);
-
-        // Reset transformation
-        g2d.setTransform(oldTransform);
-
         // Draw sprite animations of player according to weapon type
         PlayerState playerState = PlayerState.IDLE;
         WeaponType currentWeaponType = this.inventory.get(this.currentWeaponType).getType();
@@ -219,14 +211,6 @@ public class Player extends JPanel {
         // Draw weapon animation
         this.inventory.get(this.currentWeaponType).draw(g, this.x + WIDTH / 2, this.y + HEIGHT / 2, this.r);
 
-        AffineTransform oldTransform2 = g2d.getTransform();
-
-        g2d.setColor(Color.ORANGE);
-        g2d.translate(this.x + WIDTH / 2, this.y + HEIGHT / 2);
-        g2d.rotate(this.r); 
-        g2d.fillRect(0, 0, 2, 2);
-        
-        g2d.setTransform(oldTransform2);
     }
 
     /**
@@ -494,7 +478,7 @@ public class Player extends JPanel {
         double width = this.WIDTH * 0.8;
         double height = this.HEIGHT * 0.8;
 
-        return new Rectangle(this.x + (int) width/2, this.y + (int) height/2, (int) width, (int) height);
+        return new Rectangle(this.x + (int) WIDTH/2, this.y + (int) HEIGHT/2, (int) width, (int) height);
     }
 
     /**

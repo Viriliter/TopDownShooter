@@ -65,3 +65,10 @@ tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
+
+task doxygen(type: Exec) {
+    description = 'Generates documentation using Doxygen'
+    group = 'Documentation'
+
+    commandLine 'doxygen', './Doxyfile'
+}
