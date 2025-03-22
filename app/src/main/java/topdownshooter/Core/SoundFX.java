@@ -113,9 +113,15 @@ public class SoundFX implements Serializable{
      * Stops the audio playback immediately.
      */
     public void stop() {
-        if (this.clip != null && this.clip.isRunning()) {
-            this.clip.stop(); // Stop the music immediately
-            this.clip.setFramePosition(0); // Reset to the beginning for next play
+        if (this.clip != null) {
+            if (this.clip.isRunning()) {
+                this.clip.stop(); // Stop the music immediately
+            }
+            this.clip.setFramePosition(0); // Reset to the beginning for the next play
+    
+            // Release resources
+            this.clip.close();
+            this.clip = null;
         }
         this.lastClipPosition = 0;
     }

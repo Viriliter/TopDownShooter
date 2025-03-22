@@ -143,7 +143,6 @@ public class InGameMenuPanel extends AbstractActionPanel{
      */
     private void returnToMenu() {
         System.out.println("Returning to menu...");
-        this.parentPanel.getGameAreaPanel().exit();
         this.parentPanel.switchToMenu();
         this.close();
     }

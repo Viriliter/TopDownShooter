@@ -56,7 +56,7 @@ import topdownshooter.Core.ConfigHandler.WindowProperties;
 public class MenuPanel extends JPanel {
     private JFrame frame;                   //*< The parent JFrame that holds this panel. */
     private ConfigHandler config = null;    //*< The configuration handler for game settings. */
-    private Image bgImage;                  //*< The background image for the menu. */
+    private Image bgImage = null;           //*< The background image for the menu. */
     private SoundFX menuMusic = null;       //*< The sound effects or music for the menu. */
     private GamePanel gamePanel = null;     //*< The GamePanel for transitioning to the game view. */
 
@@ -70,8 +70,6 @@ public class MenuPanel extends JPanel {
         this.frame = frame;
         this.config = config;
 
-        this.menuMusic = new SoundFX(Globals.MENU_MUSIC_PATH);
-
         initPanel();
     }
 
@@ -80,6 +78,8 @@ public class MenuPanel extends JPanel {
      * loading the background image, and setting up the music.
      */
     private void initPanel() {
+        // Initialize menu music
+        this.menuMusic = new SoundFX(Globals.MENU_MUSIC_PATH);
         this.menuMusic.play(true, 5000);
 
         setLayout(new BorderLayout());
@@ -199,37 +199,46 @@ public class MenuPanel extends JPanel {
             g.drawImage(this.bgImage, 0, 0, this);
         }
 
-        frame.repaint();
+        this.frame.repaint();
     }
 
     /**
      * Displays the main menu.
-     * 
      */
     public void showMenu() {
+        // Clear resources
+        this.bgImage = null;
         this.gamePanel = null;
+        clearMusic();
 
-        this.menuMusic.play(true, 5000);
-        this.frame.getContentPane().removeAll();  // It will clear out if there is any GamePanel
+        // Refresh the panel
+        this.removeAll();
+        this.revalidate();
+        this.repaint();
 
-        MenuPanel menuPanel = new MenuPanel(this.frame, config);
-        this.frame.add(menuPanel);
+        initPanel();  // Initialize the panel
+
+        // Add MenuPanel to the frame
+        this.frame.getContentPane().removeAll();
+        this.frame.add(this);
+
         this.frame.setVisible(true);
+        this.frame.repaint();
     }
 
     /**
      * Starts a new game when the user clicks "Start Game" button.
      */
     private void startGame() {
-        this.menuMusic.stop();
+        clearMusic();
 
-        frame.getContentPane().removeAll();
-        this.gamePanel = new GamePanel(frame, config);
+        this.frame.getContentPane().removeAll();
+        this.gamePanel = new GamePanel(this.frame, config);
         this.gamePanel.setParentPanel(this);
 
-        frame.add(this.gamePanel);
-        frame.revalidate();
-        frame.repaint();
+        this.frame.add(this.gamePanel);
+        this.frame.revalidate();
+        this.frame.repaint();
 
         this.gamePanel.startGame();
     }
@@ -252,16 +261,16 @@ public class MenuPanel extends JPanel {
                 FileInputStream inputStream = new FileInputStream(fileToOpen);
 
                 this.menuMusic.pause();
-                this.gamePanel = new GamePanel(frame, config);
+                this.gamePanel = new GamePanel(this.frame, config);
                 this.gamePanel.setParentPanel(this);
                 this.gamePanel.loadGame(inputStream);
 
-                frame.getContentPane().removeAll();
-                frame.add(this.gamePanel);
-                frame.revalidate();
-                frame.repaint();
+                this.frame.getContentPane().removeAll();
+                this.frame.add(this.gamePanel);
+                this.frame.revalidate();
+                this.frame.repaint();
 
-                this.menuMusic.stop();
+                clearMusic();
                 this.gamePanel.startGame();
 
                 isExceptionOccured = false;                    
@@ -340,9 +349,9 @@ public class MenuPanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(helpTextArea);
         scrollPane.setPreferredSize(new Dimension(400, 300));
 
-        JDialog helpDialog = new JDialog(frame, "Game Help", true);
+        JDialog helpDialog = new JDialog(this.frame, "Game Help", true);
         helpDialog.setSize(500, 400);  // Set dialog size
-        helpDialog.setLocationRelativeTo(frame);  // Center dialog on the main frame
+        helpDialog.setLocationRelativeTo(this.frame);  // Center dialog on the main frame
 
         helpDialog.add(scrollPane, BorderLayout.CENTER);
 
@@ -385,9 +394,9 @@ public class MenuPanel extends JPanel {
         JScrollPane scrollPane = new JScrollPane(helpTextArea);
         scrollPane.setPreferredSize(new Dimension(400, 300));
 
-        JDialog helpDialog = new JDialog(frame, "Game Help", true);
+        JDialog helpDialog = new JDialog(this.frame, "Game Help", true);
         helpDialog.setSize(500, 400);  // Set dialog size
-        helpDialog.setLocationRelativeTo(frame);  // Center dialog on the main frame
+        helpDialog.setLocationRelativeTo(this.frame);  // Center dialog on the main frame
 
         helpDialog.add(scrollPane, BorderLayout.CENTER);
 
@@ -412,13 +421,20 @@ public class MenuPanel extends JPanel {
      */
     private void exit() {
         // Confirm the exit with the user
-        int response = JOptionPane.showConfirmDialog(frame, 
+        int response = JOptionPane.showConfirmDialog(this.frame, 
             "Are you sure you want to exit the game?", "Exit Game", 
             JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 
         if (response == JOptionPane.YES_OPTION) {
             // Perform any cleanup if necessary (e.g., saving game state, etc.)
             System.exit(0); // Close the game
+        }
+    }
+
+    private void clearMusic() {
+        if (this.menuMusic != null) {
+            this.menuMusic.stop();
+            this.menuMusic = null;
         }
     }
 }

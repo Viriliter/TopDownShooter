@@ -885,13 +885,8 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
      * Ends the game and transitions to the game over state.
      */
     public void endGame() {
-        if (this.gameTimer!=null) this.gameTimer.stop();
-        if (this.fireRateTick != null) this.fireRateTick.reset();
+        exit();
         
-        GameAreaPanel.isGamePaused = true;  // Set to true to prevent player rotation on mouse movement
-
-        if (this.backgroundSoundFX!=null) this.backgroundSoundFX.stop();
-
         showGameOverDialog();
     }
 
@@ -903,7 +898,11 @@ public class GameAreaPanel extends JPanel implements ActionListener, KeyListener
         if (this.fireRateTick != null) this.fireRateTick.reset();
         
         GameAreaPanel.isGamePaused = true;  // Set to true to prevent player rotation on mouse movement
-        if (this.backgroundSoundFX!=null) this.backgroundSoundFX.stop();
+
+        if (this.backgroundSoundFX!=null) {
+            this.backgroundSoundFX.stop();
+            this.backgroundSoundFX = null;
+        }
     }
 
     /**

@@ -169,7 +169,8 @@ public class GameLevel implements Serializable {
             this.crawlerZombieCount = levelProperties.crawlerZombieCount();
             this.tankZombieCount = levelProperties.tankZombieCount();
             this.acidZombieCount = levelProperties.acidZombieCount();
-            
+
+            this.zombieHorde.clear();            
             for (int i = 0; i < levelProperties.ordinaryZombieCount(); i++) this.zombieHorde.add(ZombieType.ORDINARY);
             for (int i = 0; i < levelProperties.crawlerZombieCount(); i++) this.zombieHorde.add(ZombieType.CRAWLER);
             for (int i = 0; i < levelProperties.tankZombieCount(); i++) this.zombieHorde.add(ZombieType.TANK);
