@@ -51,7 +51,7 @@ public interface Globals {
     public static final String CONFIGURATION_FILE_BRUTAL = "config-brutal.ini";
     public static final int GAME_TICK_MS = 10;
 
-    public static final String GAME_TITLE = "Survival Echo";
+    public static final String GAME_TITLE = "Survival Echoes";
     public static final int WINDOW_WIDTH = 1600;  // Default: 1600px
     public static final int WINDOW_HEIGHT = (int) ((double) WINDOW_WIDTH * 0.625);  // Default: 1000px
     public static final int PLAYER_WIDTH = (int) ((WINDOW_WIDTH * 0.05));  // Default: 80px
