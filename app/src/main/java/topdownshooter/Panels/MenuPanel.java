@@ -43,7 +43,6 @@ import java.io.InputStream;
 import topdownshooter.Core.ConfigHandler;
 import topdownshooter.Core.Globals;
 import topdownshooter.Core.SoundFX;
-import topdownshooter.Core.ConfigHandler.WindowProperties;
 
 /**
  * @class MenuPanel
@@ -84,15 +83,12 @@ public class MenuPanel extends JPanel {
 
         setLayout(new BorderLayout());
 
-        // Get window properties from config
-        WindowProperties windowProperties = this.config.getWindowProperties();
-
         // Load and resize background image
         try {
             InputStream input = getClass().getClassLoader().getResourceAsStream(Globals.WALLPAPER_PATH);
             if (input != null) {
                 Image image = ImageIO.read(input);  // Load the image
-                this.bgImage = image.getScaledInstance(windowProperties.windowWidth(), windowProperties.windowHeight(), Image.SCALE_SMOOTH);  // Resize the image
+                this.bgImage = image.getScaledInstance(this.frame.getWidth(), this.frame.getHeight(), Image.SCALE_SMOOTH);  // Resize the image
             }
         } catch (IOException e) {
             e.printStackTrace();

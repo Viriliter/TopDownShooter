@@ -31,6 +31,9 @@ package topdownshooter;
 
 import javax.swing.*;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
+
 import topdownshooter.Core.Globals;
 import topdownshooter.Core.ConfigHandler.WindowProperties;
 import topdownshooter.Panels.MenuPanel;
@@ -60,16 +63,20 @@ public class Game {
            
             JFrame frame = new JFrame(Globals.GAME_TITLE);
             frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
             frame.setSize(windowProperties.windowWidth(), windowProperties.windowHeight());
             frame.setResizable(false);
 
-            // Set full-screen mode
-            //GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
-            //GraphicsDevice device = env.getDefaultScreenDevice();
-            //device.setFullScreenWindow(frame);
-            //
-            //config.setProperty("Window", "Width", frame.getWidth());
-            //config.setProperty("Window", "Height", frame.getHeight());
+            // Set full-screen mode if either window width or height is set to 0 
+            if (windowProperties.windowWidth() == 0 ||  windowProperties.windowHeight() == 0 ) {
+                Toolkit toolkit = Toolkit.getDefaultToolkit();
+                Dimension screenSize = toolkit.getScreenSize();
+                frame.setSize(screenSize.width, screenSize.height);
+                frame.setResizable(false);
+            } else {
+                frame.setSize(windowProperties.windowWidth(), windowProperties.windowHeight());
+                frame.setResizable(false);    
+            }
 
             MenuPanel menuPanel = new MenuPanel(frame, config);
             frame.add(menuPanel);
