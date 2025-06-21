@@ -52,6 +52,12 @@ For Doxygen documentation, following dependencies are needed:
 - Collect power-ups and ammo to gain advantages.
 - Defeat all enemies to progress to the next level.
 
+## Screenshots
+
+![Alt text](screenshots/wp.png)
+
+![Alt text](screenshots/ingame.png)
+
 ## Game Configurations and Benchmarking
 The [config.ini](app/src/main/resources/config.ini) file is a key component of this game, allowing users to customize gameplay elements, player attributes, zombie characteristics, and level properties. It also serves as a useful tool for benchmarking the game engine’s performance by modifying different parameters.
 
